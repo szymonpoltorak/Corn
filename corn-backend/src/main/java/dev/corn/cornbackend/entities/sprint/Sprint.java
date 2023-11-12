@@ -1,11 +1,13 @@
 package dev.corn.cornbackend.entities.sprint;
 
+import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +29,9 @@ public class Sprint implements Jsonable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long sprintId;
+
+    @ManyToOne
+    private Project project;
 
     private String sprintName;
 

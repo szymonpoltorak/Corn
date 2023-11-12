@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -31,8 +33,9 @@ public class ProjectMember implements Jsonable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long projectMemberId;
 
-    @ManyToOne
-    private BacklogItem backlogItem;
+    @OneToMany
+    @ToString.Exclude
+    private List<BacklogItem> backlogItem;
 
     @ManyToOne
     private Project project;

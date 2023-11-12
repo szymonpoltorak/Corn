@@ -47,7 +47,7 @@ public class BacklogItem implements Jsonable {
     @ToString.Exclude
     private List<BacklogItemComment> comments;
 
-    @OneToOne
+    @ManyToOne
     private ProjectMember assignee;
 
     @ManyToOne
