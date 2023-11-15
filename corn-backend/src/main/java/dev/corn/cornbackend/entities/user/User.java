@@ -19,6 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -67,6 +68,36 @@ public class User implements Jsonable, ServiceUser {
     @Override
     public final Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof User user) || userId != user.userId) {
+            return false;
+        }
+        if (!Objects.equals(name, user.name) || !Objects.equals(surname, user.surname)) {
+            return false;
+        }
+        if (!Objects.equals(username, user.username) || !Objects.equals(password, user.password)) {
+            return false;
+        }
+        return Objects.equals(salt, user.salt);
+    }
+
+    @Override
+    public final int hashCode() {
+        int result = (int) (userId ^ (userId >>> 32));
+
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (salt != null ? salt.hashCode() : 0);
+
+        return result;
     }
 
     @Override
