@@ -10,8 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,8 +32,8 @@ public class BacklogItemComment implements Jsonable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long backlogItemCommentId;
 
-    @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_NULL_COMMENT_MSG)
-    @NotEmpty(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_EMPTY_COMMENT_MSG)
+    @NotBlank(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BLANK_COMMENT_MSG)
+    @Size(max = 500, message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_WRONG_SIZE_COMMENT_MSG)
     private String comment;
 
     @ManyToOne

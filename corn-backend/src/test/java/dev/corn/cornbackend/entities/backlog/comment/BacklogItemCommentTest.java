@@ -5,13 +5,14 @@ import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.user.User;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,11 +22,13 @@ class BacklogItemCommentTest {
     @Autowired
     private LocalValidatorFactoryBean validator;
 
-    @Test
-    final void test_shouldReturnCommentViolationsWhenCreatingCommentWithNullComment() {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", " \n\t\r"})
+    final void test_shouldReturnBlankCommentViolationOnNullEmptyOrOnlyWhiteSpaceComment(String comment) {
         // given
         BacklogItemComment backlogItemComment = new BacklogItemComment();
-        backlogItemComment.setComment(null);
+        backlogItemComment.setComment(comment);
 
         // when
         Set<ConstraintViolation<BacklogItemComment>> violations = validator.validateProperty(
@@ -33,22 +36,17 @@ class BacklogItemCommentTest {
                 BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME);
 
         // then
-        Set<String> expectedMessages = Set.of(
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_NULL_COMMENT_MSG,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_EMPTY_COMMENT_MSG);
+        String expectedMessage = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BLANK_COMMENT_MSG;
 
-        assertEquals(2, violations.size());
-        assertEquals(expectedMessages, violations
-                .stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.toSet()));
+        assertEquals(1, violations.size());
+        assertEquals(expectedMessage, violations.iterator().next().getMessage());
     }
 
     @Test
-    final void test_shouldReturnCommentEmptyViolationWhenCreatingCommentWithEmptyComment() {
+    final void test_shouldReturnSizeViolationOnCommentWithMoreThan500Characters() {
         // given
         BacklogItemComment backlogItemComment = new BacklogItemComment();
-        backlogItemComment.setComment("");
+        backlogItemComment.setComment("a".repeat(501));
 
         // when
         Set<ConstraintViolation<BacklogItemComment>> violations = validator.validateProperty(
@@ -56,7 +54,7 @@ class BacklogItemCommentTest {
                 BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME);
 
         // then
-        String expectedMessage = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_EMPTY_COMMENT_MSG;
+        String expectedMessage = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_WRONG_SIZE_COMMENT_MSG;
 
         assertEquals(1, violations.size());
         assertEquals(expectedMessage, violations.iterator().next().getMessage());
