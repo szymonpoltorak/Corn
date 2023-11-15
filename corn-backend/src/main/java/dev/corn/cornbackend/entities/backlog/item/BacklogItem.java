@@ -14,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +22,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -55,6 +55,41 @@ public class BacklogItem implements Jsonable {
 
     @ManyToOne
     private Project project;
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof BacklogItem that) || backlogItemId != that.backlogItemId) {
+            return false;
+        }
+        if (!Objects.equals(description, that.description) || !Objects.equals(title, that.title)) {
+            return false;
+        }
+        if (!Objects.equals(comments, that.comments) || status != that.status) {
+            return false;
+        }
+        if (!Objects.equals(sprint, that.sprint) || !Objects.equals(assignee, that.assignee)) {
+            return false;
+        }
+        return Objects.equals(project, that.project);
+    }
+
+    @Override
+    public final int hashCode() {
+        int result = (int) (backlogItemId ^ (backlogItemId >>> 32));
+
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (comments != null ? comments.hashCode() : 0);
+        result = 31 * result + (assignee != null ? assignee.hashCode() : 0);
+        result = 31 * result + (sprint != null ? sprint.hashCode() : 0);
+        result = 31 * result + (project != null ? project.hashCode() : 0);
+
+        return result;
+    }
 
     @Override
     public final String toJson() {
