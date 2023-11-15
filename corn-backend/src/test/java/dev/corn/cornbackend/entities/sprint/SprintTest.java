@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SprintTest {
     @Test
@@ -21,7 +19,7 @@ class SprintTest {
         String json = sprint.toJson();
 
         // Then
-        assertNotNull(json);
+        assertNotNull(json, "Json should not be null");
     }
 
     @Test
@@ -33,7 +31,7 @@ class SprintTest {
         String prettyJson = sprint.toPrettyJson();
 
         // Then
-        assertNotNull(prettyJson);
+        assertNotNull(prettyJson, "Pretty json should not be null");
     }
 
     @Test
@@ -42,7 +40,8 @@ class SprintTest {
         Sprint sprint = new Sprint();
 
         // When-Then
-        assertTrue(sprint.equals(sprint));
+        assertEquals(sprint, sprint,
+                "Sprint should be equal to itself");
     }
 
     @Test
@@ -52,7 +51,8 @@ class SprintTest {
         Sprint sprint2 = new Sprint();
 
         // When-Then
-        assertFalse(sprint.equals(sprint2));
+        assertNotEquals(sprint, sprint2,
+                "Sprint should not be equal to another sprint with different description");
     }
 
     @Test
@@ -62,7 +62,8 @@ class SprintTest {
         Sprint sprint2 = new Sprint();
 
         // When-Then
-        assertFalse(sprint.equals(sprint2));
+        assertNotEquals(sprint, sprint2,
+                "Sprint should not be equal to another sprint with different start date");
     }
 
     @Test
@@ -74,7 +75,7 @@ class SprintTest {
         String sprintString = sprint.toString();
 
         // Then
-        assertNotEquals("", sprintString);
+        assertNotEquals("", sprintString, "Sprint string should not be empty");
     }
 
     @Test
@@ -84,7 +85,7 @@ class SprintTest {
         Sprint sprint2 = createSampleSprint();
 
         // When-Then
-        assertTrue(sprint1.equals(sprint2));
+        assertEquals(sprint1, sprint2, "Sprints should be equal");
     }
 
     @Test
@@ -96,7 +97,7 @@ class SprintTest {
         sprint2.setSprintId(2L);
 
         // When-Then
-        assertFalse(sprint1.equals(sprint2));
+        assertNotEquals(sprint1, sprint2, "Sprints should not be equal");
     }
 
     @Test
@@ -106,7 +107,7 @@ class SprintTest {
         Object nonSprintObject = new Object();
 
         // When-Then
-        assertFalse(sprint.equals(nonSprintObject));
+        assertNotEquals(sprint, nonSprintObject, "Sprint should not be equal to non sprint object");
     }
 
     @Test
@@ -116,7 +117,7 @@ class SprintTest {
         Sprint sprint2 = createSampleSprint();
 
         // When-Then
-        assertEquals(sprint1.hashCode(), sprint2.hashCode());
+        assertEquals(sprint1.hashCode(), sprint2.hashCode(), "Hash code should match");
     }
 
     @Test
@@ -126,7 +127,7 @@ class SprintTest {
         Sprint sprint2 = Sprint.builder().build();
 
         // When-Then
-        assertEquals(sprint1.hashCode(), sprint2.hashCode());
+        assertEquals(sprint1.hashCode(), sprint2.hashCode(), "Hash code should match");
     }
 
     @Test
@@ -138,7 +139,7 @@ class SprintTest {
         sprint2.setSprintId(2L);
 
         // When-Then
-        assertNotEquals(sprint1.hashCode(), sprint2.hashCode());
+        assertNotEquals(sprint1.hashCode(), sprint2.hashCode(), "Hash code should not match");
     }
 
     private Sprint createSampleSprint() {
