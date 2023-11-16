@@ -34,16 +34,16 @@ public class BacklogItemComment implements Jsonable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long backlogItemCommentId;
 
-    @NotBlank(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BLANK_COMMENT_MSG)
-    @Size(max = 500, message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_WRONG_SIZE_COMMENT_MSG)
+    @NotBlank(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_BLANK_MSG)
+    @Size(max = 500, message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_WRONG_SIZE_MSG)
     private String comment;
 
     @ManyToOne
-    @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_NULL_USER_MSG)
+    @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_NULL_MSG)
     private User user;
 
     @ManyToOne
-    @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_NULL_BACK_LOG_ITEM_MSG)
+    @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_NULL_MSG)
     private BacklogItem backlogItem;
 
     @Override
