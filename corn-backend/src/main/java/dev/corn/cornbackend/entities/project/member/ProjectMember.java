@@ -1,8 +1,11 @@
 package dev.corn.cornbackend.entities.project.member;
 
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
+import dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants;
 import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.project.member.constants.ProjectMemberConstants;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.validators.interfaces.NoNullElements;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import jakarta.persistence.Entity;
@@ -11,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,12 +39,15 @@ public class ProjectMember implements Jsonable {
 
     @OneToMany
     @ToString.Exclude
-    private List<BacklogItem> backlogItem;
+    @NoNullElements(message = ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG)
+    private List<BacklogItem> backlogItems;
 
     @ManyToOne
+    @NotNull(message = ProjectMemberConstants.PROJECT_MEMBER_PROJECT_NULL_MSG)
     private Project project;
 
     @ManyToOne
+    @NotNull(message = ProjectMemberConstants.PROJECT_MEMBER_USER_NULL_MSG)
     private User user;
 
     @Override
@@ -51,7 +58,7 @@ public class ProjectMember implements Jsonable {
         if (!(object instanceof ProjectMember member)) {
             return false;
         }
-        if (projectMemberId != member.projectMemberId || !Objects.equals(backlogItem, member.backlogItem)) {
+        if (projectMemberId != member.projectMemberId || !Objects.equals(backlogItems, member.backlogItems)) {
             return false;
         }
         if (!Objects.equals(project, member.project)) {
@@ -64,7 +71,7 @@ public class ProjectMember implements Jsonable {
     public final int hashCode() {
         int result = (int) (projectMemberId ^ (projectMemberId >>> 32));
 
-        result = 31 * result + (backlogItem != null ? backlogItem.hashCode() : 0);
+        result = 31 * result + (backlogItems != null ? backlogItems.hashCode() : 0);
         result = 31 * result + (project != null ? project.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
 

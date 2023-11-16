@@ -247,8 +247,7 @@ class BacklogItemTest {
     @Test
     final void test_shouldReturnNullElementsViolationOnCommentsContainingNullComment() {
         BacklogItem backlogItem = new BacklogItem();
-        List<BacklogItemComment> list = Arrays.stream(new BacklogItemComment[]{null}).toList();
-        backlogItem.setComments(list);
+        backlogItem.setComments(Arrays.stream(new BacklogItemComment[]{null}).toList());
 
         // when
 
