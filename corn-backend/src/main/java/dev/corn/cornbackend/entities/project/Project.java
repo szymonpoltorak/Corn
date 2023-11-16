@@ -1,7 +1,9 @@
 package dev.corn.cornbackend.entities.project;
 
+import dev.corn.cornbackend.entities.project.constants.ProjectConstants;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.validators.interfaces.NoNullElements;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import jakarta.persistence.Entity;
@@ -10,6 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,13 +37,17 @@ public class Project implements Jsonable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long projectId;
 
+    @NotBlank(message = ProjectConstants.PROJECT_NAME_BLANK_MSG)
+    @Size(max = 100, message = ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG)
     private String name;
 
     @OneToMany
     @ToString.Exclude
-    private List<Sprint> sprint;
+    @NoNullElements(message = ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG)
+    private List<Sprint> sprints;
 
     @ManyToOne
+    @NotNull(message = ProjectConstants.PROJECT_OWNER_NULL_MSG)
     private User owner;
 
     @Override
@@ -52,7 +61,7 @@ public class Project implements Jsonable {
         if (projectId != project.projectId || !Objects.equals(name, project.name)) {
             return false;
         }
-        return Objects.equals(sprint, project.sprint);
+        return Objects.equals(sprints, project.sprints);
     }
 
     @Override
@@ -60,7 +69,7 @@ public class Project implements Jsonable {
         int result = (int) (projectId ^ (projectId >>> 32));
 
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (sprint != null ? sprint.hashCode() : 0);
+        result = 31 * result + (sprints != null ? sprints.hashCode() : 0);
 
         return result;
     }
