@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.corn.cornbackend.entities.user.constants.UserConstants;
 import dev.corn.cornbackend.entities.user.interfaces.ServiceUser;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
@@ -8,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,18 +39,26 @@ public class User implements Jsonable, ServiceUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userId;
 
+    @NotBlank(message = UserConstants.USER_NAME_BLANK_MSG)
+    @Size(max = 40, message = UserConstants.USER_NAME_WRONG_SIZE_MSG)
     private String name;
 
+    @NotBlank(message = UserConstants.USER_SURNAME_BLANK_MSG)
+    @Size(max = 50, message = UserConstants.USER_SURNAME_WRONG_SIZE_MSG)
     private String surname;
 
+    @NotBlank(message = UserConstants.USER_USERNAME_BLANK_MSG)
+    @Size(max = 50, message = UserConstants.USER_USERNAME_WRONG_SIZE_MSG)
     private String username;
 
     @ToString.Exclude
     @JsonIgnore
+    @NotBlank(message = UserConstants.USER_PASSWORD_BLANK_MSG)
     private String password;
 
     @ToString.Exclude
     @JsonIgnore
+    @NotBlank(message = UserConstants.USER_SALT_BLANK_MSG)
     private String salt;
 
     @Override

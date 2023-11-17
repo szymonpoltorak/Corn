@@ -1,13 +1,27 @@
 package dev.corn.cornbackend.entities.user;
 
+import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.user.constants.UserConstants;
+import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Objects;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class UserTest {
+
+    @Autowired
+    private LocalValidatorFactoryBean validator;
+
     @Test
     final void testEquals_SameUser_ReturnsTrue() {
         // Given
@@ -107,6 +121,80 @@ class UserTest {
         assertNotNull(prettyJson, "Pretty json should not be null");
     }
 
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", " \n\t\r"})
+    final void test_shouldReturnBlankViolationOnGivenNullEmptyOrOnlyWhiteSpaceStringOnNotBlankFields(String string) {
+        // given
+        User user = new User();
+        user.setName(string);
+        user.setSurname(string);
+        user.setUsername(string);
+        user.setPassword(string);
+        user.setSalt(string);
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_NAME_FIELD_NAME,
+                UserConstants.USER_NAME_BLANK_MSG));
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_SURNAME_FIELD_NAME,
+                UserConstants.USER_SURNAME_BLANK_MSG));
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_USERNAME_FIELD_NAME,
+                UserConstants.USER_USERNAME_BLANK_MSG));
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_PASSWORD_FIELD_NAME,
+                UserConstants.USER_PASSWORD_BLANK_MSG));
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_SALT_FIELD_NAME,
+                UserConstants.USER_SALT_BLANK_MSG));
+    }
+
+    @Test
+    final void test_shouldReturnWrongSizeViolationOnTooLongStringsOnMaxSizeFields() {
+        // given
+        User user = new User();
+        user.setName("a".repeat(41));
+        user.setSurname("b".repeat(51));
+        user.setUsername("c".repeat(51));
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_NAME_FIELD_NAME,
+                UserConstants.USER_NAME_WRONG_SIZE_MSG));
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_SURNAME_FIELD_NAME,
+                UserConstants.USER_SURNAME_WRONG_SIZE_MSG));
+        assertTrue(validateField(
+                user,
+                UserConstants.USER_USERNAME_FIELD_NAME,
+                UserConstants.USER_USERNAME_WRONG_SIZE_MSG));
+    }
+
+    @Test
+    final void test_shouldReturnNoViolationsOnCorrectUser() {
+        // given
+        User user = createSampleUser();
+
+        // when
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+        // then
+        assertEquals(0, violations.size());
+    }
+
     private User createSampleUser() {
         return User.builder()
                 .userId(1L)
@@ -116,6 +204,14 @@ class UserTest {
                 .password("password")
                 .salt("salt")
                 .build();
+    }
+
+    private boolean validateField(User user, String fieldName, String expectedMessage) {
+        Set<ConstraintViolation<User>> violations = validator.validateProperty(
+                user,
+                fieldName
+        );
+        return violations.size() == 1 && Objects.equals(violations.iterator().next().getMessage(), expectedMessage);
     }
 
 }
