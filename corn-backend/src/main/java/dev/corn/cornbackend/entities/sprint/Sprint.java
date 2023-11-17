@@ -1,6 +1,8 @@
 package dev.corn.cornbackend.entities.sprint;
 
 import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.sprint.constants.SprintConstants;
+import dev.corn.cornbackend.entities.validators.interfaces.LaterThan;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import jakarta.persistence.Entity;
@@ -8,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,20 +28,32 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@LaterThan(firstDateGetterName = SprintConstants.SPRINT_FIRST_DATE_GETTER_NAME,
+            secondDateGetterName = SprintConstants.SPRINT_SECOND_DATE_GETTER_NAME,
+            message = "")
 public class Sprint implements Jsonable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long sprintId;
 
     @ManyToOne
+    @NotNull
     private Project project;
 
+    @NotBlank
+    @Size(max = 50)
     private String sprintName;
 
+    @NotBlank
+    @Size(max = 500)
     private String sprintDescription;
 
+    @NotNull
+    @FutureOrPresent
     private LocalDate sprintStartDate;
 
+    @NotNull
+    @Future
     private LocalDate sprintEndDate;
 
     @Override

@@ -1,15 +1,25 @@
 package dev.corn.cornbackend.entities.sprint;
 
 import dev.corn.cornbackend.entities.project.Project;
+import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class SprintTest {
+
+    @Autowired
+    private LocalValidatorFactoryBean validator;
+
     @Test
     final void toJson_ReturnsValidJson() {
         // Given
@@ -140,6 +150,33 @@ class SprintTest {
 
         // When-Then
         assertNotEquals(sprint1.hashCode(), sprint2.hashCode(), "Hash code should not match");
+    }
+
+    @Test
+    final void test_DatesShouldWork() {
+        // given
+        Sprint sprint = createSampleSprint();
+
+        // when
+        Set<ConstraintViolation<Sprint>> violations = validator.validate(sprint);
+
+        // then
+        assertEquals(0, violations.size());
+    }
+
+    @Test
+    final void drugiTest() {
+        // given
+        Sprint sprint = createSampleSprint();
+        sprint.setSprintStartDate(LocalDate.now().plusDays(7L));
+        sprint.setSprintEndDate(LocalDate.now().plusDays(1L));
+
+        // when
+        Set<ConstraintViolation<Sprint>> violations = validator.validate(sprint);
+
+        // then
+        System.out.println(violations);
+        assertEquals(1, violations.size());
     }
 
     private Sprint createSampleSprint() {
