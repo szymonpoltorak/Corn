@@ -30,30 +30,30 @@ import java.util.Objects;
 @AllArgsConstructor
 @LaterThan(firstDateGetterName = SprintConstants.SPRINT_FIRST_DATE_GETTER_NAME,
             secondDateGetterName = SprintConstants.SPRINT_SECOND_DATE_GETTER_NAME,
-            message = "")
+            message = SprintConstants.SPRINT_LATER_THAN_MSG)
 public class Sprint implements Jsonable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long sprintId;
 
     @ManyToOne
-    @NotNull
+    @NotNull(message = SprintConstants.SPRINT_PROJECT_NULL_MSG)
     private Project project;
 
-    @NotBlank
-    @Size(max = 50)
+    @NotBlank(message = SprintConstants.SPRINT_NAME_BLANK_MSG)
+    @Size(max = 50, message = SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG)
     private String sprintName;
 
-    @NotBlank
-    @Size(max = 500)
+    @NotBlank(message = SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG)
+    @Size(max = 500, message = SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG)
     private String sprintDescription;
 
-    @NotNull
-    @FutureOrPresent
+    @NotNull(message = SprintConstants.SPRINT_START_DATE_NULL_MSG)
+    @FutureOrPresent(message = SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG)
     private LocalDate sprintStartDate;
 
-    @NotNull
-    @Future
+    @NotNull(message = SprintConstants.SPRINT_END_DATE_NULL_MSG)
+    @Future(message = SprintConstants.SPRINT_END_DATE_FUTURE_MSG)
     private LocalDate sprintEndDate;
 
     @Override

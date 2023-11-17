@@ -37,7 +37,7 @@ public class BacklogItemComment implements Jsonable {
     @NotBlank(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_BLANK_MSG)
     @Size(max = 500, message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_WRONG_SIZE_MSG)
     private String comment;
-
+    
     @ManyToOne
     @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_NULL_MSG)
     private User user;

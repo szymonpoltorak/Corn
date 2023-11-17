@@ -23,9 +23,9 @@ public class LaterThanValidator implements ConstraintValidator<LaterThan, Object
 
     @Override
     public boolean isValid(Object object, ConstraintValidatorContext context) {
-        Method firstDateGetter;
-        Method secondDateGetter;
         try {
+            Method firstDateGetter;
+            Method secondDateGetter;
             firstDateGetter = object.getClass().getDeclaredMethod(firstDateGetterName);
             secondDateGetter = object.getClass().getDeclaredMethod(secondDateGetterName);
 
@@ -38,9 +38,9 @@ public class LaterThanValidator implements ConstraintValidator<LaterThan, Object
 
             if(firstDateValue instanceof LocalDate firstDate && secondDateValue instanceof LocalDate secondDate) {
                 return secondDate.isAfter(firstDate);
-            } else {
-                return false;
             }
+
+            return false;
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             return false;

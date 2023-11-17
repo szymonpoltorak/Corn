@@ -1,18 +1,21 @@
 package dev.corn.cornbackend.entities.sprint;
 
 import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.sprint.constants.SprintConstants;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class SprintTest {
@@ -153,7 +156,137 @@ class SprintTest {
     }
 
     @Test
-    final void test_DatesShouldWork() {
+    final void test_shouldReturnNullElementViolationOnNullElementOnNotNullFields() {
+        // given
+        Sprint sprint = new Sprint();
+        sprint.setProject(null);
+        sprint.setSprintStartDate(null);
+        sprint.setSprintEndDate(null);
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_PROJECT_FIELD_NAME,
+                SprintConstants.SPRINT_PROJECT_NULL_MSG));
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_START_DATE_FIELD_NAME,
+                SprintConstants.SPRINT_START_DATE_NULL_MSG));
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_END_DATE_FIELD_NAME,
+                SprintConstants.SPRINT_END_DATE_NULL_MSG));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", " \n\t\r"})
+    final void test_shouldReturnBlankViolationOnNullEmptyOrOnlyWhitespaceStringOnNotBlankFields(String string) {
+        // given
+        Sprint sprint = new Sprint();
+        sprint.setSprintName(string);
+        sprint.setSprintDescription(string);
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_NAME_FIELD_NAME,
+                SprintConstants.SPRINT_NAME_BLANK_MSG));
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
+                SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG));
+    }
+
+    @Test
+    final void test_shouldReturnWrongSizeViolationOnTooLongStringOnMaxSizeFields() {
+        // given
+        Sprint sprint = new Sprint();
+        sprint.setSprintName("a".repeat(51));
+        sprint.setSprintDescription("b".repeat(501));
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_NAME_FIELD_NAME,
+                SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG));
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
+                SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG));
+    }
+
+    @Test
+    final void test_shouldReturnFutureOrPresentViolationOnPastStartDate() {
+        // given
+        Sprint sprint = new Sprint();
+        sprint.setSprintStartDate(LocalDate.now().minusDays(2L));
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_START_DATE_FIELD_NAME,
+                SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG));
+    }
+
+
+    @Test
+    final void test_shouldReturnFutureViolationOnPastEndDate() {
+        // given
+        Sprint sprint = new Sprint();
+        sprint.setSprintEndDate(LocalDate.now().minusDays(2L));
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_END_DATE_FIELD_NAME,
+                SprintConstants.SPRINT_END_DATE_FUTURE_MSG));
+    }
+
+    @Test
+    final void test_shouldReturnFutureViolationOnPresentEndDate() {
+        // given
+        Sprint sprint = new Sprint();
+        sprint.setSprintEndDate(LocalDate.now());
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                sprint,
+                SprintConstants.SPRINT_END_DATE_FIELD_NAME,
+                SprintConstants.SPRINT_END_DATE_FUTURE_MSG));
+    }
+
+    @Test
+    final void test_shouldReturnLaterThanViolationOnStartDateLaterThanEndDate() {
+        // given
+        Sprint sprint = createSampleSprint();
+        sprint.setSprintStartDate(LocalDate.now().plusDays(5L));
+        sprint.setSprintEndDate(LocalDate.now().plusDays(2L));
+
+        // when
+        Set<ConstraintViolation<Sprint>> violations = validator.validate(sprint);
+
+        // then
+        String expectedMessage = SprintConstants.SPRINT_LATER_THAN_MSG;
+
+        assertEquals(1, violations.size());
+        assertEquals(expectedMessage, violations.iterator().next().getMessage());
+    }
+
+    @Test
+    final void test_shouldReturnNoViolationOnCorrectSprint() {
         // given
         Sprint sprint = createSampleSprint();
 
@@ -162,21 +295,6 @@ class SprintTest {
 
         // then
         assertEquals(0, violations.size());
-    }
-
-    @Test
-    final void drugiTest() {
-        // given
-        Sprint sprint = createSampleSprint();
-        sprint.setSprintStartDate(LocalDate.now().plusDays(7L));
-        sprint.setSprintEndDate(LocalDate.now().plusDays(1L));
-
-        // when
-        Set<ConstraintViolation<Sprint>> violations = validator.validate(sprint);
-
-        // then
-        System.out.println(violations);
-        assertEquals(1, violations.size());
     }
 
     private Sprint createSampleSprint() {
@@ -188,5 +306,13 @@ class SprintTest {
                 .sprintStartDate(LocalDate.now())
                 .sprintEndDate(LocalDate.now().plusDays(7L))
                 .build();
+    }
+
+    private boolean validateField(Sprint sprint, String fieldName, String expectedMessage) {
+        Set<ConstraintViolation<Sprint>> violations = validator.validateProperty(
+                sprint,
+                fieldName
+        );
+        return violations.size() == 1 && Objects.equals(violations.iterator().next().getMessage(), expectedMessage);
     }
 }

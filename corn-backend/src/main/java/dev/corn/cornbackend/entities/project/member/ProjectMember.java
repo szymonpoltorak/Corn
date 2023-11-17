@@ -1,7 +1,6 @@
 package dev.corn.cornbackend.entities.project.member;
 
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
-import dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.constants.ProjectMemberConstants;
 import dev.corn.cornbackend.entities.user.User;
