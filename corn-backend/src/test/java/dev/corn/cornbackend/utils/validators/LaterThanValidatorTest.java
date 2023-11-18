@@ -1,27 +1,19 @@
 package dev.corn.cornbackend.utils.validators;
 
 import dev.corn.cornbackend.utils.validators.interfaces.LaterThan;
-import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.Payload;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import javax.print.attribute.standard.JobKOctets;
 import java.lang.annotation.Annotation;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class LaterThanValidatorTest {
-
     @Mock
     private static final ConstraintValidator<LaterThan, Object> validator = new LaterThanValidator();
-
-    @Mock
-    private final Object exampleObject = new Object();
 
     private static final String firstDateGetterName = "firstDateGetter()";
     private static final String secondDateGetterName = "secondDateGetter()";
@@ -35,30 +27,22 @@ class LaterThanValidatorTest {
     final void test_shouldNotValidateIfFirstMethodDoesNotExistOnGivenObject() {
         // given
 
-        //when
-        try {
-            when(exampleObject.getClass().getDeclaredMethod(firstDateGetterName)).thenThrow(NoSuchMethodException.class);
-        } catch (Exception e) {
+        // when
 
-        }
-
-        //then
-        assertFalse(validator.isValid(exampleObject, null));
+        // then
+        assertFalse(validator.isValid(new ExampleObjectNoFirstMethod(), null),
+                "Should not validate if first method does not exist on given object");
     }
 
     @Test
     final void test_shouldNotValidateIfSecondMethodDoesNotExistOnGivenObject() {
         // given
 
-        //when
-        try {
-            when(exampleObject.getClass().getDeclaredMethod(secondDateGetterName)).thenThrow(NoSuchMethodException.class);
-        } catch (Exception e) {
-
-        }
+        // when
 
         //then
-        assertFalse(validator.isValid(exampleObject, null));
+        assertFalse(validator.isValid(new ExampleObjectNoSecondMethod(), null),
+                "Should not validate if second method does not exist on given object");
     }
 
     private static LaterThan generateConstraintAnnotation() {
@@ -66,7 +50,6 @@ class LaterThanValidatorTest {
     }
 
     private static class MyLaterThan implements LaterThan {
-
         @Override
         public final Class<? extends Annotation> annotationType() {
             return null;
@@ -95,6 +78,18 @@ class LaterThanValidatorTest {
         @Override
         public final String secondDateGetterName() {
             return secondDateGetterName;
+        }
+    }
+
+    private record ExampleObjectNoFirstMethod() {
+        public String secondDateGetter() {
+            return "";
+        }
+    }
+
+    private record ExampleObjectNoSecondMethod() {
+        public String firstDateGetter() {
+            return "";
         }
     }
 }

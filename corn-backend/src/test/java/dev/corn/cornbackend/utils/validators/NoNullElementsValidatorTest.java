@@ -23,7 +23,7 @@ class NoNullElementsValidatorTest {
         boolean result = validator.isValid(list, null);
 
         // then
-        assertFalse(result);
+        assertFalse(result, "Should not validate a null list");
     }
 
     @Test
@@ -35,7 +35,7 @@ class NoNullElementsValidatorTest {
         boolean result = validator.isValid(list, null);
 
         // then
-        assertFalse(result);
+        assertFalse(result, "Should not validate a list containing null value");
     }
 
     @Test
@@ -47,7 +47,7 @@ class NoNullElementsValidatorTest {
         boolean result = validator.isValid(list, null);
 
         // then
-        assertTrue(result);
+        assertTrue(result, "Should validate a correct list");
     }
 
 }
