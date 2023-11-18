@@ -1,6 +1,6 @@
-package dev.corn.cornbackend.entities.validators;
+package dev.corn.cornbackend.utils.validators;
 
-import dev.corn.cornbackend.entities.validators.interfaces.LaterThan;
+import dev.corn.cornbackend.utils.validators.interfaces.LaterThan;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -9,12 +9,12 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 
 public class LaterThanValidator implements ConstraintValidator<LaterThan, Object> {
-    private String firstDateGetterName;
-    private String secondDateGetterName;
+    private String firstDateGetterName = null;
+    private String secondDateGetterName = null;
 
 
     @Override
-    public void initialize(LaterThan constraintAnnotation) {
+    public final void initialize(LaterThan constraintAnnotation) {
         this.firstDateGetterName = constraintAnnotation.firstDateGetterName();
         this.secondDateGetterName = constraintAnnotation.secondDateGetterName();
 
@@ -22,7 +22,7 @@ public class LaterThanValidator implements ConstraintValidator<LaterThan, Object
     }
 
     @Override
-    public boolean isValid(Object object, ConstraintValidatorContext context) {
+    public final boolean isValid(Object object, ConstraintValidatorContext context) {
         try {
             Method firstDateGetter;
             Method secondDateGetter;
@@ -45,7 +45,5 @@ public class LaterThanValidator implements ConstraintValidator<LaterThan, Object
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             return false;
         }
-
-
     }
 }

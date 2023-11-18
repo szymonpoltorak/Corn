@@ -1,4 +1,4 @@
-package dev.corn.cornbackend.utils;
+package dev.corn.cornbackend.utils.json;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;

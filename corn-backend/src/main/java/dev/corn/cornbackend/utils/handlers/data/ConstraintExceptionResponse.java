@@ -1,4 +1,4 @@
-package dev.corn.cornbackend.api.data;
+package dev.corn.cornbackend.utils.handlers.data;
 
 import lombok.Builder;
 

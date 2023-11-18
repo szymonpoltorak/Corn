@@ -2,7 +2,7 @@ package dev.corn.cornbackend.entities.sprint;
 
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.constants.SprintConstants;
-import dev.corn.cornbackend.entities.validators.interfaces.LaterThan;
+import dev.corn.cornbackend.utils.validators.interfaces.LaterThan;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import jakarta.persistence.Entity;

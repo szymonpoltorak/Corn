@@ -1,6 +1,5 @@
 package dev.corn.cornbackend.entities.user;
 
-import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.user.constants.UserConstants;
 import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;

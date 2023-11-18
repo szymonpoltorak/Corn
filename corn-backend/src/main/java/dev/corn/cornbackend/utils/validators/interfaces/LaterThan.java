@@ -1,6 +1,6 @@
-package dev.corn.cornbackend.entities.validators.interfaces;
+package dev.corn.cornbackend.utils.validators.interfaces;
 
-import dev.corn.cornbackend.entities.validators.LaterThanValidator;
+import dev.corn.cornbackend.utils.validators.LaterThanValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

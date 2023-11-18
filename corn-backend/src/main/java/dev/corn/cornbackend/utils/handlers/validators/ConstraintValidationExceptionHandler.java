@@ -1,6 +1,6 @@
-package dev.corn.cornbackend.api.validators;
+package dev.corn.cornbackend.utils.handlers.validators;
 
-import dev.corn.cornbackend.api.data.ConstraintExceptionResponse;
+import dev.corn.cornbackend.utils.handlers.data.ConstraintExceptionResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
