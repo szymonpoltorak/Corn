@@ -3,12 +3,12 @@ package dev.corn.cornbackend.utils.validators;
 import dev.corn.cornbackend.utils.validators.interfaces.NoNullElements;
 import jakarta.validation.ConstraintValidator;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NoNullElementsValidatorTest {
 

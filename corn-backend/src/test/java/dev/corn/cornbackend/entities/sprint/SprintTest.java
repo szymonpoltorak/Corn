@@ -15,7 +15,10 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class SprintTest {
@@ -167,19 +170,19 @@ class SprintTest {
 
         // then
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_PROJECT_FIELD_NAME,
-                SprintConstants.SPRINT_PROJECT_NULL_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_PROJECT_FIELD_NAME,
+                        SprintConstants.SPRINT_PROJECT_NULL_MSG),
                 "Should return null project violation");
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_START_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_START_DATE_NULL_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_START_DATE_FIELD_NAME,
+                        SprintConstants.SPRINT_START_DATE_NULL_MSG),
                 "Should return null sprint start date violation");
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_END_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_END_DATE_NULL_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_END_DATE_FIELD_NAME,
+                        SprintConstants.SPRINT_END_DATE_NULL_MSG),
                 "Should return null sprint end date violation");
     }
 
@@ -196,14 +199,14 @@ class SprintTest {
 
         // then
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_NAME_FIELD_NAME,
-                SprintConstants.SPRINT_NAME_BLANK_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_NAME_FIELD_NAME,
+                        SprintConstants.SPRINT_NAME_BLANK_MSG),
                 "Should return blank name violation");
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
-                SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
+                        SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG),
                 "Should return blank description violation");
     }
 
@@ -220,14 +223,14 @@ class SprintTest {
 
         // then
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_NAME_FIELD_NAME,
-                SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_NAME_FIELD_NAME,
+                        SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG),
                 "Should return wrong size name violation");
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
-                SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
+                        SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG),
                 "Should return wrong size description violation");
     }
 
@@ -241,9 +244,9 @@ class SprintTest {
 
         // then
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_START_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_START_DATE_FIELD_NAME,
+                        SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG),
                 "Should return future or present sprint start date violation");
     }
 
@@ -258,9 +261,9 @@ class SprintTest {
 
         // then
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_END_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_END_DATE_FUTURE_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_END_DATE_FIELD_NAME,
+                        SprintConstants.SPRINT_END_DATE_FUTURE_MSG),
                 "Should return future sprint end date violation");
     }
 
@@ -274,9 +277,9 @@ class SprintTest {
 
         // then
         assertTrue(validateField(
-                sprint,
-                SprintConstants.SPRINT_END_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_END_DATE_FUTURE_MSG),
+                        sprint,
+                        SprintConstants.SPRINT_END_DATE_FIELD_NAME,
+                        SprintConstants.SPRINT_END_DATE_FUTURE_MSG),
                 "Should return future sprint end date violation");
     }
 

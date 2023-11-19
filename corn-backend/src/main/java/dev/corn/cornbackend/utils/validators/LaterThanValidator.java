@@ -23,7 +23,7 @@ public class LaterThanValidator implements ConstraintValidator<LaterThan, Object
 
     @Override
     public final boolean isValid(Object object, ConstraintValidatorContext context) {
-        if(object == null) {
+        if (object == null) {
             return false;
         }
 
@@ -34,11 +34,11 @@ public class LaterThanValidator implements ConstraintValidator<LaterThan, Object
             Object firstDateValue = firstDateGetter.invoke(object);
             Object secondDateValue = secondDateGetter.invoke(object);
 
-            if(firstDateValue == null || secondDateValue == null) {
+            if (firstDateValue == null || secondDateValue == null) {
                 return true;
             }
 
-            if(firstDateValue instanceof LocalDate firstDate && secondDateValue instanceof LocalDate secondDate) {
+            if (firstDateValue instanceof LocalDate firstDate && secondDateValue instanceof LocalDate secondDate) {
                 return secondDate.isAfter(firstDate);
             }
             return false;

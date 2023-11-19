@@ -11,7 +11,6 @@ public final class ProjectMemberConstants {
     public static final String PROJECT_MEMBER_USER_NULL_MSG = "User cannot be null";
 
 
-
     private ProjectMemberConstants() {
 
     }

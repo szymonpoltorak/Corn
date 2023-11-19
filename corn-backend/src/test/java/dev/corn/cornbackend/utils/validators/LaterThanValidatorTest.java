@@ -25,6 +25,10 @@ class LaterThanValidatorTest {
         validator.initialize(generateConstraintAnnotation());
     }
 
+    private static LaterThan generateConstraintAnnotation() {
+        return new MyLaterThan();
+    }
+
     @Test
     final void test_shouldNotValidateIfGivenObjectIsNull() {
         // given
@@ -142,12 +146,7 @@ class LaterThanValidatorTest {
                 "Should validate if dates are in correct order");
     }
 
-
-    private static LaterThan generateConstraintAnnotation() {
-        return new MyLaterThan();
-    }
-
-    private static class MyLaterThan implements LaterThan {
+    public static class MyLaterThan implements LaterThan {
         @Override
         public final Class<? extends Annotation> annotationType() {
             return null;

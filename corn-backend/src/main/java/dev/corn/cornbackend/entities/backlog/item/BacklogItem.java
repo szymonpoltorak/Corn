@@ -5,9 +5,9 @@ import dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
-import dev.corn.cornbackend.utils.validators.interfaces.NoNullElements;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
+import dev.corn.cornbackend.utils.validators.interfaces.NoNullElements;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

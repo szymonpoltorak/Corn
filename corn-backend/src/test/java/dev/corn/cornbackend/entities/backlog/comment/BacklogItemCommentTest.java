@@ -15,7 +15,10 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class BacklogItemCommentTest {
@@ -160,9 +163,9 @@ class BacklogItemCommentTest {
 
         // then
         assertTrue(validateField(
-                backlogItemComment,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_BLANK_MSG),
+                        backlogItemComment,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_BLANK_MSG),
                 "Should return blank comment violation");
     }
 
@@ -177,9 +180,9 @@ class BacklogItemCommentTest {
 
         // then
         assertTrue(validateField(
-                backlogItemComment,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_WRONG_SIZE_MSG),
+                        backlogItemComment,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_WRONG_SIZE_MSG),
                 "Should return wrong size comment violation");
     }
 
@@ -194,14 +197,14 @@ class BacklogItemCommentTest {
 
         // then
         assertTrue(validateField(
-                backlogItemComment,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_FIELD_NAME,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_NULL_MSG),
+                        backlogItemComment,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_FIELD_NAME,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_NULL_MSG),
                 "Should return null user violation");
         assertTrue(validateField(
-                backlogItemComment,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_FIELD_NAME,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_NULL_MSG),
+                        backlogItemComment,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_FIELD_NAME,
+                        BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_NULL_MSG),
                 "Should return null backlog item violation");
     }
 

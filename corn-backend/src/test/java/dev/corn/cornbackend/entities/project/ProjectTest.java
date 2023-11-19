@@ -17,7 +17,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class ProjectTest {
@@ -82,9 +85,9 @@ class ProjectTest {
 
         // then
         assertTrue(validateField(
-                project,
-                ProjectConstants.PROJECT_NAME_FIELD_NAME,
-                ProjectConstants.PROJECT_NAME_BLANK_MSG),
+                        project,
+                        ProjectConstants.PROJECT_NAME_FIELD_NAME,
+                        ProjectConstants.PROJECT_NAME_BLANK_MSG),
                 "Should return blank name violation");
     }
 
@@ -99,9 +102,9 @@ class ProjectTest {
 
         // then
         assertTrue(validateField(
-                project,
-                ProjectConstants.PROJECT_NAME_FIELD_NAME,
-                ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG),
+                        project,
+                        ProjectConstants.PROJECT_NAME_FIELD_NAME,
+                        ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG),
                 "Should return wrong size name violation");
     }
 
@@ -115,9 +118,9 @@ class ProjectTest {
 
         // then
         assertTrue(validateField(
-                project,
-                ProjectConstants.PROJECT_SPRINTS_FIELD_NAME,
-                ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG),
+                        project,
+                        ProjectConstants.PROJECT_SPRINTS_FIELD_NAME,
+                        ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG),
                 "Should return null elements sprints violation");
     }
 
@@ -131,9 +134,9 @@ class ProjectTest {
 
         // then
         assertTrue(validateField(
-                project,
-                ProjectConstants.PROJECT_SPRINTS_FIELD_NAME,
-                ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG),
+                        project,
+                        ProjectConstants.PROJECT_SPRINTS_FIELD_NAME,
+                        ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG),
                 "Should return null elements sprints violation");
     }
 
@@ -147,9 +150,9 @@ class ProjectTest {
 
         // then
         assertTrue(validateField(
-                project,
-                ProjectConstants.PROJECT_OWNER_FIELD_NAME,
-                ProjectConstants.PROJECT_OWNER_NULL_MSG),
+                        project,
+                        ProjectConstants.PROJECT_OWNER_FIELD_NAME,
+                        ProjectConstants.PROJECT_OWNER_NULL_MSG),
                 "Should return null owner violation");
     }
 

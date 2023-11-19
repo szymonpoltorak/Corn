@@ -15,7 +15,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class ProjectMemberTest {
@@ -145,9 +148,9 @@ class ProjectMemberTest {
 
         // then
         assertTrue(validateField(
-                projectMember,
-                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
                 "Should return null elements backlog items violation");
     }
 
@@ -161,9 +164,9 @@ class ProjectMemberTest {
 
         // then
         assertTrue(validateField(
-                projectMember,
-                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
                 "Should return null elements backlog items violation");
     }
 
@@ -178,14 +181,14 @@ class ProjectMemberTest {
 
         // then
         assertTrue(validateField(
-                projectMember,
-                ProjectMemberConstants.PROJECT_MEMBER_PROJECT_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_PROJECT_NULL_MSG),
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_PROJECT_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_PROJECT_NULL_MSG),
                 "Should return null member violation");
         assertTrue(validateField(
-                projectMember,
-                ProjectMemberConstants.PROJECT_MEMBER_USER_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_USER_NULL_MSG),
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_USER_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_USER_NULL_MSG),
                 "Should return null user violation");
     }
 

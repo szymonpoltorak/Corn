@@ -14,9 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class BacklogItemTest {
@@ -171,14 +177,14 @@ class BacklogItemTest {
 
         // then
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_TITLE_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_TITLE_BLANK_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_TITLE_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_TITLE_BLANK_MSG),
                 "Should return blank title violation");
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_BLANK_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_BLANK_MSG),
                 "Should return blank description violation");
     }
 
@@ -195,14 +201,14 @@ class BacklogItemTest {
 
         // then
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_TITLE_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_TITLE_WRONG_SIZE_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_TITLE_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_TITLE_WRONG_SIZE_MSG),
                 "Should return title wrong size violation");
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_WRONG_SIZE_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_WRONG_SIZE_MSG),
                 "Should return description wrong size violation");
     }
 
@@ -219,24 +225,24 @@ class BacklogItemTest {
 
         // then
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_STATUS_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_STATUS_NULL_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_STATUS_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_STATUS_NULL_MSG),
                 "Should return null status violation");
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_NULL_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_NULL_MSG),
                 "Should return null assignee violation");
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_SPRINT_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_SPRINT_NULL_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_SPRINT_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_SPRINT_NULL_MSG),
                 "Should return null sprint violation");
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_PROJECT_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_PROJECT_NULL_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_PROJECT_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_PROJECT_NULL_MSG),
                 "Should return null project violation");
     }
 
@@ -249,9 +255,9 @@ class BacklogItemTest {
 
         // then
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_COMMENTS_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_COMMENTS_NULL_ELEMENTS_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_COMMENTS_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_COMMENTS_NULL_ELEMENTS_MSG),
                 "Should return null elements comments violation");
     }
 
@@ -264,9 +270,9 @@ class BacklogItemTest {
 
         // then
         assertTrue(validateField(
-                backlogItem,
-                BacklogItemConstants.BACKLOG_ITEM_COMMENTS_FIELD_NAME,
-                BacklogItemConstants.BACKLOG_ITEM_COMMENTS_NULL_ELEMENTS_MSG),
+                        backlogItem,
+                        BacklogItemConstants.BACKLOG_ITEM_COMMENTS_FIELD_NAME,
+                        BacklogItemConstants.BACKLOG_ITEM_COMMENTS_NULL_ELEMENTS_MSG),
                 "Should return null elements comments violation");
     }
 

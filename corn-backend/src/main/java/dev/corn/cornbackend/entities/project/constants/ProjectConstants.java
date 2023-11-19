@@ -1,7 +1,6 @@
 package dev.corn.cornbackend.entities.project.constants;
 
 
-
 public final class ProjectConstants {
     public static final String PROJECT_NAME_FIELD_NAME = "name";
     public static final String PROJECT_NAME_BLANK_MSG = "Name cannot be null and has to contain at least one non-whitespace character";

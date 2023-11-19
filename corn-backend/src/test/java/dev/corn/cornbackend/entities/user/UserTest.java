@@ -13,7 +13,10 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class UserTest {
@@ -134,19 +137,19 @@ class UserTest {
 
         // then
         assertTrue(validateField(
-                user,
-                UserConstants.USER_NAME_FIELD_NAME,
-                UserConstants.USER_NAME_BLANK_MSG),
+                        user,
+                        UserConstants.USER_NAME_FIELD_NAME,
+                        UserConstants.USER_NAME_BLANK_MSG),
                 "Should return blank name violation");
         assertTrue(validateField(
-                user,
-                UserConstants.USER_SURNAME_FIELD_NAME,
-                UserConstants.USER_SURNAME_BLANK_MSG),
+                        user,
+                        UserConstants.USER_SURNAME_FIELD_NAME,
+                        UserConstants.USER_SURNAME_BLANK_MSG),
                 "Should return blank surname violation");
         assertTrue(validateField(
-                user,
-                UserConstants.USER_USERNAME_FIELD_NAME,
-                UserConstants.USER_USERNAME_BLANK_MSG),
+                        user,
+                        UserConstants.USER_USERNAME_FIELD_NAME,
+                        UserConstants.USER_USERNAME_BLANK_MSG),
                 "Should return blank username violation");
     }
 
@@ -165,19 +168,19 @@ class UserTest {
 
         // then
         assertTrue(validateField(
-                user,
-                UserConstants.USER_NAME_FIELD_NAME,
-                UserConstants.USER_NAME_WRONG_SIZE_MSG),
+                        user,
+                        UserConstants.USER_NAME_FIELD_NAME,
+                        UserConstants.USER_NAME_WRONG_SIZE_MSG),
                 "Should return wrong size name violation");
         assertTrue(validateField(
-                user,
-                UserConstants.USER_SURNAME_FIELD_NAME,
-                UserConstants.USER_SURNAME_WRONG_SIZE_MSG),
+                        user,
+                        UserConstants.USER_SURNAME_FIELD_NAME,
+                        UserConstants.USER_SURNAME_WRONG_SIZE_MSG),
                 "Should return wrong size surname violation");
         assertTrue(validateField(
-                user,
-                UserConstants.USER_USERNAME_FIELD_NAME,
-                UserConstants.USER_USERNAME_WRONG_SIZE_MSG),
+                        user,
+                        UserConstants.USER_USERNAME_FIELD_NAME,
+                        UserConstants.USER_USERNAME_WRONG_SIZE_MSG),
                 "Should return wrong size username violation");
     }
 
