@@ -1,13 +1,20 @@
 package dev.corn.cornbackend.entities.sprint;
 
 import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.sprint.constants.SprintConstants;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
+import dev.corn.cornbackend.utils.validators.interfaces.LaterThan;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,20 +32,34 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@LaterThan(firstDateGetterName = SprintConstants.SPRINT_FIRST_DATE_GETTER_NAME,
+        secondDateGetterName = SprintConstants.SPRINT_SECOND_DATE_GETTER_NAME,
+        message = SprintConstants.SPRINT_LATER_THAN_MSG)
 public class Sprint implements Jsonable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long sprintId;
 
     @ManyToOne
+    @NotNull(message = SprintConstants.SPRINT_PROJECT_NULL_MSG)
     private Project project;
 
+    @NotBlank(message = SprintConstants.SPRINT_NAME_BLANK_MSG)
+    @Size(max = SprintConstants.SPRINT_NAME_MAX_SIZE,
+            message = SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG)
     private String sprintName;
 
+    @NotBlank(message = SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG)
+    @Size(max = SprintConstants.SPRINT_DESCRIPTION_MAX_SIZE,
+            message = SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG)
     private String sprintDescription;
 
+    @NotNull(message = SprintConstants.SPRINT_START_DATE_NULL_MSG)
+    @FutureOrPresent(message = SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG)
     private LocalDate sprintStartDate;
 
+    @NotNull(message = SprintConstants.SPRINT_END_DATE_NULL_MSG)
+    @Future(message = SprintConstants.SPRINT_END_DATE_FUTURE_MSG)
     private LocalDate sprintEndDate;
 
     @Override

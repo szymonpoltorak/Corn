@@ -1,9 +1,8 @@
-package dev.corn.cornbackend.utils;
+package dev.corn.cornbackend.utils.json;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.project.Project;
-import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import org.junit.jupiter.api.Test;
 
@@ -14,20 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonMapperTest {
-    private static class NotSerializableJsonable implements Jsonable {
-        private transient String name;
-
-        @Override
-        public final String toJson() {
-            return null;
-        }
-
-        @Override
-        public final String toPrettyJson() {
-            return null;
-        }
-    }
-
     @Test
     final void test_toJson_shouldProperlyMapToJson() {
         // given
@@ -91,5 +76,19 @@ class JsonMapperTest {
         // then
         assertEquals(expected, actual,
                 "JsonMapper.toPrettyJson should return empty object on non serializable object");
+    }
+
+    private static class NotSerializableJsonable implements Jsonable {
+        private transient String name;
+
+        @Override
+        public final String toJson() {
+            return null;
+        }
+
+        @Override
+        public final String toPrettyJson() {
+            return null;
+        }
     }
 }

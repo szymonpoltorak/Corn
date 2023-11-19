@@ -1,16 +1,31 @@
 package dev.corn.cornbackend.entities.project.member;
 
+import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.project.member.constants.ProjectMemberConstants;
 import dev.corn.cornbackend.entities.user.User;
+import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class ProjectMemberTest {
+
+    @Autowired
+    private LocalValidatorFactoryBean validator;
+
     @Test
     final void testEquals_SameProjectMember_ReturnsTrue() {
         // Given
@@ -123,12 +138,87 @@ class ProjectMemberTest {
         assertNotNull(prettyJson, "Pretty json should not be null");
     }
 
+    @Test
+    final void test_shouldReturnNullElementsViolationOnNullBacklogItems() {
+        // given
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setBacklogItems(null);
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
+                "Should return null elements backlog items violation");
+    }
+
+    @Test
+    final void test_shouldReturnNullElementsViolationOnBacklogItemsContainingNull() {
+        // given
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setBacklogItems(Arrays.stream(new BacklogItem[]{null}).toList());
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
+                "Should return null elements backlog items violation");
+    }
+
+    @Test
+    final void test_shouldReturnNullElementViolationOnNullElementOnNotNullFields() {
+        // given
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setProject(null);
+        projectMember.setUser(null);
+
+        // when
+
+        // then
+        assertTrue(validateField(
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_PROJECT_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_PROJECT_NULL_MSG),
+                "Should return null member violation");
+        assertTrue(validateField(
+                        projectMember,
+                        ProjectMemberConstants.PROJECT_MEMBER_USER_FIELD_NAME,
+                        ProjectMemberConstants.PROJECT_MEMBER_USER_NULL_MSG),
+                "Should return null user violation");
+    }
+
+    @Test
+    final void test_shouldReturnNoViolationsOnCorrectProjectMember() {
+        // given
+        ProjectMember projectMember = createSampleProjectMember();
+
+        // when
+        Set<ConstraintViolation<ProjectMember>> violations = validator.validate(projectMember);
+
+        // then
+        assertEquals(0, violations.size(),
+                "Should return no violations on correct project member");
+    }
+
     private ProjectMember createSampleProjectMember() {
         return ProjectMember.builder()
                 .projectMemberId(1L)
-                .backlogItem(new ArrayList<>())
+                .backlogItems(new ArrayList<>())
                 .project(new Project())
                 .user(new User())
                 .build();
+    }
+
+    private boolean validateField(ProjectMember projectMember, String fieldName, String expectedMessage) {
+        Set<ConstraintViolation<ProjectMember>> violations = validator.validateProperty(
+                projectMember,
+                fieldName
+        );
+        return violations.size() == 1 && Objects.equals(violations.iterator().next().getMessage(), expectedMessage);
     }
 }
