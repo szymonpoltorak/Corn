@@ -33,6 +33,7 @@ import java.util.Objects;
 public class User implements Jsonable, ServiceUser {
     @Serial
     private static final long serialVersionUID = 1236185595152412287L;
+    private static final String DEV_CORN_CORNBACKEND_ENTITIES_USER_USER = "dev.corn.cornbackend.entities.user.User";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -125,11 +126,11 @@ public class User implements Jsonable, ServiceUser {
 
     @Serial
     private void readObject(java.io.ObjectInputStream in) throws ClassNotFoundException, java.io.NotSerializableException {
-        throw new java.io.NotSerializableException("dev.corn.cornbackend.entities.user.User");
+        throw new java.io.NotSerializableException(DEV_CORN_CORNBACKEND_ENTITIES_USER_USER);
     }
 
     @Serial
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.NotSerializableException {
-        throw new java.io.NotSerializableException("dev.corn.cornbackend.entities.user.User");
+        throw new java.io.NotSerializableException(DEV_CORN_CORNBACKEND_ENTITIES_USER_USER);
     }
 }

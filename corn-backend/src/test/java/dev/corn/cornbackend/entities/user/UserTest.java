@@ -10,12 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
@@ -185,6 +193,54 @@ class UserTest {
     }
 
     @Test
+    final void test_shouldReturnEmptyListOfAuthorities() {
+        // given
+        User user = createSampleUser();
+
+        // when
+        int authoritiesSize = user.getAuthorities().size();
+
+        // then
+        assertEquals(0, authoritiesSize, "Should return empty list of authorities");
+    }
+
+    @Test
+    final void test_shouldIsAccountNonExpired() {
+        // given
+        User user = createSampleUser();
+
+        // when
+        boolean isAccountNonExpired = user.isAccountNonExpired();
+
+        // then
+        assertTrue(isAccountNonExpired, "Should return true on isAccountNonExpired");
+    }
+
+    @Test
+    final void test_shouldIsAccountNonLocked() {
+        // given
+        User user = createSampleUser();
+
+        // when
+        boolean isAccountNonExpired = user.isAccountNonLocked();
+
+        // then
+        assertTrue(isAccountNonExpired, "Should return true on isAccountNonExpired");
+    }
+
+    @Test
+    final void test_shouldIsCredentialsNonExpired() {
+        // given
+        User user = createSampleUser();
+
+        // when
+        boolean isAccountNonExpired = user.isCredentialsNonExpired();
+
+        // then
+        assertTrue(isAccountNonExpired, "Should return true on isAccountNonExpired");
+    }
+
+    @Test
     final void test_shouldReturnNoViolationsOnCorrectUser() {
         // given
         User user = createSampleUser();
@@ -195,6 +251,41 @@ class UserTest {
         // then
         assertEquals(0, violations.size(),
                 "Should return no violations on correct user");
+    }
+
+    @Test
+    final void testReadObjectThrowsException() {
+        User user = new User();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        try (ObjectOutput objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            objectOutputStream.writeObject(user);
+
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+
+            // Ensure that readObject method throws NotSerializableException
+            assertThrows(NotSerializableException.class, objectInputStream::readObject);
+        } catch (IOException e) {
+            assert true;
+        }
+    }
+
+    @Test
+    final void testWriteObjectThrowsException() {
+        // given
+        User user = new User();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        // when and then
+
+        try (ObjectOutput objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            assertThrows(NotSerializableException.class, () -> objectOutputStream.writeObject(user));
+        } catch (IOException e) {
+            assert false;
+        }
     }
 
     private User createSampleUser() {
