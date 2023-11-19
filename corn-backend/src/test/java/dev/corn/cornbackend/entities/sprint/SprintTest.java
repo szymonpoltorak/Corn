@@ -169,15 +169,18 @@ class SprintTest {
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_PROJECT_FIELD_NAME,
-                SprintConstants.SPRINT_PROJECT_NULL_MSG));
+                SprintConstants.SPRINT_PROJECT_NULL_MSG),
+                "Should return null project violation");
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_START_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_START_DATE_NULL_MSG));
+                SprintConstants.SPRINT_START_DATE_NULL_MSG),
+                "Should return null sprint start date violation");
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_END_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_END_DATE_NULL_MSG));
+                SprintConstants.SPRINT_END_DATE_NULL_MSG),
+                "Should return null sprint end date violation");
     }
 
     @ParameterizedTest
@@ -195,19 +198,23 @@ class SprintTest {
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_NAME_FIELD_NAME,
-                SprintConstants.SPRINT_NAME_BLANK_MSG));
+                SprintConstants.SPRINT_NAME_BLANK_MSG),
+                "Should return blank name violation");
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
-                SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG));
+                SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG),
+                "Should return blank description violation");
     }
 
     @Test
     final void test_shouldReturnWrongSizeViolationOnTooLongStringOnMaxSizeFields() {
         // given
         Sprint sprint = new Sprint();
-        sprint.setSprintName("a".repeat(51));
-        sprint.setSprintDescription("b".repeat(501));
+        int wrongNameSize = SprintConstants.SPRINT_NAME_MAX_SIZE + 1;
+        int wrongDescriptionSize = SprintConstants.SPRINT_DESCRIPTION_MAX_SIZE + 1;
+        sprint.setSprintName("a".repeat(wrongNameSize));
+        sprint.setSprintDescription("b".repeat(wrongDescriptionSize));
 
         // when
 
@@ -215,11 +222,13 @@ class SprintTest {
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_NAME_FIELD_NAME,
-                SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG));
+                SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG),
+                "Should return wrong size name violation");
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_DESCRIPTION_FIELD_NAME,
-                SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG));
+                SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG),
+                "Should return wrong size description violation");
     }
 
     @Test
@@ -234,7 +243,8 @@ class SprintTest {
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_START_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG));
+                SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG),
+                "Should return future or present sprint start date violation");
     }
 
 
@@ -250,7 +260,8 @@ class SprintTest {
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_END_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_END_DATE_FUTURE_MSG));
+                SprintConstants.SPRINT_END_DATE_FUTURE_MSG),
+                "Should return future sprint end date violation");
     }
 
     @Test
@@ -265,7 +276,8 @@ class SprintTest {
         assertTrue(validateField(
                 sprint,
                 SprintConstants.SPRINT_END_DATE_FIELD_NAME,
-                SprintConstants.SPRINT_END_DATE_FUTURE_MSG));
+                SprintConstants.SPRINT_END_DATE_FUTURE_MSG),
+                "Should return future sprint end date violation");
     }
 
     @Test
@@ -281,8 +293,10 @@ class SprintTest {
         // then
         String expectedMessage = SprintConstants.SPRINT_LATER_THAN_MSG;
 
-        assertEquals(1, violations.size());
-        assertEquals(expectedMessage, violations.iterator().next().getMessage());
+        assertEquals(1, violations.size(),
+                "Should return only one violation");
+        assertEquals(expectedMessage, violations.iterator().next().getMessage(),
+                "Should return later than violation");
     }
 
     @Test
@@ -294,7 +308,8 @@ class SprintTest {
         Set<ConstraintViolation<Sprint>> violations = validator.validate(sprint);
 
         // then
-        assertEquals(0, violations.size());
+        assertEquals(0, violations.size(),
+                "Should return no violations");
     }
 
     private Sprint createSampleSprint() {

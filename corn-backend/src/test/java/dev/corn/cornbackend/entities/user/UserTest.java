@@ -129,8 +129,6 @@ class UserTest {
         user.setName(string);
         user.setSurname(string);
         user.setUsername(string);
-        user.setPassword(string);
-        user.setSalt(string);
 
         // when
 
@@ -138,32 +136,30 @@ class UserTest {
         assertTrue(validateField(
                 user,
                 UserConstants.USER_NAME_FIELD_NAME,
-                UserConstants.USER_NAME_BLANK_MSG));
+                UserConstants.USER_NAME_BLANK_MSG),
+                "Should return blank name violation");
         assertTrue(validateField(
                 user,
                 UserConstants.USER_SURNAME_FIELD_NAME,
-                UserConstants.USER_SURNAME_BLANK_MSG));
+                UserConstants.USER_SURNAME_BLANK_MSG),
+                "Should return blank surname violation");
         assertTrue(validateField(
                 user,
                 UserConstants.USER_USERNAME_FIELD_NAME,
-                UserConstants.USER_USERNAME_BLANK_MSG));
-        assertTrue(validateField(
-                user,
-                UserConstants.USER_PASSWORD_FIELD_NAME,
-                UserConstants.USER_PASSWORD_BLANK_MSG));
-        assertTrue(validateField(
-                user,
-                UserConstants.USER_SALT_FIELD_NAME,
-                UserConstants.USER_SALT_BLANK_MSG));
+                UserConstants.USER_USERNAME_BLANK_MSG),
+                "Should return blank username violation");
     }
 
     @Test
     final void test_shouldReturnWrongSizeViolationOnTooLongStringsOnMaxSizeFields() {
         // given
         User user = new User();
-        user.setName("a".repeat(41));
-        user.setSurname("b".repeat(51));
-        user.setUsername("c".repeat(51));
+        int wrongNameSize = UserConstants.USER_NAME_MAX_SIZE + 1;
+        int wrongSurnameSize = UserConstants.USER_SURNAME_MAX_SIZE + 1;
+        int wrongUsernameSize = UserConstants.USER_USERNAME_MAX_SIZE + 1;
+        user.setName("a".repeat(wrongNameSize));
+        user.setSurname("b".repeat(wrongSurnameSize));
+        user.setUsername("c".repeat(wrongUsernameSize));
 
         // when
 
@@ -171,15 +167,18 @@ class UserTest {
         assertTrue(validateField(
                 user,
                 UserConstants.USER_NAME_FIELD_NAME,
-                UserConstants.USER_NAME_WRONG_SIZE_MSG));
+                UserConstants.USER_NAME_WRONG_SIZE_MSG),
+                "Should return wrong size name violation");
         assertTrue(validateField(
                 user,
                 UserConstants.USER_SURNAME_FIELD_NAME,
-                UserConstants.USER_SURNAME_WRONG_SIZE_MSG));
+                UserConstants.USER_SURNAME_WRONG_SIZE_MSG),
+                "Should return wrong size surname violation");
         assertTrue(validateField(
                 user,
                 UserConstants.USER_USERNAME_FIELD_NAME,
-                UserConstants.USER_USERNAME_WRONG_SIZE_MSG));
+                UserConstants.USER_USERNAME_WRONG_SIZE_MSG),
+                "Should return wrong size username violation");
     }
 
     @Test
@@ -191,7 +190,8 @@ class UserTest {
         Set<ConstraintViolation<User>> violations = validator.validate(user);
 
         // then
-        assertEquals(0, violations.size());
+        assertEquals(0, violations.size(),
+                "Should return no violations on correct user");
     }
 
     private User createSampleUser() {
@@ -200,8 +200,6 @@ class UserTest {
                 .name("John")
                 .surname("Doe")
                 .username("johndoe")
-                .password("password")
-                .salt("salt")
                 .build();
     }
 

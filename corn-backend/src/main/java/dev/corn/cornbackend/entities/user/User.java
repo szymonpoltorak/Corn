@@ -1,6 +1,5 @@
 package dev.corn.cornbackend.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.corn.cornbackend.entities.user.constants.UserConstants;
 import dev.corn.cornbackend.entities.user.interfaces.ServiceUser;
 import dev.corn.cornbackend.utils.json.JsonMapper;
@@ -40,26 +39,19 @@ public class User implements Jsonable, ServiceUser {
     private long userId;
 
     @NotBlank(message = UserConstants.USER_NAME_BLANK_MSG)
-    @Size(max = 40, message = UserConstants.USER_NAME_WRONG_SIZE_MSG)
+    @Size(max = UserConstants.USER_NAME_MAX_SIZE,
+            message = UserConstants.USER_NAME_WRONG_SIZE_MSG)
     private String name;
 
     @NotBlank(message = UserConstants.USER_SURNAME_BLANK_MSG)
-    @Size(max = 50, message = UserConstants.USER_SURNAME_WRONG_SIZE_MSG)
+    @Size(max = UserConstants.USER_SURNAME_MAX_SIZE,
+            message = UserConstants.USER_SURNAME_WRONG_SIZE_MSG)
     private String surname;
 
     @NotBlank(message = UserConstants.USER_USERNAME_BLANK_MSG)
-    @Size(max = 50, message = UserConstants.USER_USERNAME_WRONG_SIZE_MSG)
+    @Size(max = UserConstants.USER_USERNAME_MAX_SIZE,
+            message = UserConstants.USER_USERNAME_WRONG_SIZE_MSG)
     private String username;
-
-    @ToString.Exclude
-    @JsonIgnore
-    @NotBlank(message = UserConstants.USER_PASSWORD_BLANK_MSG)
-    private String password;
-
-    @ToString.Exclude
-    @JsonIgnore
-    @NotBlank(message = UserConstants.USER_SALT_BLANK_MSG)
-    private String salt;
 
     @Override
     public final String toJson() {
@@ -82,6 +74,11 @@ public class User implements Jsonable, ServiceUser {
     }
 
     @Override
+    public final String getPassword() {
+        throw new UnsupportedOperationException("getPassword not supported yet :/");
+    }
+
+    @Override
     public final boolean equals(Object object) {
         if (this == object) {
             return true;
@@ -92,10 +89,7 @@ public class User implements Jsonable, ServiceUser {
         if (!Objects.equals(name, user.name) || !Objects.equals(surname, user.surname)) {
             return false;
         }
-        if (!Objects.equals(username, user.username) || !Objects.equals(password, user.password)) {
-            return false;
-        }
-        return Objects.equals(salt, user.salt);
+        return Objects.equals(username, user.username);
     }
 
     @Override
@@ -105,8 +99,6 @@ public class User implements Jsonable, ServiceUser {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (surname != null ? surname.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (salt != null ? salt.hashCode() : 0);
 
         return result;
     }

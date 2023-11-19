@@ -42,11 +42,13 @@ public class BacklogItem implements Jsonable {
     private long backlogItemId;
 
     @NotBlank(message = BacklogItemConstants.BACKLOG_ITEM_TITLE_BLANK_MSG)
-    @Size(max = 100, message = BacklogItemConstants.BACKLOG_ITEM_TITLE_WRONG_SIZE_MSG)
+    @Size(max = BacklogItemConstants.BACKLOG_ITEM_TITLE_MAX_SIZE,
+            message = BacklogItemConstants.BACKLOG_ITEM_TITLE_WRONG_SIZE_MSG)
     private String title;
 
     @NotBlank(message = BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_BLANK_MSG)
-    @Size(max = 500, message = BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_WRONG_SIZE_MSG)
+    @Size(max = BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_MAX_SIZE,
+            message = BacklogItemConstants.BACKLOG_ITEM_DESCRIPTION_WRONG_SIZE_MSG)
     private String description;
 
     @Enumerated(value = EnumType.STRING)

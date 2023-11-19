@@ -3,6 +3,7 @@ package dev.corn.cornbackend.entities.backlog.comment.constants;
 public final class BacklogItemCommentConstants {
     public static final String BACKLOG_ITEM_COMMENT_COMMENT_BLANK_MSG = "Comment cannot be null and has to contain at least one non-whitespace character";
     public static final String BACKLOG_ITEM_COMMENT_COMMENT_WRONG_SIZE_MSG = "Comment must consist of max 500 characters";
+    public static final int BACKLOG_ITEM_COMMENT_MAX_SIZE = 500;
     public static final String BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME = "comment";
 
     public static final String BACKLOG_ITEM_COMMENT_USER_NULL_MSG = "User cannot be null";

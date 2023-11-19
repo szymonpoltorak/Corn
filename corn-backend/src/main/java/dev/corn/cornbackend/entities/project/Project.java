@@ -38,7 +38,8 @@ public class Project implements Jsonable {
     private long projectId;
 
     @NotBlank(message = ProjectConstants.PROJECT_NAME_BLANK_MSG)
-    @Size(max = 100, message = ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG)
+    @Size(max = ProjectConstants.PROJECT_NAME_MAX_SIZE,
+            message = ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG)
     private String name;
 
     @OneToMany

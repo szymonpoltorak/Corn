@@ -41,11 +41,13 @@ public class Sprint implements Jsonable {
     private Project project;
 
     @NotBlank(message = SprintConstants.SPRINT_NAME_BLANK_MSG)
-    @Size(max = 50, message = SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG)
+    @Size(max = SprintConstants.SPRINT_NAME_MAX_SIZE,
+            message = SprintConstants.SPRINT_NAME_WRONG_SIZE_MSG)
     private String sprintName;
 
     @NotBlank(message = SprintConstants.SPRINT_DESCRIPTION_BLANK_MSG)
-    @Size(max = 500, message = SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG)
+    @Size(max = SprintConstants.SPRINT_DESCRIPTION_MAX_SIZE,
+            message = SprintConstants.SPRINT_DESCRIPTION_WRONG_SIZE_MSG)
     private String sprintDescription;
 
     @NotNull(message = SprintConstants.SPRINT_START_DATE_NULL_MSG)

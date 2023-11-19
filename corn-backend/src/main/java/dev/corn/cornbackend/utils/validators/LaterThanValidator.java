@@ -23,6 +23,10 @@ public class LaterThanValidator implements ConstraintValidator<LaterThan, Object
 
     @Override
     public final boolean isValid(Object object, ConstraintValidatorContext context) {
+        if(object == null) {
+            return false;
+        }
+
         try {
             Method firstDateGetter = object.getClass().getDeclaredMethod(firstDateGetterName);
             Method secondDateGetter = object.getClass().getDeclaredMethod(secondDateGetterName);

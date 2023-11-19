@@ -147,7 +147,8 @@ class ProjectMemberTest {
         assertTrue(validateField(
                 projectMember,
                 ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG));
+                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
+                "Should return null elements backlog items violation");
     }
 
     @Test
@@ -162,7 +163,8 @@ class ProjectMemberTest {
         assertTrue(validateField(
                 projectMember,
                 ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG));
+                ProjectMemberConstants.PROJECT_MEMBER_BACKLOG_ITEM_NULL_ELEMENTS_MSG),
+                "Should return null elements backlog items violation");
     }
 
     @Test
@@ -178,11 +180,13 @@ class ProjectMemberTest {
         assertTrue(validateField(
                 projectMember,
                 ProjectMemberConstants.PROJECT_MEMBER_PROJECT_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_PROJECT_NULL_MSG));
+                ProjectMemberConstants.PROJECT_MEMBER_PROJECT_NULL_MSG),
+                "Should return null member violation");
         assertTrue(validateField(
                 projectMember,
                 ProjectMemberConstants.PROJECT_MEMBER_USER_FIELD_NAME,
-                ProjectMemberConstants.PROJECT_MEMBER_USER_NULL_MSG));
+                ProjectMemberConstants.PROJECT_MEMBER_USER_NULL_MSG),
+                "Should return null user violation");
     }
 
     @Test
@@ -194,7 +198,8 @@ class ProjectMemberTest {
         Set<ConstraintViolation<ProjectMember>> violations = validator.validate(projectMember);
 
         // then
-        assertEquals(0, violations.size());
+        assertEquals(0, violations.size(),
+                "Should return no violations on correct project member");
     }
 
     private ProjectMember createSampleProjectMember() {

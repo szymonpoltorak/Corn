@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.utils.handlers.validators;
 
+import dev.corn.cornbackend.utils.handlers.data.ConstraintExceptionMessageWithValue;
 import dev.corn.cornbackend.utils.handlers.data.ConstraintExceptionResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -20,29 +22,23 @@ public class ConstraintValidationExceptionHandler {
     public final ResponseEntity<ConstraintExceptionResponse> handleConstraintViolationException(ConstraintViolationException exception) {
         Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
 
-        ConstraintViolation<?> violation = violations.iterator().next();
+        String validationErrorClassName = violations.iterator().next().getLeafBean().getClass().getSimpleName();
 
-        String validationErrorClassName = violation.getLeafBean().getClass().getSimpleName();
-        String errorMessage = violation.getMessage();
+        List<ConstraintExceptionMessageWithValue> list = violations
+                .stream()
+                .map(violation -> new ConstraintExceptionMessageWithValue(
+                        violation.getMessage(),
+                        violation.getInvalidValue() != null ? violation.getInvalidValue().toString() : null))
+                .toList();
 
-        Object invalidValueObject = violation.getInvalidValue();
-
-        String invalidValue;
-        if(invalidValueObject == null) {
-            invalidValue = null;
-        } else {
-            invalidValue = invalidValueObject.toString();
-        }
 
         LocalDate timeStamp = LocalDate.now();
 
         return new ResponseEntity<>(ConstraintExceptionResponse
                 .builder()
                 .validationErrorClassName(validationErrorClassName)
-                .errorMessage(errorMessage)
-                .invalidValue(invalidValue)
+                .errorList(list)
                 .timeStamp(timeStamp)
                 .build(), HttpStatus.BAD_REQUEST);
-
     }
 }

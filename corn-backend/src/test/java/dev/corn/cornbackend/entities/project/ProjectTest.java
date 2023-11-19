@@ -84,14 +84,16 @@ class ProjectTest {
         assertTrue(validateField(
                 project,
                 ProjectConstants.PROJECT_NAME_FIELD_NAME,
-                ProjectConstants.PROJECT_NAME_BLANK_MSG));
+                ProjectConstants.PROJECT_NAME_BLANK_MSG),
+                "Should return blank name violation");
     }
 
     @Test
     final void test_shouldReturnSizeViolationOnNameWithMoreThan100Characters() {
         // given
         Project project = new Project();
-        project.setName("a".repeat(101));
+        int wrongSize = ProjectConstants.PROJECT_NAME_MAX_SIZE + 1;
+        project.setName("a".repeat(wrongSize));
 
         // when
 
@@ -99,7 +101,8 @@ class ProjectTest {
         assertTrue(validateField(
                 project,
                 ProjectConstants.PROJECT_NAME_FIELD_NAME,
-                ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG));
+                ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG),
+                "Should return wrong size name violation");
     }
 
     @Test
@@ -114,7 +117,8 @@ class ProjectTest {
         assertTrue(validateField(
                 project,
                 ProjectConstants.PROJECT_SPRINTS_FIELD_NAME,
-                ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG));
+                ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG),
+                "Should return null elements sprints violation");
     }
 
     @Test
@@ -129,7 +133,8 @@ class ProjectTest {
         assertTrue(validateField(
                 project,
                 ProjectConstants.PROJECT_SPRINTS_FIELD_NAME,
-                ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG));
+                ProjectConstants.PROJECT_SPRINTS_NULL_ELEMENTS_MSG),
+                "Should return null elements sprints violation");
     }
 
     @Test
@@ -144,7 +149,8 @@ class ProjectTest {
         assertTrue(validateField(
                 project,
                 ProjectConstants.PROJECT_OWNER_FIELD_NAME,
-                ProjectConstants.PROJECT_OWNER_NULL_MSG));
+                ProjectConstants.PROJECT_OWNER_NULL_MSG),
+                "Should return null owner violation");
     }
 
     @Test
@@ -159,7 +165,8 @@ class ProjectTest {
         Set<ConstraintViolation<Project>> violations = validator.validate(project);
 
         // then
-        assertEquals(0, violations.size());
+        assertEquals(0, violations.size(),
+                "Should return no violations on correct project");
     }
 
     private boolean validateField(Project project, String fieldName, String expectedMessage) {

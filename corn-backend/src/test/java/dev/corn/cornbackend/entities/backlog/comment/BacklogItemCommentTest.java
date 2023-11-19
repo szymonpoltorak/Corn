@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class BacklogItemCommentTest {
+    private final String ONLY_ONE_VIOLATION = "Validator should return only 1 violation";
 
     @Autowired
     private LocalValidatorFactoryBean validator;
@@ -156,33 +157,30 @@ class BacklogItemCommentTest {
         backlogItemComment.setComment(comment);
 
         // when
-        Set<ConstraintViolation<BacklogItemComment>> violations = validator.validateProperty(
-                backlogItemComment,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME);
 
         // then
-        String expectedMessage = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_BLANK_MSG;
-
-        assertEquals(1, violations.size());
-        assertEquals(expectedMessage, violations.iterator().next().getMessage());
+        assertTrue(validateField(
+                backlogItemComment,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_BLANK_MSG),
+                "Should return blank comment violation");
     }
 
     @Test
     final void test_shouldReturnSizeViolationOnCommentWithMoreThan500Characters() {
         // given
         BacklogItemComment backlogItemComment = new BacklogItemComment();
-        backlogItemComment.setComment("a".repeat(501));
+        int wrongSize = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_MAX_SIZE + 1;
+        backlogItemComment.setComment("a".repeat(wrongSize));
 
         // when
-        Set<ConstraintViolation<BacklogItemComment>> violations = validator.validateProperty(
-                backlogItemComment,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME);
 
         // then
-        String expectedMessage = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_WRONG_SIZE_MSG;
-
-        assertEquals(1, violations.size());
-        assertEquals(expectedMessage, violations.iterator().next().getMessage());
+        assertTrue(validateField(
+                backlogItemComment,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_FIELD_NAME,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_WRONG_SIZE_MSG),
+                "Should return wrong size comment violation");
     }
 
     @Test
@@ -198,11 +196,13 @@ class BacklogItemCommentTest {
         assertTrue(validateField(
                 backlogItemComment,
                 BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_FIELD_NAME,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_NULL_MSG));
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_USER_NULL_MSG),
+                "Should return null user violation");
         assertTrue(validateField(
                 backlogItemComment,
                 BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_FIELD_NAME,
-                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_NULL_MSG));
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_NULL_MSG),
+                "Should return null backlog item violation");
     }
 
     @Test
@@ -214,7 +214,8 @@ class BacklogItemCommentTest {
         Set<ConstraintViolation<BacklogItemComment>> violations = validator.validate(backlogItemComment);
 
         // then
-        assertEquals(0, violations.size());
+        assertEquals(0, violations.size(),
+                "Should return no violations on correct backlog item comment");
     }
 
     private BacklogItemComment createSampleBacklogItemComment() {
