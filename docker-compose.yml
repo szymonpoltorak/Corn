@@ -22,7 +22,7 @@ services:
             - SPRING_DATASOURCE_URL=jdbc:postgresql://corn-postgres:5432/corn
             - FRONTEND_URL=corn-frontend
         build:
-            context: corn-app-backend
+            context: corn-backend
             dockerfile: Dockerfile
         ports:
             - "8080:8080"
@@ -32,7 +32,7 @@ services:
         depends_on:
             - corn-backend
         build:
-            context: corn-app-frontend
+            context: corn-frontend
             dockerfile: Dockerfile
         ports:
             - "4200:80"

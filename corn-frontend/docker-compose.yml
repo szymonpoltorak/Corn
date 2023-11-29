@@ -1,0 +1,11 @@
+version: "3.1"
+
+services:
+    cinema-frontend:
+        container_name: corn-frontend
+        image: corn-frontend
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "4200:80"
