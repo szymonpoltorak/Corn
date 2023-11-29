@@ -14,15 +14,15 @@ jobs:
         runs-on: ubuntu-latest
 
         services:
-            note-postgres:
+            corn-postgres:
                 image: postgres:alpine
                 env:
                     POSTGRES_USER: postgres
                     POSTGRES_PASSWORD: none
-                    POSTGRES_DB: noteapp
+                    POSTGRES_DB: corn
                 ports:
-                    - "5100:5432"
-                options: --name note-postgres
+                    - "5000:5432"
+                options: --name corn-postgres
         steps:
             -   uses: actions/checkout@v4
 
@@ -35,14 +35,14 @@ jobs:
             -   name: Setup Gradle
                 uses: gradle/gradle-build-action@v2
                 env:
-                    SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5100/noteapp
+                    SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5000/corn
                     POSTGRES_USER: postgres
                     POSTGRES_PASSWORD: none
-                    POSTGRES_DB: noteapp
+                    POSTGRES_DB: corn
                     FRONTEND_URL: http://localhost:4200
                     GOOGLE_CLIENT_ID: none
                     GOOGLE_CLIENT_SECRET: none
                 with:
                     gradle-version: '8.2'
                     arguments: build
-                    build-root-directory: note-app-backend
+                    build-root-directory: corn-backend
