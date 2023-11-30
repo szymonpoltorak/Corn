@@ -9,4 +9,8 @@ public interface ProjectController {
     ProjectResponse addNewProject(String name, User user);
 
     List<ProjectResponse> getProjectsOnPage(int page, User user);
+
+    ProjectResponse updateProjectsName(String name, long projectId);
+
+    ProjectResponse deleteProject(long projectId);
 }

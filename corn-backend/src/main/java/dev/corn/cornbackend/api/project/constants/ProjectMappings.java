@@ -7,6 +7,10 @@ public final class ProjectMappings {
 
     public static final String ADD_PROJECT = "/addProject";
 
+    public static final String UPDATE_PROJECTS_NAME = "/updateProjectsName";
+
+    public static final String DELETE_PROJECT = "/deleteProject";
+
     private ProjectMappings() {
     }
 }

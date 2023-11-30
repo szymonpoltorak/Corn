@@ -6,11 +6,13 @@ import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private static final int PROJECTS_PER_PAGE = 20;
+    private static final String PROJECT_DOES_NOT_EXIST = "Project does not exist!";
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
 
@@ -56,5 +59,37 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(projectMapper::toProjectResponse)
                 .toList();
+    }
+
+    @Override
+    public final ProjectResponse updateProjectsName(String name, long projectId) {
+        log.info("Updating project with id: {} and name: {}", projectId, name);
+
+        Project projectToUpdate = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectDoesNotExistException(HttpStatus.NOT_FOUND, PROJECT_DOES_NOT_EXIST));
+
+        log.info("Found project to update: {}", projectToUpdate);
+
+        projectToUpdate.setName(name);
+
+        Project updatedProject = projectRepository.save(projectToUpdate);
+
+        log.info("Updated project: {}", updatedProject);
+
+        return projectMapper.toProjectResponse(updatedProject);
+    }
+
+    @Override
+    public final ProjectResponse deleteProject(long projectId) {
+        log.info("Deleting project with id: {}", projectId);
+
+        Project projectToDelete = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectDoesNotExistException(HttpStatus.NOT_FOUND, PROJECT_DOES_NOT_EXIST));
+
+        log.info("Found project to delete: {}", projectToDelete);
+
+        projectRepository.deleteById(projectId);
+
+        return projectMapper.toProjectResponse(projectToDelete);
     }
 }
