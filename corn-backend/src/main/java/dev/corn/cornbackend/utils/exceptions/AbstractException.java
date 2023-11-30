@@ -10,15 +10,15 @@ public abstract class AbstractException extends ResponseStatusException {
     @Serial
     private static final long serialVersionUID = -7663571089805042815L;
 
-    public AbstractException(String reason) {
+    protected AbstractException(String reason) {
         super(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), reason);
     }
 
-    public AbstractException(HttpStatusCode status, String reason) {
+    protected AbstractException(HttpStatusCode status, String reason) {
         super(status, reason);
     }
 
-    public AbstractException(HttpStatusCode status, String reason, Throwable cause) {
+    protected AbstractException(HttpStatusCode status, String reason, Throwable cause) {
         super(status, reason, cause);
     }
 }
