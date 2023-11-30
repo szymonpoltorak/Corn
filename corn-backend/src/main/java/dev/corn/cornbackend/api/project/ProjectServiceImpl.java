@@ -40,7 +40,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         log.info("Saved project: {}", newProject);
 
-        return projectMapper.ToProjectResponse(newProject);
+        return projectMapper.toProjectResponse(newProject);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projects
                 .stream()
-                .map(projectMapper::ToProjectResponse)
+                .map(projectMapper::toProjectResponse)
                 .toList();
     }
 }
