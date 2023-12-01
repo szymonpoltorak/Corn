@@ -23,7 +23,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-@Entity
+import static dev.corn.cornbackend.entities.user.constants.UserConstants.USERS_TABLE_NAME;
+
+@Entity(name = USERS_TABLE_NAME)
 @Builder
 @Getter
 @Setter
@@ -70,16 +72,6 @@ public class User implements Jsonable, ServiceUser {
     }
 
     @Override
-    public final Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public final String getPassword() {
-        throw new UnsupportedOperationException("getPassword not supported yet :/");
-    }
-
-    @Override
     public final boolean equals(Object object) {
         if (this == object) {
             return true;
@@ -102,26 +94,6 @@ public class User implements Jsonable, ServiceUser {
         result = 31 * result + (username != null ? username.hashCode() : 0);
 
         return result;
-    }
-
-    @Override
-    public final boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public final boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public final boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public final boolean isEnabled() {
-        return true;
     }
 
     @Serial

@@ -18,3 +18,13 @@ spring:
                         non_contextual_creation: true
                 dialect: org.hibernate.dialect.PostgreSQLDialect
                 format_sql: true
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: http://localhost:8081/realms/Corn
+                    jwk-set-uri: http://corn-keycloak:8080/realms/Corn/protocol/openid-connect/certs
+app:
+    jwt:
+        issuer-uri: http://corn-keycloak:8080/realms/Corn
+        resource-client-ids: Corn

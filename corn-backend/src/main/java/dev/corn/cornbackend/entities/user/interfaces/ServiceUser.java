@@ -1,7 +1,5 @@
 package dev.corn.cornbackend.entities.user.interfaces;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
-public interface ServiceUser extends UserDetails {
+public interface ServiceUser {
     String getFullName();
 }
