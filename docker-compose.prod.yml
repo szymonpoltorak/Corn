@@ -25,7 +25,7 @@ services:
             context: corn-backend
             dockerfile: Dockerfile.prod
         ports:
-            - "8080:8080"
+            - "8080:8081"
     corn-frontend:
         container_name: corn-frontend
         image: corn-frontend
@@ -42,12 +42,12 @@ services:
         image: corn-keycloak-initializer
         build:
             context: keycloak-initializer
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.prod
         depends_on:
             corn-keycloak:
                 condition: service_healthy
         environment:
-            - KCCFG_OVERRIDE_EXISTING=true
+            - KCCFG_OVERRIDE_EXISTING=false
             - KC_SERVER_URL=http://corn-keycloak:8080
     corn-keycloak:
         container_name: corn-keycloak

@@ -13,17 +13,19 @@ public class Users extends ArrayList<UserRepresentation> {
 
     public Users() {
         addAll(Stream.of(
-                new SimpleUser("admin", "admin", CornRealm.Role.ADMIN),
-                new SimpleUser("user", "user", CornRealm.Role.USER),
-                new SimpleUser("someuser", "password", CornRealm.Role.USER)
+                new SimpleUser("Pan", "Admin", "admin", "admin", CornRealm.Role.ADMIN),
+                new SimpleUser("Użyt", "Kownik", "user", "user", CornRealm.Role.USER),
+                new SimpleUser("Jan", "Kowalski", "jan", "jan", CornRealm.Role.USER)
         ).map(SimpleUser::intoUserRepresentation).toList());
     }
 
-    private record SimpleUser(String username, String password, CornRealm.Role... roles) {
+    private record SimpleUser(String name, String surname, String username, String password, CornRealm.Role... roles) {
 
         UserRepresentation intoUserRepresentation() {
             return new UserRepresentation() {{
                 setUsername(username());
+                setFirstName(name);
+                setLastName(surname);
                 setEnabled(true);
                 setCredentials(singletonList(new CredentialRepresentation() {{
                     setType(CredentialRepresentation.PASSWORD);

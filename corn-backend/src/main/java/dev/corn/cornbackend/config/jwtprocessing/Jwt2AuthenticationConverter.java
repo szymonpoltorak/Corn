@@ -1,7 +1,9 @@
 package dev.corn.cornbackend.config.jwtprocessing;
 
 import dev.corn.cornbackend.entities.user.User;
-import dev.corn.cornbackend.entities.user.UserService;
+import dev.corn.cornbackend.api.user.UserServiceImpl;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
+import dev.corn.cornbackend.entities.user.interfaces.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -18,18 +20,19 @@ public class Jwt2AuthenticationConverter implements Converter<Jwt, JwtAuthentica
 
     private final Jwt2AuthoritiesConverter authoritiesConverter;
     private final Jwt2UserConverter userConverter;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Override
     public JwtAuthenticationToken convert(Jwt jwt) {
         User user = userConverter.convert(jwt);
-        if(user == null) {
-            user = registerUserOnFirstLogin(jwt);
+        if(user != null) {
+            return new JwtAuthenticationToken(jwt, user.getAuthorities(), user.getUsername());
         }
-        return new JwtAuthenticationToken(jwt, authoritiesConverter.convert(jwt), user.getUsername());
+        UserResponse userResponse = registerUserOnFirstLogin(jwt);
+        return new JwtAuthenticationToken(jwt, authoritiesConverter.convert(jwt), userResponse.username());
     }
 
-    private User registerUserOnFirstLogin(Jwt jwt) {
+    private UserResponse registerUserOnFirstLogin(Jwt jwt) {
         String name = getName(jwt);
         String surname = getSurname(jwt);
         String username = getPrincipalClaimName(jwt);

@@ -24,9 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import static dev.corn.cornbackend.entities.user.constants.UserConstants.USERS_TABLE_NAME;
-
-@Entity(name = USERS_TABLE_NAME)
+@Entity
 @Builder
 @Getter
 @Setter
@@ -58,6 +56,16 @@ public class User implements Jsonable, ServiceUser {
             message = UserConstants.USER_USERNAME_WRONG_SIZE_MSG)
     private String username;
 
+    @Setter
+    @Builder.Default
+    private transient Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
+
+    public User(String name, String surname, String username) {
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+    }
+
     @Override
     public final String toJson() {
         return JsonMapper.toJson(this);
@@ -71,6 +79,11 @@ public class User implements Jsonable, ServiceUser {
     @Override
     public final String getFullName() {
         return String.format("%s %s", name, surname);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
