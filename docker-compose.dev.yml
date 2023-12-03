@@ -30,7 +30,7 @@ services:
         volumes:
             - "./corn-backend:/home/corn"
             - "./.cache/corn-backend/.gradle:/home/corn/.gradle"
-            - "./.cache/corn-backend/build:/corn-backend/build"
+            - "./.cache/corn-backend/build:/home/corn/build"
     corn-frontend:
         container_name: corn-frontend
         image: corn-frontend
