@@ -1,0 +1,43 @@
+version: "3.1"
+
+services:
+    corn-postgres:
+        container_name: corn-postgres
+        image: postgres:alpine
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=none
+            - POSTGRES_DB=corn
+        ports:
+            - "5000:5432"
+    corn-backend:
+        container_name: corn-backend
+        image: corn-backend
+        depends_on:
+            - corn-postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=none
+            - POSTGRES_DB=corn
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://corn-postgres:5432/corn
+            - FRONTEND_URL=corn-frontend
+        build:
+            context: corn-backend
+            dockerfile: Dockerfile.dev
+        ports:
+            - "8080:8080"
+            - "5005:5005"
+        volumes:
+            - "./corn-backend:/home/corn"
+            - "./.cache/corn-backend/.gradle:/home/corn/.gradle"
+            - "./.cache/corn-backend/build:/corn-backend/build"
+    corn-frontend:
+        container_name: corn-frontend
+        image: corn-frontend
+        build:
+            context: corn-frontend
+            dockerfile: Dockerfile.dev
+        ports:
+            - "4200:4200"
+        volumes:
+            - "./corn-frontend:/corn-frontend"

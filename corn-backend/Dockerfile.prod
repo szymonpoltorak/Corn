@@ -14,4 +14,4 @@ RUN mv build/libs/corn-backend-0.0.1-SNAPSHOT.jar corn.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "corn.jar"]
+CMD ["java", "-jar", "corn.jar"]
