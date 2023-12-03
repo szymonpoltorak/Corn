@@ -6,6 +6,7 @@ import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import dev.corn.cornbackend.utils.validators.interfaces.NoNullElements;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,6 +38,7 @@ public class Project implements Jsonable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long projectId;
 
+    @Column(unique = true)
     @NotBlank(message = ProjectConstants.PROJECT_NAME_BLANK_MSG)
     @Size(max = ProjectConstants.PROJECT_NAME_MAX_SIZE,
             message = ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG)

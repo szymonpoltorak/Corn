@@ -23,7 +23,7 @@ services:
             - FRONTEND_URL=corn-frontend
         build:
             context: corn-backend
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.prod
         ports:
             - "8080:8080"
     corn-frontend:
@@ -33,7 +33,7 @@ services:
             - corn-backend
         build:
             context: corn-frontend
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.prod
         ports:
             - "4200:80"
 
