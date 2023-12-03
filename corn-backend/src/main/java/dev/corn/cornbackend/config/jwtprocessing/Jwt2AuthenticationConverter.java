@@ -3,16 +3,11 @@ package dev.corn.cornbackend.config.jwtprocessing;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.api.user.UserServiceImpl;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
-import dev.corn.cornbackend.entities.user.interfaces.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
-
-import static dev.corn.cornbackend.config.jwtprocessing.JwtProcessingUtil.getName;
-import static dev.corn.cornbackend.config.jwtprocessing.JwtProcessingUtil.getPrincipalClaimName;
-import static dev.corn.cornbackend.config.jwtprocessing.JwtProcessingUtil.getSurname;
 
 @Component
 @RequiredArgsConstructor
@@ -33,9 +28,9 @@ public class Jwt2AuthenticationConverter implements Converter<Jwt, JwtAuthentica
     }
 
     private UserResponse registerUserOnFirstLogin(Jwt jwt) {
-        String name = getName(jwt);
-        String surname = getSurname(jwt);
-        String username = getPrincipalClaimName(jwt);
+        String name = JwtClaim.NAME.getClaim(jwt);
+        String surname = JwtClaim.SURNAME.getClaim(jwt);
+        String username = JwtClaim.USERNAME.getClaim(jwt);
         return userService.registerUser(name, surname, username);
     }
 

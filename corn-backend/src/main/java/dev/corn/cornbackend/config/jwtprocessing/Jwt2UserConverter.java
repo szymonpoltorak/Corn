@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static dev.corn.cornbackend.config.jwtprocessing.JwtProcessingUtil.getPrincipalClaimName;
-
 @Component
 @RequiredArgsConstructor
 public class Jwt2UserConverter implements Converter<Jwt, User> {
@@ -20,8 +18,8 @@ public class Jwt2UserConverter implements Converter<Jwt, User> {
 
     @Override
     public User convert(Jwt jwt) {
-        String principalClaimName = getPrincipalClaimName(jwt);
-        Optional<User> optionalUser = userRepository.findByUsername(principalClaimName);
+        String username = JwtClaim.USERNAME.getClaim(jwt);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
         if(optionalUser.isEmpty()) {
             return null;
         }
