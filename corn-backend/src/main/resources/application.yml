@@ -22,9 +22,13 @@ spring:
         oauth2:
             resourceserver:
                 jwt:
-                    issuer-uri: http://localhost:8081/realms/Corn
-                    jwk-set-uri: http://corn-keycloak:8080/realms/Corn/protocol/openid-connect/certs
+                    issuer-uri: ${app.jwt.public-issuer-uri}
+                    jwk-set-uri: ${app.jwt.local-issuer-uri}/protocol/openid-connect/certs
 app:
     jwt:
-        issuer-uri: http://corn-keycloak:8080/realms/Corn
+        #id klienta, z którym jest skojarzona ta aplikacja
         resource-client-ids: Corn
+        #lokalne URI emitenta tokenów
+        local-issuer-uri: http://corn-keycloak:8080/realms/Corn
+        #publiczne URI emitenta tokenów
+        public-issuer-uri: http://localhost:8081/realms/Corn
