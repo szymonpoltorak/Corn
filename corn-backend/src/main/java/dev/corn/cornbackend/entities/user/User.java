@@ -60,12 +60,6 @@ public class User implements Jsonable, ServiceUser {
     @Builder.Default
     private transient Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
 
-    public User(String name, String surname, String username) {
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-    }
-
     @Override
     public final String toJson() {
         return JsonMapper.toJson(this);

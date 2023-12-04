@@ -21,7 +21,11 @@ public class UserServiceImpl implements UserService {
     public UserResponse registerUser(String name, String surname, String username) {
         log.info("Registering new user with name: {}, surname: {} and username: {}", name, surname, username);
 
-        User user = new User(name, surname, username);
+        User user = User.builder()
+                .name(name)
+                .surname(surname)
+                .username(username)
+                .build();
 
         log.info("Instantiated user: {}", user);
 
