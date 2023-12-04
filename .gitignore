@@ -41,3 +41,6 @@ gradle
 out
 generated
 *.pem
+
+#Files from development builds
+.cache/

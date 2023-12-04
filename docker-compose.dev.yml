@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3.8"
 
 services:
     corn-postgres:
@@ -41,6 +41,8 @@ services:
             - "4200:4200"
         volumes:
             - "./corn-frontend:/corn-frontend"
+            - "./.cache/corn-frontend/node_modules:/corn-frontend/node_modules"
+            - "./.cache/corn-frontend/dist:/corn-frontend/dist"
     corn-keycloak-initializer:
         container_name: corn-keycloak-initializer
         image: corn-keycloak-initializer
