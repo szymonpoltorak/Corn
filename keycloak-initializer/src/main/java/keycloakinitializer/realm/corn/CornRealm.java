@@ -12,7 +12,6 @@ public class CornRealm extends RealmRepresentation {
         setEnabled(true);
         setRegistrationAllowed(true);
         setClients(List.of(new CornClient()));
-        setUsers(new Users());
         setIdentityProviders(ExternalConfig.getIdentityProviders());
     }
 
