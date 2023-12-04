@@ -205,42 +205,6 @@ class UserTest {
     }
 
     @Test
-    final void test_shouldIsAccountNonExpired() {
-        // given
-        User user = createSampleUser();
-
-        // when
-        boolean isAccountNonExpired = user.isAccountNonExpired();
-
-        // then
-        assertTrue(isAccountNonExpired, "Should return true on isAccountNonExpired");
-    }
-
-    @Test
-    final void test_shouldIsAccountNonLocked() {
-        // given
-        User user = createSampleUser();
-
-        // when
-        boolean isAccountNonExpired = user.isAccountNonLocked();
-
-        // then
-        assertTrue(isAccountNonExpired, "Should return true on isAccountNonExpired");
-    }
-
-    @Test
-    final void test_shouldIsCredentialsNonExpired() {
-        // given
-        User user = createSampleUser();
-
-        // when
-        boolean isAccountNonExpired = user.isCredentialsNonExpired();
-
-        // then
-        assertTrue(isAccountNonExpired, "Should return true on isAccountNonExpired");
-    }
-
-    @Test
     final void test_shouldReturnNoViolationsOnCorrectUser() {
         // given
         User user = createSampleUser();

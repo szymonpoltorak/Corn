@@ -3,10 +3,10 @@ package dev.corn.cornbackend.api.project;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.interfaces.ProjectController;
 import dev.corn.cornbackend.api.project.interfaces.ProjectService;
+import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
 import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,14 +34,14 @@ public class ProjectControllerImpl implements ProjectController {
     @PostMapping(value = ADD_PROJECT)
     @ResponseStatus(value = HttpStatus.CREATED)
     public final ProjectResponse addNewProject(@RequestParam String name,
-                                               @AuthenticationPrincipal User user) {
+                                               @JwtAuthed User user) {
         return projectService.addNewProject(name, user);
     }
 
     @Override
     @GetMapping(value = GET_PROJECTS_ON_PAGE)
     public final List<ProjectResponse> getProjectsOnPage(@RequestParam int page,
-                                                         @AuthenticationPrincipal User user) {
+                                                         @JwtAuthed User user) {
         return projectService.getProjectsOnPage(page, user);
     }
 

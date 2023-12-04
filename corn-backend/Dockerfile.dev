@@ -1,7 +1,7 @@
 # Required volumes:
 #    - "./corn-backend:/home/corn"
 #    - "./.cache/corn-backend/.gradle:/home/corn/.gradle"
-#    - "./.cache/corn-backend/build:/corn-backend/build"
+#    - "./.cache/corn-backend/build:/home/corn/build"
 
 FROM gradle:8.2-jdk17-alpine
 

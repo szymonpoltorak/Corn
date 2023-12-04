@@ -1,7 +1,12 @@
 package dev.corn.cornbackend.entities.user.interfaces;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 
-public interface ServiceUser extends UserDetails {
+import java.util.Collection;
+
+public interface ServiceUser {
     String getFullName();
+
+    Collection<? extends GrantedAuthority> getAuthorities();
+
 }

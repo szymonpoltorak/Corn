@@ -56,6 +56,10 @@ public class User implements Jsonable, ServiceUser {
             message = UserConstants.USER_USERNAME_WRONG_SIZE_MSG)
     private String username;
 
+    @Setter
+    @Builder.Default
+    private transient Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
+
     @Override
     public final String toJson() {
         return JsonMapper.toJson(this);
@@ -72,13 +76,8 @@ public class User implements Jsonable, ServiceUser {
     }
 
     @Override
-    public final Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public final String getPassword() {
-        throw new UnsupportedOperationException("getPassword not supported yet :/");
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
@@ -104,26 +103,6 @@ public class User implements Jsonable, ServiceUser {
         result = 31 * result + (username != null ? username.hashCode() : 0);
 
         return result;
-    }
-
-    @Override
-    public final boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public final boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public final boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public final boolean isEnabled() {
-        return true;
     }
 
     @Serial

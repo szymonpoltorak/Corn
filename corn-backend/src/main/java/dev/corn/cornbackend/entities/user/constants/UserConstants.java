@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.entities.user.constants;
 
 public final class UserConstants {
+
     public static final String USER_NAME_FIELD_NAME = "name";
     public static final String USER_NAME_BLANK_MSG = "Name cannot be null and has to contain at least one non-whitespace character";
     public static final String USER_NAME_WRONG_SIZE_MSG = "Name must consist of max 40 characters";
