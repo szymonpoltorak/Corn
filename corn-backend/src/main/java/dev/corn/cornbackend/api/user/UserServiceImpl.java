@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponse registerUser(String name, String surname, String username) {
+    public final UserResponse registerUser(String name, String surname, String username) {
         log.info("Registering new user with name: {}, surname: {} and username: {}", name, surname, username);
 
         User user = User.builder()
