@@ -40,9 +40,16 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     private static final String PROJECT_MEMBER_NOT_FOUND_MESSAGE = "Project member not found";
     private static final String SPRINT_NOT_FOUND_MESSAGE = "Sprint not found";
     private static final String PROJECT_NOT_FOUND_MESSAGE = "Project not found";
+    private static final String BACKLOG_ITEM = "BacklogItem";
+    private static final String PROJECT_MEMBER = "ProjectMember";
+    private static final String SPRINT = "Sprint";
+    private static final String PROJECT = "Project";
+    private static final String RETURNING_BACKLOG_ITEMS_OF_QUANTITY = "Returning backlog items of quantity: {}";
+    private static final String SAVING_AND_RETURNING_RESPONSE_OF = "Saving and returning response of: {}";
+
     @Override
     public BacklogItemResponse getById(long id) {
-        log.info(GETTING_BY_ID, "BacklogItem" ,id);
+        log.info(GETTING_BY_ID, BACKLOG_ITEM,id);
 
         BacklogItem item = backlogItemRepository.findById(id)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
@@ -54,22 +61,22 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
     @Override
     public BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest) {
-        log.info(GETTING_BY_ID, "BacklogItem", id);
+        log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findById(id)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, "ProjectMember", backlogItemRequest.projectMemberId());
+        log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
 
         ProjectMember assignee = projectMemberRepository.findById(backlogItemRequest.projectMemberId())
                 .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, "Sprint", backlogItemRequest.sprintId());
+        log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
 
         Sprint sprint = sprintRepository.findById(backlogItemRequest.sprintId())
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, "Project", backlogItemRequest.projectId());
+        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
 
         Project project = projectRepository.findById(backlogItemRequest.projectId())
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
@@ -86,7 +93,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
                 .project(project)
                 .build();
 
-        log.info("Saving and returning response of: {}", newItem);
+        log.info(SAVING_AND_RETURNING_RESPONSE_OF, newItem);
 
         BacklogItem savedItem = backlogItemRepository.save(newItem);
 
@@ -95,7 +102,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
     @Override
     public BacklogItemResponse deleteById(long id) {
-        log.info(GETTING_BY_ID, "BacklogItem", id);
+        log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findById(id)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
@@ -109,17 +116,17 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
     @Override
     public BacklogItemResponse create(BacklogItemRequest backlogItemRequest) {
-        log.info(GETTING_BY_ID, "ProjectMember", backlogItemRequest.projectMemberId());
+        log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
 
         ProjectMember assignee = projectMemberRepository.findById(backlogItemRequest.projectMemberId())
                 .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, "Sprint", backlogItemRequest.sprintId());
+        log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
 
         Sprint sprint = sprintRepository.findById(backlogItemRequest.sprintId())
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, "Project", backlogItemRequest.projectId());
+        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
 
         Project project = projectRepository.findById(backlogItemRequest.projectId())
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
@@ -135,7 +142,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
                 .project(project)
                 .build();
 
-        log.info("Saving and returning response of: {}", item);
+        log.info(SAVING_AND_RETURNING_RESPONSE_OF, item);
 
         BacklogItem savedItem = backlogItemRepository.save(item);
 
@@ -144,16 +151,16 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
     @Override
     public List<BacklogItemResponse> getBySprintId(long sprintId) {
-        log.info(GETTING_BY_ID, "Sprint", sprintId);
+        log.info(GETTING_BY_ID, SPRINT, sprintId);
 
         Sprint sprint = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
 
-        log.info("Getting backlogitems for sprint: {}", sprint);
+        log.info("Getting backlog items for sprint: {}", sprint);
 
         List<BacklogItem> items = backlogItemRepository.getBySprint(sprint);
 
-        log.info("Returning backlogitems of quantity: {}", items.size());
+        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.size());
 
         return items.stream()
                 .map(backlogItemMapper::backlogItemToBacklogItemResponse)
@@ -162,16 +169,16 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
     @Override
     public List<BacklogItemResponse> getByProjectId(long projectId) {
-        log.info(GETTING_BY_ID, "Project", projectId);
+        log.info(GETTING_BY_ID, PROJECT, projectId);
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        log.info("Getting backlogitems for project: {}", project);
+        log.info("Getting backlog items for project: {}", project);
 
         List<BacklogItem> items = backlogItemRepository.getByProject(project);
 
-        log.info("Returning backlogitems of quantity: {}", items.size());
+        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.size());
 
         return items.stream()
                 .map(backlogItemMapper::backlogItemToBacklogItemResponse)

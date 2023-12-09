@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.backlog.item.interfaces;
 
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 
@@ -18,4 +19,6 @@ public interface BacklogItemController {
     public List<BacklogItemResponse> getBySprintId(long sprintId);
 
     public List<BacklogItemResponse> getByProjectId(long projectId);
+
+    public BacklogItemDetails getDetailsById(long id);
 }

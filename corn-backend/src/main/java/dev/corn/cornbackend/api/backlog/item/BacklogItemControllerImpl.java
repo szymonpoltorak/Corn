@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.backlog.item;
 
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemController;
@@ -21,6 +22,7 @@ import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMapping
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_DELETE_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_BY_PROJECT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_BY_SPRINT_MAPPING;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_DETAILS_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_UPDATE_MAPPING;
 
@@ -66,5 +68,11 @@ public class BacklogItemControllerImpl implements BacklogItemController {
     @GetMapping(BACKLOG_ITEM_GET_BY_PROJECT_MAPPING)
     public List<BacklogItemResponse> getByProjectId(@RequestParam long projectId) {
         return backlogItemService.getByProjectId(projectId);
+    }
+
+    @Override
+    @GetMapping(BACKLOG_ITEM_GET_DETAILS_MAPPING)
+    public BacklogItemDetails getDetailsById(@RequestParam long id) {
+        return null;
     }
 }
