@@ -10,10 +10,9 @@ import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundException;
-import dev.corn.cornbackend.utils.exceptions.backlog.item.item.BacklogItemCommentNotFoundException;
+import dev.corn.cornbackend.utils.exceptions.backlog.item.comment.BacklogItemCommentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +37,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
         log.info("Getting backlogItem of id: {}", request.backlogItemId());
 
         BacklogItem item = backlogItemRepository.findById(request.backlogItemId())
-                .orElseThrow(() -> new BacklogItemNotFoundException(HttpStatus.NOT_FOUND, BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info("Building and saving new backlogItemComment for request: {} and user: {}", request, user);
 
@@ -61,7 +60,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
         log.info(GETTING_BACKLOG_ITEM_COMMENT_OF_ID, commentId);
 
         BacklogItemComment backlogItemComment = backlogItemCommentRepository.findById(commentId)
-                .orElseThrow(() -> new BacklogItemCommentNotFoundException(HttpStatus.NOT_FOUND, BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new BacklogItemCommentNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         backlogItemComment.setComment(comment);
 
@@ -77,7 +76,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
         log.info(GETTING_BACKLOG_ITEM_COMMENT_OF_ID, commentId);
 
         BacklogItemComment backlogItemComment = backlogItemCommentRepository.findById(commentId)
-                .orElseThrow(() -> new BacklogItemCommentNotFoundException(HttpStatus.NOT_FOUND, BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new BacklogItemCommentNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info("Deleting backlogItemComment of id: {}", commentId);
 
@@ -93,7 +92,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
         log.info(GETTING_BACKLOG_ITEM_COMMENT_OF_ID, commentId);
 
         BacklogItemComment backlogItemComment = backlogItemCommentRepository.findById(commentId)
-                .orElseThrow(() -> new BacklogItemCommentNotFoundException(HttpStatus.NOT_FOUND, BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new BacklogItemCommentNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info(RETURNING_RESPONSE_FOR, backlogItemComment);
 

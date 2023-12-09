@@ -66,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("Updating project with id: {} and name: {}", projectId, name);
 
         Project projectToUpdate = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectDoesNotExistException(HttpStatus.NOT_FOUND, PROJECT_DOES_NOT_EXIST));
+                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_DOES_NOT_EXIST));
 
         log.info("Found project to update: {}", projectToUpdate);
 
@@ -84,7 +84,7 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("Deleting project with id: {}", projectId);
 
         Project projectToDelete = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectDoesNotExistException(HttpStatus.NOT_FOUND, PROJECT_DOES_NOT_EXIST));
+                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_DOES_NOT_EXIST));
 
         log.info("Found project to delete: {}", projectToDelete);
 
