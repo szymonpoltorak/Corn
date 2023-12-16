@@ -4,7 +4,7 @@ import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapperImpl;
 import dev.corn.cornbackend.entities.sprint.Sprint;
-import dev.corn.cornbackend.entities.sprint.data.SprintResponse;
+import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,18 +20,6 @@ class ProjectMapperTest {
 
         // when
         ProjectResponse actual = projectMapper.toProjectResponse(null);
-
-        // then
-        assertNull(actual, "Should return null");
-    }
-
-    @Test
-    final void test_toSprintResponse_shouldReturnNull() {
-        // given
-        ProjectMapper projectMapper = new ProjectMapperImpl();
-
-        // when
-        SprintResponse actual = projectMapper.toSprintResponse(null);
 
         // then
         assertNull(actual, "Should return null");
