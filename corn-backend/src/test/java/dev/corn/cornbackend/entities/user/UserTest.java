@@ -17,6 +17,8 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -73,6 +75,17 @@ class UserTest {
 
         // When-Then
         assertNotEquals(user1, user2, "Users should not be equal");
+    }
+
+    @Test
+    final void test_addEmptyListOfAuthorities() {
+        // given
+        User user = createSampleUser();
+
+        user.setAuthorities(Collections.emptyList());
+
+        // when
+        assertTrue(user.getAuthorities().isEmpty(), "Should return empty list of authorities");
     }
 
     @Test

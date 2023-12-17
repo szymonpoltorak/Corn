@@ -7,6 +7,7 @@ import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -55,5 +56,23 @@ class ProjectMapperTest {
 
         // then
         assertNull(actual.sprints(), "Should return null");
+    }
+
+    @Test
+    final void test_sprintToSprintResponse_shouldReturnNull() {
+        // given
+        ProjectMapper projectMapper = new ProjectMapperImpl();
+        List<Sprint> list = new ArrayList<>();
+        list.add(null);
+        Project project = Project
+                .builder()
+                .sprints(list)
+                .build();
+
+        // when
+        ProjectResponse actual = projectMapper.toProjectResponse(project);
+
+        // then
+        assertNull(actual.sprints().get(0), "Should return null");
     }
 }
