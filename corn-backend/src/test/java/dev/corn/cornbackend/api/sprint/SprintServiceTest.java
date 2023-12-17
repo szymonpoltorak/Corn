@@ -10,7 +10,6 @@ import dev.corn.cornbackend.test.sprint.data.AddNewSprintData;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintEndDateMustBeAfterStartDate;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +57,8 @@ public class SprintServiceTest {
                 ADD_SPRINT_DATA.name(),
                 ADD_SPRINT_DATA.startDate(),
                 ADD_SPRINT_DATA.endDate(),
-                ADD_SPRINT_DATA.description()
+                ADD_SPRINT_DATA.description(),
+                ADD_SPRINT_DATA.project().getOwner()
         );
 
         // then
@@ -83,7 +82,8 @@ public class SprintServiceTest {
                 ADD_SPRINT_DATA.name(),
                 ADD_SPRINT_DATA.endDate(),
                 ADD_SPRINT_DATA.startDate(),
-                ADD_SPRINT_DATA.description()
+                ADD_SPRINT_DATA.description(),
+                ADD_SPRINT_DATA.project().getOwner()
         ), "Should throw SprintDoesNotExistException");
     }
 
@@ -114,13 +114,14 @@ public class SprintServiceTest {
         Pageable pageable = PageRequest.of(page, SprintServiceImpl.SPRINTS_PER_PAGE);
 
         // when
-        when(sprintRepository.findAllByOwnerOrderByName(user, pageable))
+        when(sprintRepository.findAllByProjectId(ADD_SPRINT_DATA.project().getProjectId(), pageable))
                 .thenReturn(new PageImpl<>(List.of(ADD_SPRINT_DATA.asSprint())));
         SprintResponse response = new SprintResponse(0, 0, null, null, null, null);
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(response);
 
-        List<SprintResponse> actual = sprintService.getSprintsOnPage(page, user);
+        List<SprintResponse> actual = sprintService.getSprintsOnPage(page, ADD_SPRINT_DATA.project().getProjectId(),
+                ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(List.of(response), actual, "List of SprintResponse should not be empty");
@@ -138,7 +139,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintDoesNotExistException.class,
-                () -> sprintService.updateSprintsName(newName, sprintId),
+                () -> sprintService.updateSprintsName(newName, sprintId, ADD_SPRINT_DATA.project().getOwner()),
                 SHOULD_THROW_SPRINT_DOES_NOT_EXIST_EXCEPTION);
     }
 
@@ -157,7 +158,7 @@ public class SprintServiceTest {
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintService.updateSprintsName(newName, sprintId);
+        SprintResponse actual = sprintService.updateSprintsName(newName, sprintId, ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -175,7 +176,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintDoesNotExistException.class,
-                () -> sprintService.updateSprintsDescription(newDescription, sprintId),
+                () -> sprintService.updateSprintsDescription(newDescription, sprintId, ADD_SPRINT_DATA.project().getOwner()),
                 SHOULD_THROW_SPRINT_DOES_NOT_EXIST_EXCEPTION);
     }
 
@@ -194,7 +195,7 @@ public class SprintServiceTest {
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintService.updateSprintsDescription(newDescription, sprintId);
+        SprintResponse actual = sprintService.updateSprintsDescription(newDescription, sprintId, ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -212,7 +213,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintDoesNotExistException.class,
-                () -> sprintService.updateSprintsStartDate(newStartDate, sprintId),
+                () -> sprintService.updateSprintsStartDate(newStartDate, sprintId, ADD_SPRINT_DATA.project().getOwner()),
                 SHOULD_THROW_SPRINT_DOES_NOT_EXIST_EXCEPTION);
     }
 
@@ -228,7 +229,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintEndDateMustBeAfterStartDate.class,
-                () -> sprintService.updateSprintsStartDate(newStartDate, sprint.getSprintId()),
+                () -> sprintService.updateSprintsStartDate(newStartDate, sprint.getSprintId(), ADD_SPRINT_DATA.project().getOwner()),
                 SHOULD_THROW_SPRINT_DOES_NOT_EXIST_EXCEPTION);
     }
 
@@ -247,7 +248,7 @@ public class SprintServiceTest {
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintService.updateSprintsStartDate(newStartDate, sprintId);
+        SprintResponse actual = sprintService.updateSprintsStartDate(newStartDate, sprintId, ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -265,7 +266,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintDoesNotExistException.class,
-                () -> sprintService.updateSprintsEndDate(newEndDate, sprintId),
+                () -> sprintService.updateSprintsEndDate(newEndDate, sprintId, ADD_SPRINT_DATA.project().getOwner()),
                 "Should throw SprintDoesNotExistException");
     }
 
@@ -281,7 +282,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintEndDateMustBeAfterStartDate.class,
-                () -> sprintService.updateSprintsEndDate(newEndDate, sprint.getSprintId()),
+                () -> sprintService.updateSprintsEndDate(newEndDate, sprint.getSprintId(), ADD_SPRINT_DATA.project().getOwner()),
                 "Should throw SprintDoesNotExistException");
     }
 
@@ -300,7 +301,7 @@ public class SprintServiceTest {
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintService.updateSprintsEndDate(newEndDate, sprintId);
+        SprintResponse actual = sprintService.updateSprintsEndDate(newEndDate, sprintId, ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -317,7 +318,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintDoesNotExistException.class,
-                () -> sprintService.deleteSprint(sprintId),
+                () -> sprintService.deleteSprint(sprintId, ADD_SPRINT_DATA.project().getOwner()),
                 SHOULD_THROW_SPRINT_DOES_NOT_EXIST_EXCEPTION);
     }
 
@@ -333,7 +334,7 @@ public class SprintServiceTest {
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintService.deleteSprint(sprintId);
+        SprintResponse actual = sprintService.deleteSprint(sprintId, ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);

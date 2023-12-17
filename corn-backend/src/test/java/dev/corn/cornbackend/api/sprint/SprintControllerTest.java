@@ -39,10 +39,10 @@ class SprintControllerTest {
 
         // when
         when(sprintService.addNewSprint(ADD_SPRINT_DATA.name(), ADD_SPRINT_DATA.startDate(),
-                ADD_SPRINT_DATA.endDate(), ADD_SPRINT_DATA.description()))
+                ADD_SPRINT_DATA.endDate(), ADD_SPRINT_DATA.description(), ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintController.addNewSprint(ADD_SPRINT_DATA.asSprintRequest());
+        SprintResponse actual = sprintController.addNewSprint(ADD_SPRINT_DATA.asSprintRequest(), ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -70,10 +70,12 @@ class SprintControllerTest {
         int page = 0;
 
         // when
-        when(sprintService.getSprintsOnPage(page, ADD_SPRINT_DATA.project().getOwner()))
+        when(sprintService.getSprintsOnPage(page, ADD_SPRINT_DATA.project().getProjectId(),
+                ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
-        List<SprintResponse> actual = sprintController.getSprintsOnPage(page, ADD_SPRINT_DATA.project().getOwner());
+        List<SprintResponse> actual = sprintController.getSprintsOnPage(page, ADD_SPRINT_DATA.project().getProjectId(),
+                ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -85,10 +87,12 @@ class SprintControllerTest {
         SprintResponse expected = MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint());
 
         // when
-        when(sprintService.updateSprintsName(ADD_SPRINT_DATA.name(), ADD_SPRINT_DATA.asSprint().getSprintId()))
+        when(sprintService.updateSprintsName(ADD_SPRINT_DATA.name(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintController.updateSprintsName(ADD_SPRINT_DATA.name(), ADD_SPRINT_DATA.asSprint().getSprintId());
+        SprintResponse actual = sprintController.updateSprintsName(ADD_SPRINT_DATA.name(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -100,10 +104,12 @@ class SprintControllerTest {
         SprintResponse expected = MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint());
 
         // when
-        when(sprintService.updateSprintsDescription(ADD_SPRINT_DATA.description(), ADD_SPRINT_DATA.asSprint().getSprintId()))
+        when(sprintService.updateSprintsDescription(ADD_SPRINT_DATA.description(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintController.updateSprintsDescription(ADD_SPRINT_DATA.description(), ADD_SPRINT_DATA.asSprint().getSprintId());
+        SprintResponse actual = sprintController.updateSprintsDescription(ADD_SPRINT_DATA.description(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -115,10 +121,12 @@ class SprintControllerTest {
         SprintResponse expected = MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint());
 
         // when
-        when(sprintService.updateSprintsStartDate(ADD_SPRINT_DATA.startDate(), ADD_SPRINT_DATA.asSprint().getSprintId()))
+        when(sprintService.updateSprintsStartDate(ADD_SPRINT_DATA.startDate(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintController.updateSprintsStartDate(ADD_SPRINT_DATA.startDate(), ADD_SPRINT_DATA.asSprint().getSprintId());
+        SprintResponse actual = sprintController.updateSprintsStartDate(ADD_SPRINT_DATA.startDate(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -130,10 +138,12 @@ class SprintControllerTest {
         SprintResponse expected = MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint());
 
         // when
-        when(sprintService.updateSprintsEndDate(ADD_SPRINT_DATA.endDate(), ADD_SPRINT_DATA.asSprint().getSprintId()))
+        when(sprintService.updateSprintsEndDate(ADD_SPRINT_DATA.endDate(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintController.updateSprintsEndDate(ADD_SPRINT_DATA.endDate(), ADD_SPRINT_DATA.asSprint().getSprintId());
+        SprintResponse actual = sprintController.updateSprintsEndDate(ADD_SPRINT_DATA.endDate(),
+                ADD_SPRINT_DATA.asSprint().getSprintId(), ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -146,10 +156,10 @@ class SprintControllerTest {
         long sprintId = ADD_SPRINT_DATA.asSprint().getSprintId();
 
         // when
-        when(sprintService.deleteSprint(sprintId))
+        when(sprintService.deleteSprint(sprintId, ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintController.deleteSprint(sprintId);
+        SprintResponse actual = sprintController.deleteSprint(sprintId, ADD_SPRINT_DATA.project().getOwner());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);

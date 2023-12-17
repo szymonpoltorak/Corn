@@ -38,9 +38,9 @@ public class SprintControllerImpl implements SprintController {
 
     @Override
     @PostMapping(value = ADD_SPRINT)
-    public SprintResponse addNewSprint(@RequestBody SprintRequest sprintRequest) {
+    public SprintResponse addNewSprint(@RequestBody SprintRequest sprintRequest, @JwtAuthed User user) {
         return sprintService.addNewSprint(sprintRequest.name(), sprintRequest.startDate(),
-                sprintRequest.endDate(), sprintRequest.description());
+                sprintRequest.endDate(), sprintRequest.description(), user);
     }
 
     @Override
@@ -51,38 +51,38 @@ public class SprintControllerImpl implements SprintController {
 
     @Override
     @GetMapping(value = GET_SPRINTS_ON_PAGE)
-    public List<SprintResponse> getSprintsOnPage(@RequestParam int page, @JwtAuthed User user) {
-        return sprintService.getSprintsOnPage(page, user);
+    public List<SprintResponse> getSprintsOnPage(@RequestParam int page, @RequestParam long projectId, @JwtAuthed User user) {
+        return sprintService.getSprintsOnPage(page, projectId, user);
     }
 
     @Override
     @PatchMapping(value = UPDATE_SPRINTS_NAME)
-    public SprintResponse updateSprintsName(@RequestParam String name, @RequestParam long sprintId) {
-        return sprintService.updateSprintsName(name, sprintId);
+    public SprintResponse updateSprintsName(@RequestParam String name, @RequestParam long sprintId, @JwtAuthed User user) {
+        return sprintService.updateSprintsName(name, sprintId, user);
     }
 
     @Override
     @PatchMapping(value = UPDATE_SPRINTS_DESCRIPTION)
-    public SprintResponse updateSprintsDescription(@RequestParam String description, @RequestParam long sprintId) {
-        return sprintService.updateSprintsDescription(description, sprintId);
+    public SprintResponse updateSprintsDescription(@RequestParam String description, @RequestParam long sprintId, @JwtAuthed User user) {
+        return sprintService.updateSprintsDescription(description, sprintId, user);
     }
 
     @Override
     @PatchMapping(value = UPDATE_SPRINTS_START_DATE)
-    public SprintResponse updateSprintsStartDate(@RequestParam LocalDate startDate, @RequestParam long sprintId) {
-        return sprintService.updateSprintsStartDate(startDate, sprintId);
+    public SprintResponse updateSprintsStartDate(@RequestParam LocalDate startDate, @RequestParam long sprintId, @JwtAuthed User user) {
+        return sprintService.updateSprintsStartDate(startDate, sprintId, user);
     }
 
     @Override
     @PatchMapping(value = UPDATE_SPRINTS_END_DATE)
-    public SprintResponse updateSprintsEndDate(@RequestParam LocalDate endDate, @RequestParam long sprintId) {
-        return sprintService.updateSprintsEndDate(endDate, sprintId);
+    public SprintResponse updateSprintsEndDate(@RequestParam LocalDate endDate, @RequestParam long sprintId, @JwtAuthed User user) {
+        return sprintService.updateSprintsEndDate(endDate, sprintId, user);
     }
 
     @Override
     @DeleteMapping(value = DELETE_SPRINT)
-    public SprintResponse deleteSprint(@RequestParam long sprintId) {
-        return sprintService.deleteSprint(sprintId);
+    public SprintResponse deleteSprint(@RequestParam long sprintId, @JwtAuthed User user) {
+        return sprintService.deleteSprint(sprintId, user);
     }
 
 }

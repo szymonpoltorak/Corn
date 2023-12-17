@@ -27,7 +27,10 @@ public class SprintServiceImpl implements SprintService {
     private final SprintMapper sprintMapper;
 
     @Override
-    public final SprintResponse addNewSprint(String name, LocalDate startDate, LocalDate endDate, String description) {
+    public final SprintResponse addNewSprint(String name, LocalDate startDate, LocalDate endDate, String description, User user) {
+
+        //auth user
+
         Sprint sprint = Sprint
                 .builder()
                 .sprintName(name)
@@ -50,6 +53,8 @@ public class SprintServiceImpl implements SprintService {
     public final SprintResponse getSprintById(long sprintId, User user) {
         log.info("Getting sprint with id: {} for user: {}", sprintId, user);
 
+        //auth user
+
         Sprint sprint = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
         log.info("Sprint found : {}", sprint);
@@ -58,19 +63,23 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final List<SprintResponse> getSprintsOnPage(int page, User user) {
-        log.info("Getting sprints on page: {} for user: {}", page, user);
+    public final List<SprintResponse> getSprintsOnPage(int page, long projectId, User user) {
+        log.info("Getting sprints in project {} on page: {} for user: {}", projectId, page, user);
+
+        //auth user
 
         Pageable pageable = PageRequest.of(page, SPRINTS_PER_PAGE);
-        Page<Sprint> sprints = sprintRepository.findAllByOwnerOrderByName(user, pageable);
+        Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, pageable);
         log.info("Sprints found on page : {}", sprints.getTotalElements());
 
         return sprints.map(sprintMapper::toSprintResponse).toList();
     }
 
     @Override
-    public final SprintResponse updateSprintsName(String name, long sprintId) {
+    public final SprintResponse updateSprintsName(String name, long sprintId, User user) {
         log.info("Updating sprint with id: {} name to: {}", sprintId, name);
+
+        //auth user
 
         Sprint sprintToUpdate = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
@@ -84,8 +93,10 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse updateSprintsDescription(String description, long sprintId) {
+    public final SprintResponse updateSprintsDescription(String description, long sprintId, User user) {
         log.info("Updating sprint with id: {} description to: {}", sprintId, description);
+
+        //auth user
 
         Sprint sprintToUpdate = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
@@ -99,8 +110,10 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse updateSprintsStartDate(LocalDate startDate, long sprintId) {
+    public final SprintResponse updateSprintsStartDate(LocalDate startDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} startDate to: {}", sprintId, startDate);
+
+        //auth user
 
         Sprint sprintToUpdate = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
@@ -118,8 +131,10 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse updateSprintsEndDate(LocalDate endDate, long sprintId) {
+    public final SprintResponse updateSprintsEndDate(LocalDate endDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} endDate to: {}", sprintId, endDate);
+
+        //auth user
 
         Sprint sprintToUpdate = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
@@ -137,8 +152,10 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse deleteSprint(long sprintId) {
+    public final SprintResponse deleteSprint(long sprintId, User user) {
         log.info("Deleting sprint with id: {}", sprintId);
+
+        //auth user
 
         Sprint sprintToDelete = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
