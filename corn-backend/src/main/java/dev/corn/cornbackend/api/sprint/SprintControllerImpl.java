@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.sprint;
 
+import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintController;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,9 +38,9 @@ public class SprintControllerImpl implements SprintController {
 
     @Override
     @PostMapping(value = ADD_SPRINT)
-    public SprintResponse addNewSprint(@RequestParam String name, @RequestParam LocalDate startDate,
-                                       @RequestParam LocalDate endDate, @RequestParam String description) {
-        return sprintService.addNewSprint(name, startDate, endDate, description);
+    public SprintResponse addNewSprint(@RequestBody SprintRequest sprintRequest) {
+        return sprintService.addNewSprint(sprintRequest.name(), sprintRequest.startDate(),
+                sprintRequest.endDate(), sprintRequest.description());
     }
 
     @Override

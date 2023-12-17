@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.api.sprint;
 
 
+import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
@@ -41,8 +42,7 @@ class SprintControllerTest {
                 ADD_SPRINT_DATA.endDate(), ADD_SPRINT_DATA.description()))
                 .thenReturn(expected);
 
-        SprintResponse actual = sprintController.addNewSprint(ADD_SPRINT_DATA.name(), ADD_SPRINT_DATA.startDate(),
-                ADD_SPRINT_DATA.endDate(), ADD_SPRINT_DATA.description());
+        SprintResponse actual = sprintController.addNewSprint(ADD_SPRINT_DATA.asSprintRequest());
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
