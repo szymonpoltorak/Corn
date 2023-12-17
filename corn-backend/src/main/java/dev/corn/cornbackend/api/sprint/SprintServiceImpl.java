@@ -106,7 +106,7 @@ public class SprintServiceImpl implements SprintService {
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
         log.info("Found sprint to update: {}", sprintToUpdate);
 
-        if (sprintToUpdate.getSprintEndDate().isBefore(startDate)) {
+        if (sprintToUpdate.isEndBefore(startDate)) {
             throw new SprintEndDateMustBeAfterStartDate(startDate, sprintToUpdate.getSprintEndDate());
         }
 
@@ -125,7 +125,7 @@ public class SprintServiceImpl implements SprintService {
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
         log.info("Found sprint to update: {}", sprintToUpdate);
 
-        if (endDate.isBefore(sprintToUpdate.getSprintStartDate())) {
+        if (sprintToUpdate.isStartAfter(endDate)) {
             throw new SprintEndDateMustBeAfterStartDate(sprintToUpdate.getSprintStartDate(), endDate);
         }
 

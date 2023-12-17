@@ -15,10 +15,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = LocalValidatorFactoryBean.class)
 class SprintTest {
@@ -313,6 +310,91 @@ class SprintTest {
         // then
         assertEquals(0, violations.size(),
                 "Should return no violations");
+    }
+
+    @Test
+    void givenSprintWithStartDateInPast_whenIsStartBeforeFutureDate_thenReturnsTrue() {
+        // Given
+        Sprint sprint = Sprint.builder()
+                .sprintStartDate(LocalDate.now().minusDays(1))
+                .build();
+
+        // When
+        boolean result = sprint.isStartBefore(LocalDate.now().plusDays(1));
+
+        // Then
+        assertTrue(result);
+    }
+
+    @Test
+    void givenSprintWithStartDateInFuture_whenIsStartBeforePastDate_thenReturnsFalse() {
+        // Given
+        Sprint sprint = Sprint.builder()
+                .sprintStartDate(LocalDate.now().plusDays(1))
+                .build();
+
+        // When
+        boolean result = sprint.isStartBefore(LocalDate.now().minusDays(1));
+
+        // Then
+        assertFalse(result);
+    }
+
+    @Test
+    void givenSprintWithStartDateInPast_whenIsStartAfterFutureDate_thenReturnsFalse() {
+        // Given
+        Sprint sprint = Sprint.builder()
+                .sprintStartDate(LocalDate.now().minusDays(1))
+                .build();
+
+        // When
+        boolean result = sprint.isStartAfter(LocalDate.now().plusDays(1));
+
+        // Then
+        assertFalse(result);
+    }
+
+    @Test
+    void givenSprintWithStartDateInFuture_whenIsStartAfterPastDate_thenReturnsTrue() {
+        // Given
+        Sprint sprint = Sprint.builder()
+                .sprintStartDate(LocalDate.now().plusDays(1))
+                .build();
+
+        // When
+        boolean result = sprint.isStartAfter(LocalDate.now().minusDays(1));
+
+        // Then
+        assertTrue(result);
+    }
+
+
+    @Test
+    void givenSprintWithEndDateInPast_whenIsEndAfterFutureDate_thenReturnsTrue() {
+        // Given
+        Sprint sprint = Sprint.builder()
+                .sprintEndDate(LocalDate.now().minusDays(1))
+                .build();
+
+        // When
+        boolean result = sprint.isEndAfter(LocalDate.now().plusDays(1));
+
+        // Then
+        assertFalse(result);
+    }
+
+    @Test
+    void givenSprintWithEndDateInFuture_whenIsEndAfterPastDate_thenReturnsFalse() {
+        // Given
+        Sprint sprint = Sprint.builder()
+                .sprintEndDate(LocalDate.now().plusDays(1))
+                .build();
+
+        // When
+        boolean result = sprint.isEndAfter(LocalDate.now().minusDays(1));
+
+        // Then
+        assertTrue(result);
     }
 
     private Sprint createSampleSprint() {

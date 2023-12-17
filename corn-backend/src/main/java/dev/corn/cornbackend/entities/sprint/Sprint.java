@@ -94,6 +94,22 @@ public class Sprint implements Jsonable {
         return result;
     }
 
+    public boolean isStartBefore(LocalDate date) {
+        return sprintStartDate.isBefore(date);
+    }
+
+    public boolean isStartAfter(LocalDate date) {
+        return sprintStartDate.isAfter(date);
+    }
+
+    public boolean isEndBefore(LocalDate date) {
+        return sprintEndDate.isBefore(date);
+    }
+
+    public boolean isEndAfter(LocalDate date) {
+        return sprintEndDate.isAfter(date);
+    }
+
     @Override
     public final String toJson() {
         return JsonMapper.toJson(this);
