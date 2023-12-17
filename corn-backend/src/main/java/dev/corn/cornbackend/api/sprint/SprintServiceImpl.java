@@ -26,6 +26,7 @@ public class SprintServiceImpl implements SprintService {
     private final SprintRepository sprintRepository;
     private final SprintMapper sprintMapper;
 
+    @Override
     public final SprintResponse addNewSprint(String name, LocalDate startDate, LocalDate endDate, String description) {
         Sprint sprint = Sprint
                 .builder()
@@ -45,6 +46,7 @@ public class SprintServiceImpl implements SprintService {
         return sprintMapper.toSprintResponse(newSprint);
     }
 
+    @Override
     public final SprintResponse getSprintById(long sprintId, User user) {
         log.info("Getting sprint with id: {} for user: {}", sprintId, user);
 
@@ -55,6 +57,7 @@ public class SprintServiceImpl implements SprintService {
         return sprintMapper.toSprintResponse(sprint);
     }
 
+    @Override
     public final List<SprintResponse> getSprintsOnPage(int page, User user) {
         log.info("Getting sprints on page: {} for user: {}", page, user);
 
@@ -65,6 +68,7 @@ public class SprintServiceImpl implements SprintService {
         return sprints.map(sprintMapper::toSprintResponse).toList();
     }
 
+    @Override
     public final SprintResponse updateSprintsName(String name, long sprintId) {
         log.info("Updating sprint with id: {} name to: {}", sprintId, name);
 
@@ -79,6 +83,7 @@ public class SprintServiceImpl implements SprintService {
         return sprintMapper.toSprintResponse(updatedSprint);
     }
 
+    @Override
     public final SprintResponse updateSprintsDescription(String description, long sprintId) {
         log.info("Updating sprint with id: {} description to: {}", sprintId, description);
 
@@ -93,6 +98,7 @@ public class SprintServiceImpl implements SprintService {
         return sprintMapper.toSprintResponse(updatedSprint);
     }
 
+    @Override
     public final SprintResponse updateSprintsStartDate(LocalDate startDate, long sprintId) {
         log.info("Updating sprint with id: {} startDate to: {}", sprintId, startDate);
 
@@ -111,6 +117,7 @@ public class SprintServiceImpl implements SprintService {
         return sprintMapper.toSprintResponse(updatedSprint);
     }
 
+    @Override
     public final SprintResponse updateSprintsEndDate(LocalDate endDate, long sprintId) {
         log.info("Updating sprint with id: {} endDate to: {}", sprintId, endDate);
 
@@ -129,6 +136,7 @@ public class SprintServiceImpl implements SprintService {
         return sprintMapper.toSprintResponse(sprintToUpdate);
     }
 
+    @Override
     public final SprintResponse deleteSprint(long sprintId) {
         log.info("Deleting sprint with id: {}", sprintId);
 
