@@ -1,6 +1,10 @@
 package dev.corn.cornbackend.api.sprint.constants;
 
-public class SprintMappings {
+public final class SprintMappings {
+
+    private SprintMappings() {
+    }
+
     public static final String SPRINT_API_ENDPOINT = "/api/v1/sprint";
 
     public static final String GET_SPRINTS_ON_PAGE = "/getSprintsOnPage";
