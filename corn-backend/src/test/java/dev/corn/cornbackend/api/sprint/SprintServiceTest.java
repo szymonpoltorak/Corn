@@ -54,10 +54,7 @@ public class SprintServiceTest {
                 .thenReturn(expected);
 
         SprintResponse actual = sprintService.addNewSprint(
-                ADD_SPRINT_DATA.name(),
-                ADD_SPRINT_DATA.startDate(),
-                ADD_SPRINT_DATA.endDate(),
-                ADD_SPRINT_DATA.description(),
+                ADD_SPRINT_DATA.asSprintRequest(),
                 ADD_SPRINT_DATA.project().getOwner()
         );
 
@@ -79,10 +76,7 @@ public class SprintServiceTest {
 
         // then
         assertThrows(SprintEndDateMustBeAfterStartDate.class, () -> sprintService.addNewSprint(
-                ADD_SPRINT_DATA.name(),
-                ADD_SPRINT_DATA.endDate(),
-                ADD_SPRINT_DATA.startDate(),
-                ADD_SPRINT_DATA.description(),
+                ADD_SPRINT_DATA.asSprintRequest(),
                 ADD_SPRINT_DATA.project().getOwner()
         ), "Should throw SprintDoesNotExistException");
     }

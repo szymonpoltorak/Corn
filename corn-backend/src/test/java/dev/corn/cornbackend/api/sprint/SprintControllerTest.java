@@ -38,8 +38,7 @@ class SprintControllerTest {
         SprintResponse expected = MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint());
 
         // when
-        when(sprintService.addNewSprint(ADD_SPRINT_DATA.name(), ADD_SPRINT_DATA.startDate(),
-                ADD_SPRINT_DATA.endDate(), ADD_SPRINT_DATA.description(), ADD_SPRINT_DATA.project().getOwner()))
+        when(sprintService.addNewSprint(ADD_SPRINT_DATA.asSprintRequest(), ADD_SPRINT_DATA.project().getOwner()))
                 .thenReturn(expected);
 
         SprintResponse actual = sprintController.addNewSprint(ADD_SPRINT_DATA.asSprintRequest(), ADD_SPRINT_DATA.project().getOwner());
