@@ -39,8 +39,7 @@ public class SprintControllerImpl implements SprintController {
     @Override
     @PostMapping(value = ADD_SPRINT)
     public SprintResponse addNewSprint(@RequestBody SprintRequest sprintRequest, @JwtAuthed User user) {
-        return sprintService.addNewSprint(sprintRequest.name(), sprintRequest.startDate(),
-                sprintRequest.endDate(), sprintRequest.description(), user);
+        return sprintService.addNewSprint(sprintRequest, user);
     }
 
     @Override

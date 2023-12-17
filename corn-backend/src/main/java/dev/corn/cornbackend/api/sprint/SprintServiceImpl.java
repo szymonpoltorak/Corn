@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.sprint;
 
+import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
 import dev.corn.cornbackend.entities.sprint.Sprint;
@@ -27,20 +28,19 @@ public class SprintServiceImpl implements SprintService {
     private final SprintMapper sprintMapper;
 
     @Override
-    public final SprintResponse addNewSprint(String name, LocalDate startDate, LocalDate endDate, String description, User user) {
-
+    public final SprintResponse addNewSprint(SprintRequest sprintRequest, User user) {
         //auth user
 
+        if (sprintRequest.endDate().isBefore(sprintRequest.startDate())) {
+            throw new SprintEndDateMustBeAfterStartDate(sprintRequest.startDate(), sprintRequest.endDate());
+        }
         Sprint sprint = Sprint
                 .builder()
-                .sprintName(name)
-                .sprintStartDate(startDate)
-                .sprintEndDate(endDate)
-                .sprintDescription(description)
+                .sprintName(sprintRequest.name())
+                .sprintStartDate(sprintRequest.startDate())
+                .sprintEndDate(sprintRequest.endDate())
+                .sprintDescription(sprintRequest.description())
                 .build();
-        if (endDate.isBefore(startDate)) {
-            throw new SprintEndDateMustBeAfterStartDate(startDate, endDate);
-        }
         log.info("Instantiated sprint: {}", sprint);
 
         Sprint newSprint = sprintRepository.save(sprint);

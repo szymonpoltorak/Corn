@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.sprint.interfaces;
 
+import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.user.User;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public interface SprintService {
 
-    SprintResponse addNewSprint(String name, LocalDate startDate, LocalDate endDate, String description, User user);
+    SprintResponse addNewSprint(SprintRequest sprintRequest, User user);
 
     SprintResponse getSprintById(long sprintId, User user);
 
