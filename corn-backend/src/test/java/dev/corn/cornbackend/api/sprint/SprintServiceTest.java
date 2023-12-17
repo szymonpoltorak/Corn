@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.sprint;
 
+import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
@@ -75,10 +76,19 @@ public class SprintServiceTest {
                 .thenReturn(expected);
 
         // then
-        assertThrows(SprintEndDateMustBeAfterStartDate.class, () -> sprintService.addNewSprint(
-                ADD_SPRINT_DATA.asSprintRequest(),
-                ADD_SPRINT_DATA.project().getOwner()
-        ), "Should throw SprintDoesNotExistException");
+        assertThrows(SprintEndDateMustBeAfterStartDate.class, () -> {
+            SprintRequest sprintRequest = ADD_SPRINT_DATA.asSprintRequest();
+            sprintRequest = SprintRequest.builder()
+                    .name(sprintRequest.name())
+                    .startDate(sprintRequest.endDate())
+                    .endDate(sprintRequest.startDate())
+                    .description(sprintRequest.description())
+                    .build();
+            sprintService.addNewSprint(
+                    sprintRequest,
+                    ADD_SPRINT_DATA.project().getOwner()
+            );
+        }, "Should throw SprintDoesNotExistException");
     }
 
     @Test
