@@ -22,7 +22,21 @@
         "lib": [
             "ES2022",
             "dom"
-        ]
+        ],
+        "paths": {
+            "@styles/*": [
+                "./src/app/styles/*"
+            ],
+            "@environments/*": [
+                "./src/environments/*"
+            ],
+            "@enums/*": [
+                "./src/app/core/enums/*"
+            ],
+            "@core/*": [
+                "./src/app/core/*"
+            ]
+        }
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false,
