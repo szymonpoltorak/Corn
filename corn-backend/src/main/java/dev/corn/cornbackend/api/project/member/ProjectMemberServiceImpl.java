@@ -82,8 +82,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         User user = getUserFromRepository(username);
         ProjectMember projectMember = projectMemberRepository
                 .findByProjectAndUser(getProjectFromRepository(projectId), user)
-                .orElseThrow(() -> new ProjectMemberDoesNotExistException(HttpStatus.NOT_FOUND,
-                        String.format("Project member of id username %s in project %s does not exist", username, projectId))
+                .orElseThrow(() -> new ProjectMemberDoesNotExistException(String.format("Project member of id username %s in project %s does not exist", username, projectId))
                 );
         log.info("Found projectMember: {}", projectMember);
 
@@ -101,8 +100,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     private Project getProjectFromRepository(long projectId) {
         return projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectDoesNotExistException(HttpStatus.NOT_FOUND,
-                        String.format("Project with projectId: %d does not exist", projectId))
+                .orElseThrow(() -> new ProjectDoesNotExistException(String.format("Project with projectId: %d does not exist", projectId))
                 );
     }
 }
