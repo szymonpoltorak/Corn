@@ -5,12 +5,12 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
+import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.ItemStatus;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
-import dev.corn.cornbackend.entities.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.test.backlog.item.data.AddBacklogItemTestData;
 import dev.corn.cornbackend.test.backlog.item.data.BacklogItemDetailsTestData;
@@ -142,7 +142,15 @@ public final class BacklogItemTestDataBuilder {
                 .comments(Collections.emptyList())
                 .build();
 
-        SprintResponse sprintResponse = new SprintResponse();
+        SprintResponse sprintResponse = SprintResponse.builder()
+                .sprintId(sprint.getSprintId())
+                .projectId(sprint.getProject().getProjectId())
+                .sprintName(sprint.getSprintName())
+                .sprintDescription(sprint.getSprintDescription())
+                .sprintStartDate(sprint.getSprintStartDate())
+                .sprintEndDate(sprint.getSprintEndDate())
+                .build();
+
         ProjectResponse projectResponse = ProjectResponse.builder()
                 .sprints(List.of(sprintResponse))
                 .name(project.getName())
