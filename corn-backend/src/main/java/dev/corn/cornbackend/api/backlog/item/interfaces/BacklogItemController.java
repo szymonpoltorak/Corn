@@ -8,17 +8,17 @@ import java.util.List;
 
 public interface BacklogItemController {
 
-    public BacklogItemResponse getById(long id);
+    BacklogItemResponse getById(long id);
 
-    public BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest);
+    BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest);
 
-    public BacklogItemResponse deleteById(long id);
+    BacklogItemResponse deleteById(long id);
 
-    public BacklogItemResponse create(BacklogItemRequest backlogItemRequest);
+    BacklogItemResponse create(BacklogItemRequest backlogItemRequest);
 
-    public List<BacklogItemResponse> getBySprintId(long sprintId);
+    List<BacklogItemResponse> getBySprintId(long sprintId);
 
-    public List<BacklogItemResponse> getByProjectId(long projectId);
+    List<BacklogItemResponse> getByProjectId(long projectId);
 
-    public BacklogItemDetails getDetailsById(long id);
+    BacklogItemDetails getDetailsById(long id);
 }

@@ -35,44 +35,44 @@ public class BacklogItemControllerImpl implements BacklogItemController {
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_MAPPING)
-    public BacklogItemResponse getById(@RequestParam long id) {
+    public final BacklogItemResponse getById(@RequestParam long id) {
         return backlogItemService.getById(id);
     }
 
     @Override
     @PutMapping(BACKLOG_ITEM_UPDATE_MAPPING)
-    public BacklogItemResponse update(@RequestParam long id,
-                                      @RequestBody BacklogItemRequest backlogItemRequest) {
+    public final BacklogItemResponse update(@RequestParam long id,
+                                            @RequestBody BacklogItemRequest backlogItemRequest) {
         return backlogItemService.update(id, backlogItemRequest);
     }
 
     @Override
     @DeleteMapping(BACKLOG_ITEM_DELETE_MAPPING)
-    public BacklogItemResponse deleteById(@RequestParam long id) {
+    public final BacklogItemResponse deleteById(@RequestParam long id) {
         return backlogItemService.deleteById(id);
     }
 
     @Override
     @PostMapping(BACKLOG_ITEM_ADD_MAPPING)
-    public BacklogItemResponse create(@RequestBody BacklogItemRequest backlogItemRequest) {
+    public final BacklogItemResponse create(@RequestBody BacklogItemRequest backlogItemRequest) {
         return backlogItemService.create(backlogItemRequest);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_BY_SPRINT_MAPPING)
-    public List<BacklogItemResponse> getBySprintId(@RequestParam long sprintId) {
+    public final List<BacklogItemResponse> getBySprintId(@RequestParam long sprintId) {
         return backlogItemService.getBySprintId(sprintId);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_BY_PROJECT_MAPPING)
-    public List<BacklogItemResponse> getByProjectId(@RequestParam long projectId) {
+    public final List<BacklogItemResponse> getByProjectId(@RequestParam long projectId) {
         return backlogItemService.getByProjectId(projectId);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_DETAILS_MAPPING)
-    public BacklogItemDetails getDetailsById(@RequestParam long id) {
+    public final BacklogItemDetails getDetailsById(@RequestParam long id) {
         return backlogItemService.getDetailsById(id);
     }
 }

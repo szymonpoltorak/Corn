@@ -4,6 +4,7 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
+import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.ItemStatus;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemMapper;
@@ -22,10 +23,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM_NOT_FOUND_MESSAGE;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.GETTING_BY_ID;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_MEMBER;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_MEMBER_NOT_FOUND_MESSAGE;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_NOT_FOUND_MESSAGE;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.RETURNING_BACKLOG_ITEMS_OF_QUANTITY;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.RETURNING_RESPONSE_OF;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.SAVING_AND_RETURNING_RESPONSE_OF;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.SPRINT;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.SPRINT_NOT_FOUND_MESSAGE;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,21 +50,8 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     private final ProjectMemberRepository projectMemberRepository;
     private final BacklogItemMapper backlogItemMapper;
 
-    private static final String GETTING_BY_ID = "Getting {} by id: {}";
-    private static final String BACKLOG_ITEM_NOT_FOUND_MESSAGE = "Backlog item not found";
-    private static final String RETURNING_RESPONSE_OF = "Returning response of: {}";
-    private static final String PROJECT_MEMBER_NOT_FOUND_MESSAGE = "Project member not found";
-    private static final String SPRINT_NOT_FOUND_MESSAGE = "Sprint not found";
-    private static final String PROJECT_NOT_FOUND_MESSAGE = "Project not found";
-    private static final String BACKLOG_ITEM = "BacklogItem";
-    private static final String PROJECT_MEMBER = "ProjectMember";
-    private static final String SPRINT = "Sprint";
-    private static final String PROJECT = "Project";
-    private static final String RETURNING_BACKLOG_ITEMS_OF_QUANTITY = "Returning backlog items of quantity: {}";
-    private static final String SAVING_AND_RETURNING_RESPONSE_OF = "Saving and returning response of: {}";
-
     @Override
-    public BacklogItemResponse getById(long id) {
+    public final BacklogItemResponse getById(long id) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM,id);
 
         BacklogItem item = backlogItemRepository.findById(id)
@@ -63,7 +63,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest) {
+    public final BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findById(id)
@@ -84,17 +84,8 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         Project project = projectRepository.findById(backlogItemRequest.projectId())
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        BacklogItem newItem = BacklogItem
-                .builder()
-                .title(backlogItemRequest.title())
-                .description(backlogItemRequest.description())
-                .comments(item.getComments())
-                .status(ItemStatus.TODO)
-                .assignee(assignee)
-                .sprint(sprint)
-                .backlogItemId(id)
-                .project(project)
-                .build();
+        BacklogItem newItem = buildUpdatedBacklogItem(id, backlogItemRequest.title(), backlogItemRequest.description(),
+                assignee, sprint, project, item.getStatus(), item.getComments());
 
         log.info(SAVING_AND_RETURNING_RESPONSE_OF, newItem);
 
@@ -104,7 +95,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public BacklogItemResponse deleteById(long id) {
+    public final BacklogItemResponse deleteById(long id) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findById(id)
@@ -118,7 +109,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public BacklogItemResponse create(BacklogItemRequest backlogItemRequest) {
+    public final BacklogItemResponse create(BacklogItemRequest backlogItemRequest) {
         log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
 
         ProjectMember assignee = projectMemberRepository.findById(backlogItemRequest.projectMemberId())
@@ -134,16 +125,8 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         Project project = projectRepository.findById(backlogItemRequest.projectId())
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        BacklogItem item = BacklogItem
-                .builder()
-                .title(backlogItemRequest.title())
-                .description(backlogItemRequest.description())
-                .comments(Collections.emptyList())
-                .status(ItemStatus.TODO)
-                .assignee(assignee)
-                .sprint(sprint)
-                .project(project)
-                .build();
+        BacklogItem item = buildNewBacklogItem(backlogItemRequest.title(), backlogItemRequest.description(),
+                assignee, sprint, project);
 
         log.info(SAVING_AND_RETURNING_RESPONSE_OF, item);
 
@@ -153,7 +136,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public List<BacklogItemResponse> getBySprintId(long sprintId) {
+    public final List<BacklogItemResponse> getBySprintId(long sprintId) {
         log.info(GETTING_BY_ID, SPRINT, sprintId);
 
         Sprint sprint = sprintRepository.findById(sprintId)
@@ -171,7 +154,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public List<BacklogItemResponse> getByProjectId(long projectId) {
+    public final List<BacklogItemResponse> getByProjectId(long projectId) {
         log.info(GETTING_BY_ID, PROJECT, projectId);
 
         Project project = projectRepository.findById(projectId)
@@ -189,7 +172,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public BacklogItemDetails getDetailsById(long id) {
+    public final BacklogItemDetails getDetailsById(long id) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem backlogItem = backlogItemRepository.findById(id)
@@ -198,5 +181,32 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         log.info(RETURNING_RESPONSE_OF, backlogItem);
 
         return backlogItemMapper.backlogItemToBacklogItemDetails(backlogItem);
+    }
+
+    private BacklogItem buildNewBacklogItem(String title, String description, ProjectMember assignee,
+                                            Sprint sprint, Project project) {
+        return BacklogItem.builder()
+                .title(title)
+                .description(description)
+                .comments(Collections.emptyList())
+                .status(ItemStatus.TODO)
+                .assignee(assignee)
+                .sprint(sprint)
+                .project(project)
+                .build();
+    }
+
+    private BacklogItem buildUpdatedBacklogItem(long id, String title, String description, ProjectMember assignee,
+                                                Sprint sprint, Project project, ItemStatus status, List<BacklogItemComment> comments) {
+        return BacklogItem.builder()
+                .backlogItemId(id)
+                .title(title)
+                .description(description)
+                .comments(comments)
+                .status(status)
+                .assignee(assignee)
+                .sprint(sprint)
+                .project(project)
+                .build();
     }
 }

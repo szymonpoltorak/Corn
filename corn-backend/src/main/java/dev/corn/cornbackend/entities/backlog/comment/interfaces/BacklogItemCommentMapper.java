@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface BacklogItemCommentMapper {
 
-    public BacklogItemCommentResponse toBacklogItemCommentResponse(BacklogItemComment backlogItemComment);
+    BacklogItemCommentResponse toBacklogItemCommentResponse(BacklogItemComment backlogItemComment);
 }

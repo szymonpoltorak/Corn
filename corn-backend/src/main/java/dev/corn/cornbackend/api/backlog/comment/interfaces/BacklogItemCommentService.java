@@ -13,8 +13,4 @@ public interface BacklogItemCommentService {
     BacklogItemCommentResponse deleteComment(long commentId);
 
     BacklogItemCommentResponse getComment(long commentId);
-
-
-
-
 }

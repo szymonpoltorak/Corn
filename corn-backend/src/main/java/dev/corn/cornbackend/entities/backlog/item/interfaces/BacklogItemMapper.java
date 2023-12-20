@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = SprintMapper.class)
 public interface BacklogItemMapper {
 
-    public BacklogItemResponse backlogItemToBacklogItemResponse(BacklogItem backlogItem);
+    BacklogItemResponse backlogItemToBacklogItemResponse(BacklogItem backlogItem);
 
     @Mapping(target = "sprint", source = "sprint")
-    public BacklogItemDetails backlogItemToBacklogItemDetails(BacklogItem backlogItem);
+    BacklogItemDetails backlogItemToBacklogItemDetails(BacklogItem backlogItem);
 }

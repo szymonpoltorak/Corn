@@ -39,7 +39,7 @@ public class BacklogItemCommentControllerImpl implements BacklogItemCommentContr
 
     @Override
     @PutMapping(BACKLOG_ITEM_COMMENT_UPDATE_MAPPING)
-    public BacklogItemCommentResponse updateComment(
+    public final BacklogItemCommentResponse updateComment(
             @RequestParam long commentId,
             @RequestBody String comment) {
         return backlogItemCommentService.updateComment(commentId, comment);
@@ -47,13 +47,13 @@ public class BacklogItemCommentControllerImpl implements BacklogItemCommentContr
 
     @Override
     @DeleteMapping(BACKLOG_ITEM_COMMENT_DELETE_MAPPING)
-    public BacklogItemCommentResponse deleteComment(@RequestParam long commentId) {
+    public final BacklogItemCommentResponse deleteComment(@RequestParam long commentId) {
         return backlogItemCommentService.deleteComment(commentId);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_COMMENT_GET_MAPPING)
-    public BacklogItemCommentResponse getComment(@RequestParam long commentId) {
+    public final BacklogItemCommentResponse getComment(@RequestParam long commentId) {
         return backlogItemCommentService.getComment(commentId);
     }
 
