@@ -73,6 +73,6 @@ public class BacklogItemControllerImpl implements BacklogItemController {
     @Override
     @GetMapping(BACKLOG_ITEM_GET_DETAILS_MAPPING)
     public BacklogItemDetails getDetailsById(@RequestParam long id) {
-        return null;
+        return backlogItemService.getDetailsById(id);
     }
 }

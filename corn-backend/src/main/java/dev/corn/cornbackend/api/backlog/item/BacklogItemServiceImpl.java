@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.backlog.item;
 
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
@@ -22,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -135,7 +138,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
                 .builder()
                 .title(backlogItemRequest.title())
                 .description(backlogItemRequest.description())
-                .comments(new ArrayList<>())
+                .comments(Collections.emptyList())
                 .status(ItemStatus.TODO)
                 .assignee(assignee)
                 .sprint(sprint)
@@ -183,5 +186,17 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         return items.stream()
                 .map(backlogItemMapper::backlogItemToBacklogItemResponse)
                 .toList();
+    }
+
+    @Override
+    public BacklogItemDetails getDetailsById(long id) {
+        log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
+
+        BacklogItem backlogItem = backlogItemRepository.findById(id)
+                .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+
+        log.info(RETURNING_RESPONSE_OF, backlogItem);
+
+        return backlogItemMapper.backlogItemToBacklogItemDetails(backlogItem);
     }
 }

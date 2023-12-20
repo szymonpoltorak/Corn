@@ -7,9 +7,11 @@ import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = ProjectRepository.class)
+@ExtendWith(MockitoExtension.class)
 class ProjectServiceTest {
     static final String SHOULD_THROW_PROJECT_DOES_NOT_EXIST_EXCEPTION = "Should throw ProjectDoesNotExistException";
     static final String PROJECT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED = "ProjectResponse should be equal to expected";

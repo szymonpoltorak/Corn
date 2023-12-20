@@ -6,5 +6,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface SprintMapper {
+
     SprintResponse toSprintResponse(Sprint sprint);
 }
