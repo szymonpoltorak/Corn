@@ -19,7 +19,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -33,10 +32,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements Jsonable, ServiceUser {
-    @Serial
-    private static final long serialVersionUID = 1236185595152412287L;
-    private static final String DEV_CORN_CORNBACKEND_ENTITIES_USER_USER = "dev.corn.cornbackend.entities.user.User";
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userId;
@@ -76,8 +71,8 @@ public class User implements Jsonable, ServiceUser {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    public final Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.unmodifiableCollection(authorities);
     }
 
     @Override
@@ -103,15 +98,5 @@ public class User implements Jsonable, ServiceUser {
         result = 31 * result + (username != null ? username.hashCode() : 0);
 
         return result;
-    }
-
-    @Serial
-    private void readObject(java.io.ObjectInputStream in) throws ClassNotFoundException, java.io.NotSerializableException {
-        throw new java.io.NotSerializableException(DEV_CORN_CORNBACKEND_ENTITIES_USER_USER);
-    }
-
-    @Serial
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.NotSerializableException {
-        throw new java.io.NotSerializableException(DEV_CORN_CORNBACKEND_ENTITIES_USER_USER);
     }
 }
