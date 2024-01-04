@@ -15,6 +15,7 @@ import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintRepository;
+import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundException;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
@@ -51,10 +52,10 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     private final BacklogItemMapper backlogItemMapper;
 
     @Override
-    public final BacklogItemResponse getById(long id) {
+    public final BacklogItemResponse getById(long id, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM,id);
 
-        BacklogItem item = backlogItemRepository.findById(id)
+        BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info(RETURNING_RESPONSE_OF, item);
@@ -63,26 +64,26 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest) {
+    public final BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
-        BacklogItem item = backlogItemRepository.findById(id)
+        BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+
+        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
+
+        Project project = projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
         log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
 
-        ProjectMember assignee = projectMemberRepository.findById(backlogItemRequest.projectMemberId())
+        ProjectMember assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
                 .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
 
         log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
 
-        Sprint sprint = sprintRepository.findById(backlogItemRequest.sprintId())
+        Sprint sprint = sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), project)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
-
-        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
-
-        Project project = projectRepository.findById(backlogItemRequest.projectId())
-                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
         BacklogItem newItem = buildUpdatedBacklogItem(id, backlogItemRequest.title(), backlogItemRequest.description(),
                 assignee, sprint, project, item.getStatus(), item.getComments());
@@ -95,10 +96,10 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemResponse deleteById(long id) {
+    public final BacklogItemResponse deleteById(long id, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
-        BacklogItem item = backlogItemRepository.findById(id)
+        BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         backlogItemRepository.deleteById(id);
@@ -109,21 +110,22 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemResponse create(BacklogItemRequest backlogItemRequest) {
+    public final BacklogItemResponse create(BacklogItemRequest backlogItemRequest, User user) {
+        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
+
+        Project project = projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
+
         log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
 
-        ProjectMember assignee = projectMemberRepository.findById(backlogItemRequest.projectMemberId())
+        ProjectMember assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
                 .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
 
         log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
 
-        Sprint sprint = sprintRepository.findById(backlogItemRequest.sprintId())
+        Sprint sprint = sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), project)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
-
-        Project project = projectRepository.findById(backlogItemRequest.projectId())
-                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
         BacklogItem item = buildNewBacklogItem(backlogItemRequest.title(), backlogItemRequest.description(),
                 assignee, sprint, project);
@@ -136,10 +138,10 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final List<BacklogItemResponse> getBySprintId(long sprintId) {
+    public final List<BacklogItemResponse> getBySprintId(long sprintId, User user) {
         log.info(GETTING_BY_ID, SPRINT, sprintId);
 
-        Sprint sprint = sprintRepository.findById(sprintId)
+        Sprint sprint = sprintRepository.findByIdWithProjectMember(sprintId, user)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
 
         log.info("Getting backlog items for sprint: {}", sprint);
@@ -154,10 +156,10 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final List<BacklogItemResponse> getByProjectId(long projectId) {
+    public final List<BacklogItemResponse> getByProjectId(long projectId, User user) {
         log.info(GETTING_BY_ID, PROJECT, projectId);
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findByIdWithProjectMember(projectId, user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
         log.info("Getting backlog items for project: {}", project);
@@ -172,10 +174,10 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemDetails getDetailsById(long id) {
+    public final BacklogItemDetails getDetailsById(long id, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
-        BacklogItem backlogItem = backlogItemRepository.findById(id)
+        BacklogItem backlogItem = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info(RETURNING_RESPONSE_OF, backlogItem);

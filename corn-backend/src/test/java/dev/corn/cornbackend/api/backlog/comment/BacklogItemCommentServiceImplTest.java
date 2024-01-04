@@ -4,10 +4,12 @@ import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponse;
 import dev.corn.cornbackend.entities.backlog.comment.interfaces.BacklogItemCommentMapper;
 import dev.corn.cornbackend.entities.backlog.comment.interfaces.BacklogItemCommentRepository;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
+import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.test.backlog.item.comment.BacklogItemCommentTestDataBuilder;
 import dev.corn.cornbackend.test.backlog.item.comment.data.BacklogItemCommentTestData;
 import dev.corn.cornbackend.test.backlog.item.comment.data.UpdateBacklogItemCommentTestData;
 import dev.corn.cornbackend.test.backlog.item.data.UpdateBacklogItemTestData;
+import dev.corn.cornbackend.test.user.UserTestDataBuilder;
 import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundException;
 import dev.corn.cornbackend.utils.exceptions.backlog.item.comment.BacklogItemCommentNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -49,10 +51,13 @@ class BacklogItemCommentServiceImplTest {
         //given
 
         //when
-        when(backlogItemRepository.findById(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentRequest().backlogItemId()))
+        when(backlogItemRepository.findByIdWithProjectMember(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentRequest().backlogItemId(),
+                BACKLOG_ITEM_COMMENT_TEST_DATA.user()))
                 .thenReturn(Optional.of(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment().getBacklogItem()));
+
         when(backlogItemCommentRepository.save(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentToSave()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment());
+
         when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
 
@@ -68,7 +73,8 @@ class BacklogItemCommentServiceImplTest {
         //given
 
         //when
-        when(backlogItemRepository.findById(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentRequest().backlogItemId()))
+        when(backlogItemRepository.findByIdWithProjectMember(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentRequest().backlogItemId(),
+                BACKLOG_ITEM_COMMENT_TEST_DATA.user()))
                 .thenReturn(Optional.empty());
 
         //then
@@ -82,17 +88,19 @@ class BacklogItemCommentServiceImplTest {
         long commentId = 1L;
 
         //when
-        when(backlogItemCommentRepository.findById(commentId))
+        when(backlogItemCommentRepository.findByBacklogItemCommentIdAndUser(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(Optional.of(UPDATE_BACKLOG_ITEM_TEST_DATA.backlogItemComment()));
+
         when(backlogItemCommentRepository.save(UPDATE_BACKLOG_ITEM_TEST_DATA.updatedBacklogItemComment()))
                 .thenReturn(UPDATE_BACKLOG_ITEM_TEST_DATA.updatedBacklogItemComment());
+
         when(backlogItemCommentMapper.toBacklogItemCommentResponse(UPDATE_BACKLOG_ITEM_TEST_DATA.updatedBacklogItemComment()))
                 .thenReturn(UPDATE_BACKLOG_ITEM_TEST_DATA.backlogItemCommentResponse());
 
         BacklogItemCommentResponse expected = UPDATE_BACKLOG_ITEM_TEST_DATA.backlogItemCommentResponse();
 
         //then
-        assertEquals(expected, backlogItemCommentServiceImpl.updateComment(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.newComment()),
+        assertEquals(expected, backlogItemCommentServiceImpl.updateComment(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.newComment(), BACKLOG_ITEM_COMMENT_TEST_DATA.user()),
                 SHOULD_RETURN_CORRECT_COMMENT_RESPONSE);
     }
 
@@ -102,11 +110,14 @@ class BacklogItemCommentServiceImplTest {
         long commentId = 1L;
 
         //when
-        when(backlogItemCommentRepository.findById(commentId))
+        when(backlogItemCommentRepository.findByBacklogItemCommentIdAndUser(commentId, BACKLOG_ITEM_COMMENT_TEST_DATA.user()))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(BacklogItemCommentNotFoundException.class, () -> backlogItemCommentServiceImpl.updateComment(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.newComment()),
+        assertThrows(BacklogItemCommentNotFoundException.class, () ->
+                        backlogItemCommentServiceImpl.updateComment(commentId,
+                                UPDATE_BACKLOG_ITEM_TEST_DATA.newComment(),
+                                BACKLOG_ITEM_COMMENT_TEST_DATA.user()),
                 SHOULD_THROW);
     }
 
@@ -116,15 +127,16 @@ class BacklogItemCommentServiceImplTest {
         long commentId = 1L;
 
         //when
-        when(backlogItemCommentRepository.findById(commentId))
+        when(backlogItemCommentRepository.findByIdWithUserOrOwner(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(Optional.of(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()));
+
         when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
 
         BacklogItemCommentResponse expected = BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse();
 
         //then
-        assertEquals(expected, backlogItemCommentServiceImpl.deleteComment(commentId),
+        assertEquals(expected, backlogItemCommentServiceImpl.deleteComment(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()),
                 SHOULD_RETURN_CORRECT_COMMENT_RESPONSE);
     }
 
@@ -134,11 +146,13 @@ class BacklogItemCommentServiceImplTest {
         long commentId = 1L;
 
         //when
-        when(backlogItemCommentRepository.findById(commentId))
+        when(backlogItemCommentRepository.findByIdWithUserOrOwner(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(BacklogItemCommentNotFoundException.class, () -> backlogItemCommentServiceImpl.deleteComment(commentId),
+        assertThrows(BacklogItemCommentNotFoundException.class, () ->
+                        backlogItemCommentServiceImpl.deleteComment(commentId,
+                                UPDATE_BACKLOG_ITEM_TEST_DATA.user()),
                 SHOULD_THROW);
     }
 
@@ -148,15 +162,17 @@ class BacklogItemCommentServiceImplTest {
         long commentId = 1L;
 
         //when
-        when(backlogItemCommentRepository.findById(commentId))
+        when(backlogItemCommentRepository.findByIdWithProjectMember(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(Optional.of(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()));
+
         when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
 
         BacklogItemCommentResponse expected = BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse();
 
         //then
-        assertEquals(expected, backlogItemCommentServiceImpl.getComment(commentId),
+        assertEquals(expected, backlogItemCommentServiceImpl.getComment(commentId,
+                        UPDATE_BACKLOG_ITEM_TEST_DATA.user()),
                 SHOULD_RETURN_CORRECT_COMMENT_RESPONSE);
     }
 
@@ -166,11 +182,13 @@ class BacklogItemCommentServiceImplTest {
         long commentId = 1L;
 
         //when
-        when(backlogItemCommentRepository.findById(commentId))
+        when(backlogItemCommentRepository.findByIdWithProjectMember(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(BacklogItemCommentNotFoundException.class, () -> backlogItemCommentServiceImpl.getComment(commentId),
+        assertThrows(BacklogItemCommentNotFoundException.class, () ->
+                        backlogItemCommentServiceImpl.getComment(commentId,
+                                UPDATE_BACKLOG_ITEM_TEST_DATA.user()),
                 SHOULD_THROW);
     }
 }

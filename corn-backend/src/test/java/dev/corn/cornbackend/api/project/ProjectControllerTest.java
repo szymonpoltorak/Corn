@@ -72,11 +72,11 @@ class ProjectControllerTest {
         ProjectResponse expected = MAPPER.toProjectResponse(project);
 
         // when
-        when(projectService.updateProjectsName(ADD_PROJECT_DATA.project().getName(), 0L))
+        when(projectService.updateProjectsName(ADD_PROJECT_DATA.project().getName(), 0L, ADD_PROJECT_DATA.owner()))
                 .thenReturn(expected);
 
         ProjectResponse actual = projectController
-                .updateProjectsName(ADD_PROJECT_DATA.project().getName(), 0L);
+                .updateProjectsName(ADD_PROJECT_DATA.project().getName(), 0L, ADD_PROJECT_DATA.owner());
 
         // then
         assertEquals(expected, actual, PROJECT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -90,10 +90,10 @@ class ProjectControllerTest {
         ProjectResponse expected = MAPPER.toProjectResponse(project);
 
         // when
-        when(projectService.deleteProject(projectId))
+        when(projectService.deleteProject(projectId, ADD_PROJECT_DATA.owner()))
                 .thenReturn(expected);
 
-        ProjectResponse actual = projectController.deleteProject(projectId);
+        ProjectResponse actual = projectController.deleteProject(projectId, ADD_PROJECT_DATA.owner());
 
         // then
         assertEquals(expected, actual, PROJECT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);

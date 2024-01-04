@@ -8,12 +8,14 @@ import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemReposito
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintRepository;
+import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.test.backlog.item.BacklogItemTestDataBuilder;
 import dev.corn.cornbackend.test.backlog.item.data.AddBacklogItemTestData;
 import dev.corn.cornbackend.test.backlog.item.data.BacklogItemDetailsTestData;
 import dev.corn.cornbackend.test.backlog.item.data.BacklogItemListTestData;
 import dev.corn.cornbackend.test.backlog.item.data.EntityData;
 import dev.corn.cornbackend.test.backlog.item.data.UpdateBacklogItemTestData;
+import dev.corn.cornbackend.test.user.UserTestDataBuilder;
 import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundException;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
@@ -58,6 +60,7 @@ class BacklogItemServiceImplTest {
     private final static String SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE = "Should return correct BacklogItemResponse";
     private final static String SHOULD_THROW = "Should throw %s";
     private final static String SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST = "Should return correct list of BacklogItemResponses";
+    private final static User SAMPLE_USER = UserTestDataBuilder.createSampleUser();
 
     @Test
     final void getById_shouldReturnBacklogItemResponseOnCorrectId() {
@@ -65,15 +68,16 @@ class BacklogItemServiceImplTest {
         long id = 1L;
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_TEST_DATA.backLogItem()));
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_TEST_DATA.backLogItem()))
                 .thenReturn(BACKLOG_ITEM_TEST_DATA.backlogItemResponse());
 
         BacklogItemResponse expected = BACKLOG_ITEM_TEST_DATA.backlogItemResponse();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.getById(id),
+        assertEquals(expected, backlogItemServiceImpl.getById(id, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 
@@ -83,11 +87,11 @@ class BacklogItemServiceImplTest {
         long id = -1L;
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.getById(id),
+        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.getById(id, SAMPLE_USER),
                 String.format(SHOULD_THROW, BacklogItemNotFoundException.class.getSimpleName()));
     }
 
@@ -97,22 +101,41 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_TEST_DATA.backlogItemRequest();
 
         //when
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(),
+                ENTITY_DATA.project()))
                 .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
-        when(sprintRepository.findById(backlogItemRequest.sprintId()))
+
+        when(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), ENTITY_DATA.project()))
                 .thenReturn(Optional.of(ENTITY_DATA.sprint()));
-        when(projectRepository.findById(backlogItemRequest.projectId()))
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
                 .thenReturn(Optional.of(ENTITY_DATA.project()));
+
         when(backlogItemRepository.save(any()))
                 .thenReturn(BACKLOG_ITEM_TEST_DATA.backLogItem());
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_TEST_DATA.backLogItem()))
                 .thenReturn(BACKLOG_ITEM_TEST_DATA.backlogItemResponse());
 
         BacklogItemResponse expected = BACKLOG_ITEM_TEST_DATA.backlogItemResponse();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.create(backlogItemRequest),
+        assertEquals(expected, backlogItemServiceImpl.create(backlogItemRequest, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+    }
+
+    @Test
+    final void create_ShouldThrowProjectNotFoundExceptionOnIncorrectProject() {
+        //given
+        BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_TEST_DATA.backlogItemRequest();
+
+        //when
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.empty());
+
+        //then
+        assertThrows(ProjectDoesNotExistException.class, () -> backlogItemServiceImpl.create(backlogItemRequest, SAMPLE_USER),
+                String.format(SHOULD_THROW, ProjectDoesNotExistException.class.getSimpleName()));
     }
 
     @Test
@@ -121,11 +144,14 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_TEST_DATA.backlogItemRequest();
 
         //when
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(ProjectMemberDoesNotExistException.class, () -> backlogItemServiceImpl.create(backlogItemRequest),
+        assertThrows(ProjectMemberDoesNotExistException.class, () -> backlogItemServiceImpl.create(backlogItemRequest, SAMPLE_USER),
                 String.format(SHOULD_THROW, ProjectMemberDoesNotExistException.class.getSimpleName()));
     }
 
@@ -135,32 +161,18 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_TEST_DATA.backlogItemRequest();
 
         //when
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
                 .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
-        when(sprintRepository.findById(backlogItemRequest.sprintId()))
+
+        when(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), ENTITY_DATA.project()))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.create(backlogItemRequest),
+        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.create(backlogItemRequest, SAMPLE_USER),
                 String.format(SHOULD_THROW, SprintNotFoundException.class.getSimpleName()));
-    }
-
-    @Test
-    final void create_ShouldThrowProjectNotFoundExceptionOnIncorrectProject() {
-        //given
-        BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_TEST_DATA.backlogItemRequest();
-
-        //when
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
-                .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
-        when(sprintRepository.findById(backlogItemRequest.sprintId()))
-                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
-        when(projectRepository.findById(backlogItemRequest.projectId()))
-                .thenReturn(Optional.empty());
-
-        //then
-        assertThrows(ProjectDoesNotExistException.class, () -> backlogItemServiceImpl.create(backlogItemRequest),
-                String.format(SHOULD_THROW, ProjectDoesNotExistException.class.getSimpleName()));
     }
 
     @Test
@@ -170,23 +182,28 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemRequest();
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_UPDATE_TEST_DATA.backLogItem()));
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
-                .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
-        when(sprintRepository.findById(backlogItemRequest.sprintId()))
-                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
-        when(projectRepository.findById(backlogItemRequest.projectId()))
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
                 .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
+
+        when(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
+
         when(backlogItemRepository.save(BACKLOG_ITEM_UPDATE_TEST_DATA.updatedBacklogItem()))
                 .thenReturn(BACKLOG_ITEM_UPDATE_TEST_DATA.updatedBacklogItem());
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_UPDATE_TEST_DATA.updatedBacklogItem()))
                 .thenReturn(BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemResponse());
 
         BacklogItemResponse expected = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemResponse();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.update(id, backlogItemRequest),
+        assertEquals(expected, backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 
@@ -197,11 +214,11 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemRequest();
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest),
+        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER),
                 String.format(SHOULD_THROW, BacklogItemNotFoundException.class.getSimpleName()));
     }
 
@@ -212,13 +229,18 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemRequest();
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_UPDATE_TEST_DATA.backLogItem()));
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
                 .thenReturn(Optional.empty());
 
+
         //then
-        assertThrows(ProjectMemberDoesNotExistException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest),
+        assertThrows(ProjectMemberDoesNotExistException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER),
                 String.format(SHOULD_THROW, ProjectMemberDoesNotExistException.class.getSimpleName()));
     }
 
@@ -229,15 +251,20 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemRequest();
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_UPDATE_TEST_DATA.backLogItem()));
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
                 .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
-        when(sprintRepository.findById(backlogItemRequest.sprintId()))
+
+        when(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), ENTITY_DATA.project()))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest),
+        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER),
                 String.format(SHOULD_THROW, SprintNotFoundException.class.getSimpleName()));
     }
 
@@ -248,17 +275,14 @@ class BacklogItemServiceImplTest {
         BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemRequest();
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_UPDATE_TEST_DATA.backLogItem()));
-        when(projectMemberRepository.findById(backlogItemRequest.projectMemberId()))
-                .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
-        when(sprintRepository.findById(backlogItemRequest.sprintId()))
-                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
-        when(projectRepository.findById(backlogItemRequest.projectId()))
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(ProjectDoesNotExistException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest),
+        assertThrows(ProjectDoesNotExistException.class, () -> backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER),
                 String.format(SHOULD_THROW, ProjectDoesNotExistException.class.getSimpleName()));
     }
 
@@ -268,15 +292,16 @@ class BacklogItemServiceImplTest {
         long id = 1L;
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_TEST_DATA.backLogItem()));
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_TEST_DATA.backLogItem()))
                 .thenReturn(BACKLOG_ITEM_TEST_DATA.backlogItemResponse());
 
         BacklogItemResponse expected = BACKLOG_ITEM_TEST_DATA.backlogItemResponse();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.deleteById(id),
+        assertEquals(expected, backlogItemServiceImpl.deleteById(id, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 
@@ -286,11 +311,11 @@ class BacklogItemServiceImplTest {
         long id = -1L;
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.deleteById(id),
+        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.deleteById(id, SAMPLE_USER),
                 String.format(SHOULD_THROW, BacklogItemNotFoundException.class.getSimpleName()));
     }
 
@@ -300,19 +325,22 @@ class BacklogItemServiceImplTest {
         long id = 1L;
 
         //when
-        when(sprintRepository.findById(id))
+        when(sprintRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(ENTITY_DATA.sprint()));
+
         when(backlogItemRepository.getBySprint(ENTITY_DATA.sprint()))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems());
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(0)))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(0));
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(1)))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(1));
 
         List<BacklogItemResponse> expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.getBySprintId(id),
+        assertEquals(expected, backlogItemServiceImpl.getBySprintId(id, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
     }
 
@@ -322,11 +350,11 @@ class BacklogItemServiceImplTest {
         long id = -1L;
 
         //when
-        when(sprintRepository.findById(id))
+        when(sprintRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.getBySprintId(id),
+        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.getBySprintId(id, SAMPLE_USER),
                 String.format(SHOULD_THROW, SprintNotFoundException.class.getSimpleName()));
     }
 
@@ -336,19 +364,22 @@ class BacklogItemServiceImplTest {
         long id = 1L;
 
         //when
-        when(projectRepository.findById(id))
+        when(projectRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(ENTITY_DATA.project()));
+
         when(backlogItemRepository.getByProject(ENTITY_DATA.project()))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems());
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(0)))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(0));
+
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(1)))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(1));
 
         List<BacklogItemResponse> expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.getByProjectId(id),
+        assertEquals(expected, backlogItemServiceImpl.getByProjectId(id, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
     }
 
@@ -358,11 +389,11 @@ class BacklogItemServiceImplTest {
         long id = -1L;
 
         //when
-        when(projectRepository.findById(id))
+        when(projectRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(ProjectDoesNotExistException.class, () -> backlogItemServiceImpl.getByProjectId(id),
+        assertThrows(ProjectDoesNotExistException.class, () -> backlogItemServiceImpl.getByProjectId(id, SAMPLE_USER),
                 String.format(SHOULD_THROW, ProjectDoesNotExistException.class.getSimpleName()));
     }
 
@@ -372,15 +403,16 @@ class BacklogItemServiceImplTest {
         long id = 1L;
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItem()));
+
         when(backlogItemMapper.backlogItemToBacklogItemDetails(BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItem()))
                 .thenReturn(BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItemDetails());
 
         BacklogItemDetails expected = BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItemDetails();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.getDetailsById(id),
+        assertEquals(expected, backlogItemServiceImpl.getDetailsById(id, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 
@@ -390,11 +422,11 @@ class BacklogItemServiceImplTest {
         long id = -1L;
 
         //when
-        when(backlogItemRepository.findById(id))
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.getDetailsById(id),
+        assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.getDetailsById(id, SAMPLE_USER),
                 String.format(SHOULD_THROW, BacklogItemNotFoundException.class.getSimpleName()));
     }
 

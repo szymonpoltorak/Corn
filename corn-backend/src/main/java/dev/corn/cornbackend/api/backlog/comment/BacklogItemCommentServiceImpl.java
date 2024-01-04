@@ -36,7 +36,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
     public final BacklogItemCommentResponse addNewComment(BacklogItemCommentRequest request, User user) {
         log.info("Getting backlogItem of id: {}", request.backlogItemId());
 
-        BacklogItem item = backlogItemRepository.findById(request.backlogItemId())
+        BacklogItem item = backlogItemRepository.findByIdWithProjectMember(request.backlogItemId(), user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info("Building and saving new backlogItemComment for request: {} and user: {}", request, user);
@@ -56,10 +56,10 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
     }
 
     @Override
-    public final BacklogItemCommentResponse updateComment(long commentId, String comment) {
+    public final BacklogItemCommentResponse updateComment(long commentId, String comment, User user) {
         log.info(GETTING_BACKLOG_ITEM_COMMENT_OF_ID, commentId);
 
-        BacklogItemComment backlogItemComment = backlogItemCommentRepository.findById(commentId)
+        BacklogItemComment backlogItemComment = backlogItemCommentRepository.findByBacklogItemCommentIdAndUser(commentId, user)
                 .orElseThrow(() -> new BacklogItemCommentNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         backlogItemComment.setComment(comment);
@@ -72,10 +72,10 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
     }
 
     @Override
-    public final BacklogItemCommentResponse deleteComment(long commentId) {
+    public final BacklogItemCommentResponse deleteComment(long commentId, User user) {
         log.info(GETTING_BACKLOG_ITEM_COMMENT_OF_ID, commentId);
 
-        BacklogItemComment backlogItemComment = backlogItemCommentRepository.findById(commentId)
+        BacklogItemComment backlogItemComment = backlogItemCommentRepository.findByIdWithUserOrOwner(commentId, user)
                 .orElseThrow(() -> new BacklogItemCommentNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info("Deleting backlogItemComment of id: {}", commentId);
@@ -88,10 +88,10 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
     }
 
     @Override
-    public final BacklogItemCommentResponse getComment(long commentId) {
+    public final BacklogItemCommentResponse getComment(long commentId, User user) {
         log.info(GETTING_BACKLOG_ITEM_COMMENT_OF_ID, commentId);
 
-        BacklogItemComment backlogItemComment = backlogItemCommentRepository.findById(commentId)
+        BacklogItemComment backlogItemComment = backlogItemCommentRepository.findByIdWithProjectMember(commentId, user)
                 .orElseThrow(() -> new BacklogItemCommentNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
         log.info(RETURNING_RESPONSE_FOR, backlogItemComment);

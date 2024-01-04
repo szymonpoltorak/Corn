@@ -47,13 +47,16 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     @PatchMapping(value = UPDATE_PROJECTS_NAME)
-    public final ProjectResponse updateProjectsName(@RequestParam String name, @RequestParam long projectId) {
-        return projectService.updateProjectsName(name, projectId);
+    public final ProjectResponse updateProjectsName(@RequestParam String name,
+                                                    @RequestParam long projectId,
+                                                    @JwtAuthed User user) {
+        return projectService.updateProjectsName(name, projectId, user);
     }
 
     @Override
     @DeleteMapping(value = DELETE_PROJECT)
-    public final ProjectResponse deleteProject(@RequestParam long projectId) {
-        return projectService.deleteProject(projectId);
+    public final ProjectResponse deleteProject(@RequestParam long projectId,
+                                               @JwtAuthed User user) {
+        return projectService.deleteProject(projectId, user);
     }
 }

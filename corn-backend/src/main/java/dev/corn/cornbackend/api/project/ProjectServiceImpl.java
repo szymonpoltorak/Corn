@@ -62,10 +62,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public final ProjectResponse updateProjectsName(String name, long projectId) {
+    public final ProjectResponse updateProjectsName(String name, long projectId, User user) {
         log.info("Updating project with id: {} and name: {}", projectId, name);
 
-        Project projectToUpdate = projectRepository.findById(projectId)
+        Project projectToUpdate = projectRepository.findByProjectIdAndOwner(projectId, user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_DOES_NOT_EXIST));
 
         log.info("Found project to update: {}", projectToUpdate);
@@ -80,10 +80,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public final ProjectResponse deleteProject(long projectId) {
+    public final ProjectResponse deleteProject(long projectId, User user) {
         log.info("Deleting project with id: {}", projectId);
 
-        Project projectToDelete = projectRepository.findById(projectId)
+        Project projectToDelete = projectRepository.findByProjectIdAndOwner(projectId, user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_DOES_NOT_EXIST));
 
         log.info("Found project to delete: {}", projectToDelete);

@@ -88,12 +88,12 @@ class ProjectServiceTest {
         final long projectId = 1L;
 
         // when
-        when(projectRepository.findById(projectId))
+        when(projectRepository.findByProjectIdAndOwner(projectId, ADD_PROJECT_DATA.owner()))
                 .thenReturn(Optional.empty());
 
         // then
         assertThrows(ProjectDoesNotExistException.class,
-                () -> projectService.updateProjectsName(newName, projectId),
+                () -> projectService.updateProjectsName(newName, projectId, ADD_PROJECT_DATA.owner()),
                 SHOULD_THROW_PROJECT_DOES_NOT_EXIST_EXCEPTION);
     }
 
@@ -105,14 +105,16 @@ class ProjectServiceTest {
         ProjectResponse expected = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project());
 
         // when
-        when(projectRepository.findById(projectId))
+        when(projectRepository.findByProjectIdAndOwner(projectId, ADD_PROJECT_DATA.owner()))
                 .thenReturn(Optional.of(ADD_PROJECT_DATA.project()));
+
         when(projectRepository.save(ADD_PROJECT_DATA.project()))
                 .thenReturn(ADD_PROJECT_DATA.project());
+
         when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project()))
                 .thenReturn(expected);
 
-        ProjectResponse actual = projectService.updateProjectsName(newName, projectId);
+        ProjectResponse actual = projectService.updateProjectsName(newName, projectId, ADD_PROJECT_DATA.owner());
 
         // then
         assertEquals(expected, actual, PROJECT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
@@ -124,12 +126,12 @@ class ProjectServiceTest {
         final long projectId = 1L;
 
         // when
-        when(projectRepository.findById(projectId))
+        when(projectRepository.findByProjectIdAndOwner(projectId, ADD_PROJECT_DATA.owner()))
                 .thenReturn(Optional.empty());
 
         // then
         assertThrows(ProjectDoesNotExistException.class,
-                () -> projectService.deleteProject(projectId),
+                () -> projectService.deleteProject(projectId, ADD_PROJECT_DATA.owner()),
                 SHOULD_THROW_PROJECT_DOES_NOT_EXIST_EXCEPTION);
     }
 
@@ -140,12 +142,13 @@ class ProjectServiceTest {
         ProjectResponse expected = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project());
 
         // when
-        when(projectRepository.findById(projectId))
+        when(projectRepository.findByProjectIdAndOwner(projectId, ADD_PROJECT_DATA.owner()))
                 .thenReturn(Optional.of(ADD_PROJECT_DATA.project()));
+
         when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project()))
                 .thenReturn(expected);
 
-        ProjectResponse actual = projectService.deleteProject(projectId);
+        ProjectResponse actual = projectService.deleteProject(projectId, ADD_PROJECT_DATA.owner());
 
         // then
         assertEquals(expected, actual, PROJECT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
