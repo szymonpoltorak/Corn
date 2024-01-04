@@ -43,7 +43,7 @@ public class SprintServiceImpl implements SprintService {
         }
 
         Project project = projectRepository.findById(sprintRequest.projectId())
-                .orElseThrow(() -> new ProjectDoesNotExistException(HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new ProjectDoesNotExistException(
                         String.format("Project with projectId: %d does not exist", sprintRequest.projectId()))
                 );
         Sprint sprint = Sprint
