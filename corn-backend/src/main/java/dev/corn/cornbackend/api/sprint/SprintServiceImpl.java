@@ -3,10 +3,13 @@ package dev.corn.cornbackend.api.sprint;
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
+import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintRepository;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintEndDateMustBeAfterStartDate;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,6 +29,7 @@ import java.util.List;
 public class SprintServiceImpl implements SprintService {
     public static final int SPRINTS_PER_PAGE = 20;
     private final SprintRepository sprintRepository;
+    private final ProjectRepository projectRepository;
     private final SprintMapper sprintMapper;
 
     @Override
@@ -34,8 +39,14 @@ public class SprintServiceImpl implements SprintService {
         if (sprintRequest.endDate().isBefore(sprintRequest.startDate())) {
             throw new SprintEndDateMustBeAfterStartDate(sprintRequest.startDate(), sprintRequest.endDate());
         }
+
+        Project project = projectRepository.findById(sprintRequest.projectId())
+                .orElseThrow(() -> new ProjectDoesNotExistException(HttpStatus.NOT_FOUND,
+                        String.format("Project with projectId: %d does not exist", sprintRequest.projectId()))
+                );
         Sprint sprint = Sprint
                 .builder()
+                .project(project)
                 .sprintName(sprintRequest.name())
                 .sprintStartDate(sprintRequest.startDate())
                 .sprintEndDate(sprintRequest.endDate())
