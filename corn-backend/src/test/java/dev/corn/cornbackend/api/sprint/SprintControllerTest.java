@@ -1,7 +1,6 @@
 package dev.corn.cornbackend.api.sprint;
 
 
-import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;

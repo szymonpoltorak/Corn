@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SprintRepository extends JpaRepository<Sprint, Long> {
-
-
+  
     @Query("SELECT s FROM Sprint s WHERE s.project.projectId = ?1")
     Page<Sprint> findAllByProjectId(long projectId, Pageable pageable);
 

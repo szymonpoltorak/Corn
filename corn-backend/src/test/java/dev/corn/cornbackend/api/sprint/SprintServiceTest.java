@@ -30,9 +30,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = SprintRepository.class)
-public class SprintServiceTest {
+class SprintServiceTest {
 
-    static final String SHOULD_THROW_SPRINT_DOES_NOT_EXIST_EXCEPTION = "Should throw SprintDoesNotExistException";
+    private static final String SHOULD_THROW_SPRINT_DOES_NOT_EXIST_EXCEPTION = "Should throw SprintDoesNotExistException";
     static final String SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED = "SprintResponse should be equal to expected";
 
     @InjectMocks
