@@ -13,6 +13,8 @@ public class ExternalConfig {
 
     public static final String KCCFG_OVERRIDE_EXISTING = System.getenv("KCCFG_OVERRIDE_EXISTING");
 
+    public static final String KCCFG_LOGIN_THEME_NAME = System.getenv("KCCFG_LOGIN_THEME_NAME");
+
     public static final String KC_SERVER_URL = System.getenv("KC_SERVER_URL");
 
     public static final String GITHUB_CLIENT_ID = System.getenv("GITHUB_CLIENT_ID");
