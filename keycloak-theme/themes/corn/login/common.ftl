@@ -127,7 +127,7 @@
     <@common.DARK_INPUT 
         tabindex="${tabindex}" type="password"
         placeholder="${msg(\"passwordConfirm\")}"
-        id="passwordConfirm" name="passwordConfirm"
+        id="password-confirm" name="password-confirm"
         value="${(passwordConfirm!'')}"
     />
 </#macro>
