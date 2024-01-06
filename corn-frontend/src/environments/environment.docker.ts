@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    httpBackend: "http://backend:8080"
+    httpBackend: "http://corn-backend:8080"
 };
