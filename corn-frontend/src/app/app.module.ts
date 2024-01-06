@@ -12,7 +12,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
         keycloak.init({
             config: {
                 realm: 'Corn',
-                url: 'http://localhost:8081',
+                url: 'http://auth.corn.zet',
                 clientId: 'Corn'
             },
             initOptions: {

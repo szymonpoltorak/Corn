@@ -88,3 +88,16 @@ services:
             - "5001:5432"
         healthcheck:
             test: "pg_isready -U keycloak"
+    corn-nginx:
+        container_name: corn-nginx
+        image: corn-nginx
+        build:
+            context: nginx
+            dockerfile: Dockerfile.dev
+        depends_on:
+            - corn-backend
+            - corn-frontend
+            - corn-keycloak
+        ports:
+            - "80:80"
+            - "443:443"

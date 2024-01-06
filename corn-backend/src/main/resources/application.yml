@@ -31,4 +31,4 @@ app:
         #lokalne URI emitenta tokenów
         local-issuer-uri: http://corn-keycloak:8080/realms/Corn
         #publiczne URI emitenta tokenów
-        public-issuer-uri: http://localhost:8081/realms/Corn
+        public-issuer-uri: http://auth.corn.zet/realms/Corn
