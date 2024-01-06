@@ -30,7 +30,7 @@
             </div>
             <div class="bg-yellowishDark h-screen pl-[32px] pr-[32px] w-[50%]">
                 <div class="h-screen flex items-center relative">
-                    <div>
+                    <div class="min-w-[512px]">
                         <h1 class="mt-[12px] mb-[12px] text-center font-semibold text-white text-5xl">
                             ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}
                         </h1>
