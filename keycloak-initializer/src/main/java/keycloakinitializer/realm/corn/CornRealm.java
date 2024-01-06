@@ -13,6 +13,9 @@ public class CornRealm extends RealmRepresentation {
         setRegistrationAllowed(true);
         setClients(List.of(new CornClient()));
         setIdentityProviders(ExternalConfig.getIdentityProviders());
+        if(ExternalConfig.KCCFG_LOGIN_THEME_NAME != null) {
+            setLoginTheme(ExternalConfig.KCCFG_LOGIN_THEME_NAME);
+        }
     }
 
     public enum Role {
