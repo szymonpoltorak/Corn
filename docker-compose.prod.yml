@@ -25,7 +25,7 @@ services:
             context: corn-backend
             dockerfile: Dockerfile.prod
         ports:
-            - "8080:8081"
+            - "8080:8080"
     corn-frontend:
         container_name: corn-frontend
         image: corn-frontend
