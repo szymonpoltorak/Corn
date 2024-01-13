@@ -54,11 +54,25 @@ services:
                 condition: service_healthy
         environment:
             - KCCFG_OVERRIDE_EXISTING=true
+            - KCCFG_LOGIN_THEME_NAME=corn
             - KC_SERVER_URL=http://corn-keycloak:8080
         volumes:
             - "./keycloak-initializer:/keycloak-initializer"
             - "./.cache/keycloak-initializer/.gradle:/keycloak-initializer/.gradle"
             - "./.cache/keycloak-initializer/build:/keycloak-initializer/build"
+    corn-keycloak-theme:
+        container_name: corn-keycloak-theme
+        image: corn-keycloak-theme
+        build:
+            context: keycloak-theme
+            dockerfile: Dockerfile.dev
+        depends_on:
+            corn-keycloak:
+                condition: service_healthy
+        tty: true
+        volumes:
+            - "./keycloak-theme:/keycloak-theme"
+            - "./.cache/keycloak-theme/node_modules:/keycloak-theme/node_modules"
     corn-keycloak:
         container_name: corn-keycloak
         image: quay.io/keycloak/keycloak:20.0.1
@@ -77,6 +91,9 @@ services:
             - '8081:8080'
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
+        volumes:
+            #- "./keycloak-theme/disable-theme-cache.cli:/opt/jboss/startup-scripts/disable-theme-cache.cli"
+            - "./keycloak-theme/themes/corn/:/opt/keycloak/themes/corn/"
     corn-keycloak-postgres:
         container_name: corn-keycloak-postgres
         image: postgres:alpine
