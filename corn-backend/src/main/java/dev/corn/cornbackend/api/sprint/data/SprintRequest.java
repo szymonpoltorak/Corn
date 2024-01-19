@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record SprintRequest(String name, LocalDate startDate, LocalDate endDate, String description) {
+public record SprintRequest(long projectId, String name, LocalDate startDate, LocalDate endDate, String description) {
 }

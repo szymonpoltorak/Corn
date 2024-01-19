@@ -2,12 +2,14 @@ package dev.corn.cornbackend.api.sprint;
 
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
+import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.test.sprint.SprintTestDataBuilder;
 import dev.corn.cornbackend.test.sprint.data.AddNewSprintData;
+import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintEndDateMustBeAfterStartDate;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,8 @@ class SprintServiceTest {
     @Mock
     private SprintRepository sprintRepository;
     @Mock
+    private ProjectRepository projectRepository;
+    @Mock
     private SprintMapper MAPPER;
 
     private static final AddNewSprintData ADD_SPRINT_DATA = SprintTestDataBuilder.addNewProjectData();
@@ -51,6 +55,8 @@ class SprintServiceTest {
         // when
         when(sprintRepository.save(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(ADD_SPRINT_DATA.asSprint());
+        when(projectRepository.findById(ADD_SPRINT_DATA.asSprint().getSprintId()))
+                .thenReturn(Optional.of(ADD_SPRINT_DATA.project()));
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(expected);
 
@@ -62,6 +68,28 @@ class SprintServiceTest {
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
         verify(sprintRepository).save(ADD_SPRINT_DATA.asSprint());
+    }
+    @Test
+    final void test_addNewSprint_shouldThrowWhenProjectNotFound() {
+        // given
+        SprintResponse expected = MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint());
+        SprintRequest sprintRequest = ADD_SPRINT_DATA.asSprintRequest();
+
+        // when
+        when(sprintRepository.save(ADD_SPRINT_DATA.asSprint()))
+                .thenReturn(ADD_SPRINT_DATA.asSprint());
+        when(projectRepository.findById(ADD_SPRINT_DATA.asSprint().getSprintId()))
+                .thenReturn(Optional.empty());
+        when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
+                .thenReturn(expected);
+
+        // then
+        assertThrows(ProjectDoesNotExistException.class, () -> {
+            sprintService.addNewSprint(
+                    ADD_SPRINT_DATA.asSprintRequest(),
+                    ADD_SPRINT_DATA.project().getOwner()
+            );
+        }, "Should throw ProjectDoesNotExistException");
     }
 
     @Test
