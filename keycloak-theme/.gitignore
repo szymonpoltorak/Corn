@@ -40,4 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-.angular
+
+#Generated css
+themes/corn/login/resources/css/styles.css

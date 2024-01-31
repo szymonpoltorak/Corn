@@ -11,9 +11,11 @@ public record AddNewSprintData(Project project, String name, String description,
     public Sprint asSprint() {
         return new Sprint(0, project, name, description, startDate, endDate);
     }
+
     public SprintRequest asSprintRequest() {
         return SprintRequest.builder()
                 .name(name)
+                .projectId(project.getProjectId())
                 .description(description)
                 .startDate(startDate)
                 .endDate(endDate)
