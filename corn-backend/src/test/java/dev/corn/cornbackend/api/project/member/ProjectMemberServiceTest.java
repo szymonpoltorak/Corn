@@ -11,6 +11,7 @@ import dev.corn.cornbackend.entities.user.interfaces.UserRepository;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
+import dev.corn.cornbackend.utils.exceptions.project.member.InvalidUsernameException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.user.UserDoesNotExistException;
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,8 @@ class ProjectMemberServiceTest {
                 .thenReturn(Optional.of(user));
         when(projectRepository.findByProjectIdAndOwner(projectId, user))
                 .thenReturn(Optional.of(ADD_NEW_PROJECT_DATA.project()));
+        when(projectRepository.existsByProjectMemberAndProjectId(user, projectId))
+                .thenReturn(false);
         when(projectMemberRepository.save(any(ProjectMember.class)))
                 .thenReturn(projectMember);
         when(projectMemberMapper.toProjectMemberResponse(projectMember))
@@ -121,6 +124,26 @@ class ProjectMemberServiceTest {
         assertThrows(ProjectDoesNotExistException.class, () -> projectMemberService
                         .addMemberToProject(username, projectId, user),
                 SHOULD_THROW_EXCEPTION_WHEN_PROJECT_DOES_NOT_EXIST);
+    }
+
+    @Test
+    final void test_addMemberToProject_shouldThrowExceptionWhenUserAlreadyOwnerOfProject() {
+        //given
+        User user = ADD_NEW_PROJECT_DATA.owner();
+        long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
+
+        //when
+        when(userRepository.findByUsername(user.getUsername()))
+                .thenReturn(Optional.of(user));
+        when(projectRepository.findByProjectIdAndOwner(projectId, user))
+                .thenReturn(Optional.of(ADD_NEW_PROJECT_DATA.project()));
+        when(projectRepository.existsByProjectMemberAndProjectId(user, projectId))
+                .thenReturn(true);
+
+        //then
+        assertThrows(InvalidUsernameException.class, () -> projectMemberService
+                .addMemberToProject(user.getUsername(), projectId, user),
+                "Should throw exception if given username is username of project owner");
     }
 
     @Test
@@ -252,5 +275,18 @@ class ProjectMemberServiceTest {
         assertThrows(ProjectDoesNotExistException.class, () -> projectMemberService
                         .removeMemberFromProject(username, projectId, user),
                 "Should throw exception when project member does not exist");
+    }
+
+    @Test
+    final void test_removeMemberFromProject_shouldThrowExceptionWhenUsernameEqualsUsersUsername() {
+        //given
+        User user = ADD_NEW_PROJECT_DATA.owner();
+        long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
+
+        //when
+
+        //then
+        assertThrows(InvalidUsernameException.class, () -> projectMemberService
+                .removeMemberFromProject(user.getUsername(), projectId, user));
     }
 }
