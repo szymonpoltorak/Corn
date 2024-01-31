@@ -41,7 +41,7 @@
             ],
             "@pages/*": [
                 "./src/app/pages/*"
-            ],
+            ]
         }
     },
     "angularCompilerOptions": {
