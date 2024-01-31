@@ -1,0 +1,46 @@
+@use '@angular/material/index' as mat;
+@use '@fireflysemantics/sass-logger' as logger;
+
+@import "palette";
+
+@include mat.core();
+
+@function replace-color($map, $old-color, $new-color) {
+    $new-map: ();
+
+    @each $key, $value in $map {
+        @if type-of($value) == map {
+            $value: replace-color($value, $old-color, $new-color);
+        } @else if $value == $old-color {
+            $value: $new-color;
+        }
+
+        $new-map: map-merge($new-map, ($key: $value));
+    }
+
+    @return $new-map;
+}
+
+$primary-dark: mat.define-palette($corn-primary, 400);
+$accent-dark: mat.define-palette(mat.$purple-palette, A400);
+$warn-dark: mat.define-palette(mat.$red-palette);
+
+$dark-theme: mat.define-dark-theme((
+        color: (
+                primary: $primary-dark,
+                accent: $accent-dark,
+                warn: $warn-dark
+        )
+));
+
+$dark-background: map-get($dark-theme, background);
+
+$dark-background: map-merge($dark-background, (
+        card: map-get($map: $dark-color-settings, $key: container-background-color),
+        dialog: map-get($map: $dark-color-settings, $key: container-background-color),
+        selected-disabled-button: map-get($map: $dark-color-settings, $key: container-background-color),
+        raised-button: map-get($map: $dark-color-settings, $key: container-background-color),
+));
+$dark-theme: replace-color($dark-theme, #424242, #292627);
+
+@include mat.all-component-themes($dark-theme);
