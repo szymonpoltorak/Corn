@@ -14,9 +14,17 @@ import java.util.Optional;
 
 @Repository
 public interface SprintRepository extends JpaRepository<Sprint, Long> {
-  
-    @Query("SELECT s FROM Sprint s WHERE s.project.projectId = ?1")
-    Page<Sprint> findAllByProjectId(long projectId, Pageable pageable);
+
+    /**
+     * Finds all Sprints associated with Project of given projectId and checks if the user is a member
+     * or the owner of the project
+     * @param projectId id of Project
+     * @param user user requesting access
+     * @param pageable pageable
+     * @return Page containing sprints associated with Project if user's criteria are met, empty Page otherwise
+     */
+    @Query("SELECT s FROM Sprint s WHERE s.project.projectId = :projectId AND (s.project.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm WHERE pm.project = s.project))")
+    Page<Sprint> findAllByProjectId(@Param("projectId") long projectId, @Param("user") User user, Pageable pageable);
 
     /**
      * Finds a Sprint by id and checks if the user is a member or the owner of the project associated
@@ -29,5 +37,8 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
     Optional<Sprint> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
 
     Optional<Sprint> findBySprintIdAndProject(long sprintId, Project project);
+
+    @Query("SELECT s FROM Sprint s WHERE s.sprintId = :id AND s.project.owner = :user")
+    Optional<Sprint> findByIdWithProjectOwner(@Param("id") long id, @Param("user") User user);
 
 }

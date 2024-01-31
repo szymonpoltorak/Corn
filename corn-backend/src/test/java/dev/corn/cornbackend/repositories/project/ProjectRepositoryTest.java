@@ -81,7 +81,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void test_findAllByOwnerOrderByNaeShouldReturnNoProjectsWhenUserOwns0Projects() {
+    void test_findAllByOwnerOrderByNameShouldReturnNoProjectsWhenUserOwns0Projects() {
         //given
         User user = TEST_DATA.nonProjectMember();
         Pageable pageable = PageRequest.of(0, 1);
