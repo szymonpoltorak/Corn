@@ -29,15 +29,20 @@ class SprintRepositoryTest {
     @Autowired
     private SprintRepository sprintRepository;
 
-    private static SprintRepositoryTestData TEST_DATA;
+    private static SprintRepositoryTestData TEST_DATA = null;
+
+    private static final String OPTIONAL_PRESENT = "Sprint optional should be present";
+    private static final String OPTIONAL_EMPTY = "Sprint optional should be empty";
+    private static final String PAGE_CORRECT_TOTAL_ELEMENTS = "Sprint page should contain correct number of total elements";
+    private static final String SPRINT_EQUAL = "Sprints should be equal";
 
     @BeforeEach
-    public void setUp() {
+    public final void setUp() {
         TEST_DATA = SprintRepositoryTestDataBuilder.sprintRepositoryTestData(testEntityManager);
     }
 
     @Test
-    void test_findAllByProjectIdShouldReturnSprintsWhenGivenUserIsOwnerOfProject() {
+    final void test_findAllByProjectIdShouldReturnSprintsWhenGivenUserIsOwnerOfProject() {
         //given
         User owner = TEST_DATA.projectOwner();
         Pageable pageable = PageRequest.of(0, 1);
@@ -47,12 +52,12 @@ class SprintRepositoryTest {
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, owner, pageable);
 
         //then
-        assertEquals(1L, sprints.getTotalElements());
-        assertTrue(sprints.getContent().contains(TEST_DATA.sprint()));
+        assertEquals(1L, sprints.getTotalElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
+        assertTrue(sprints.getContent().contains(TEST_DATA.sprint()), SPRINT_EQUAL);
     }
 
     @Test
-    void test_findAllByProjectIdShouldReturnSpritnsWhenGivenUserIsMemberOfProject() {
+    final void test_findAllByProjectIdShouldReturnSpritnsWhenGivenUserIsMemberOfProject() {
         //given
         User member = TEST_DATA.projectMember();
         Pageable pageable = PageRequest.of(0, 1);
@@ -62,12 +67,12 @@ class SprintRepositoryTest {
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, member, pageable);
 
         //then
-        assertEquals(1L, sprints.getTotalElements());
-        assertTrue(sprints.getContent().contains(TEST_DATA.sprint()));
+        assertEquals(1L, sprints.getTotalElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
+        assertTrue(sprints.getContent().contains(TEST_DATA.sprint()), SPRINT_EQUAL);
     }
 
     @Test
-    void test_findAllByProjectIdShouldReturnEmptyPageWhenGivenUserIsNotAMemberOfProject() {
+    final void test_findAllByProjectIdShouldReturnEmptyPageWhenGivenUserIsNotAMemberOfProject() {
         //given
         User nonMember = TEST_DATA.nonProjectMember();
         Pageable pageable = PageRequest.of(0, 1);
@@ -77,11 +82,11 @@ class SprintRepositoryTest {
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, nonMember, pageable);
 
         //then
-        assertEquals(0L, sprints.getTotalElements());
+        assertEquals(0L, sprints.getTotalElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
     }
 
     @Test
-    void test_findByIdWithProjectMemberShouldReturnCorrectSprintWhenUserIsOwnerOfProject() {
+    final void test_findByIdWithProjectMemberShouldReturnCorrectSprintWhenUserIsOwnerOfProject() {
         //given
         User owner = TEST_DATA.projectOwner();
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -90,12 +95,12 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectMember(sprintId, owner);
 
         //then
-        assertTrue(sprint.isPresent());
-        assertEquals(TEST_DATA.sprint(), sprint.get());
+        assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
-    void test_findByIdWithProjectMemberShouldReturnCorrectSprintWhenUserIsMemberOfProject() {
+    final void test_findByIdWithProjectMemberShouldReturnCorrectSprintWhenUserIsMemberOfProject() {
         //given
         User member = TEST_DATA.projectMember();
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -104,12 +109,12 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectMember(sprintId, member);
 
         //then
-        assertTrue(sprint.isPresent());
-        assertEquals(TEST_DATA.sprint(), sprint.get());
+        assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
-    void test_findByIdWithProjectMemberShouldReturnEmptyOptionalWhenUserIsNotOwnerOrMemberOfProject() {
+    final void test_findByIdWithProjectMemberShouldReturnEmptyOptionalWhenUserIsNotOwnerOrMemberOfProject() {
         //given
         User nonMember = TEST_DATA.nonProjectMember();
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -118,11 +123,11 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectMember(sprintId, nonMember);
 
         //then
-        assertTrue(sprint.isEmpty());
+        assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
-    void test_findByIdWithProjectMemberShouldReturnEmptyOptionalWhenGivenIdIsIncorrect() {
+    final void test_findByIdWithProjectMemberShouldReturnEmptyOptionalWhenGivenIdIsIncorrect() {
         //given
         User owner = TEST_DATA.projectOwner();
         long sprintId = -1L;
@@ -131,11 +136,11 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectMember(sprintId, owner);
 
         //then
-        assertTrue(sprint.isEmpty());
+        assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
-    void test_findBySprintIdAndProjectShouldReturnCorrectSprint() {
+    final void test_findBySprintIdAndProjectShouldReturnCorrectSprint() {
         //given
         Project project = TEST_DATA.sprint().getProject();
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -144,12 +149,12 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findBySprintIdAndProject(sprintId, project);
 
         //then
-        assertTrue(sprint.isPresent());
-        assertEquals(TEST_DATA.sprint(), sprint.get());
+        assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
-    void test_findBySprintIdAndProjectShouldReturnEmptyOptionalOnIncorrectId() {
+    final void test_findBySprintIdAndProjectShouldReturnEmptyOptionalOnIncorrectId() {
         //given
         Project project = TEST_DATA.sprint().getProject();
         long sprintId = -1L;
@@ -158,11 +163,11 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findBySprintIdAndProject(sprintId, project);
 
         //then
-        assertTrue(sprint.isEmpty());
+        assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
-    void test_findBySprintIdAndProjectShouldReturnEmptyOptionalOnIncorrectProject() {
+    final void test_findBySprintIdAndProjectShouldReturnEmptyOptionalOnIncorrectProject() {
         //given
         Project project = createSampleProject(2L, "Incorrect project");
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -171,11 +176,11 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findBySprintIdAndProject(sprintId, project);
 
         //then
-        assertTrue(sprint.isEmpty());
+        assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
-    void test_findByIdWithProjectOwnerShouldReturnSprintOnOwner() {
+    final void test_findByIdWithProjectOwnerShouldReturnSprintOnOwner() {
         //given
         User owner = TEST_DATA.projectOwner();
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -184,12 +189,12 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectOwner(sprintId, owner);
 
         //then
-        assertTrue(sprint.isPresent());
-        assertEquals(TEST_DATA.sprint(), sprint.get());
+        assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
-    void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnProjectMember() {
+    final void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnProjectMember() {
         //given
         User member = TEST_DATA.projectMember();
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -198,11 +203,11 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectOwner(sprintId, member);
 
         //then
-        assertTrue(sprint.isEmpty());
+        assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
-    void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnNonProjectMember() {
+    final void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnNonProjectMember() {
         //given
         User nonMember = TEST_DATA.nonProjectMember();
         long sprintId = TEST_DATA.sprint().getSprintId();
@@ -211,11 +216,11 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectOwner(sprintId, nonMember);
 
         //then
-        assertTrue(sprint.isEmpty());
+        assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
-    void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnIncorrectId() {
+    final void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnIncorrectId() {
         //given
         User owner = TEST_DATA.projectOwner();
         long sprintId = -1L;
@@ -224,6 +229,6 @@ class SprintRepositoryTest {
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectOwner(sprintId, owner);
 
         //then
-        assertTrue(sprint.isEmpty());
+        assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
     }
 }

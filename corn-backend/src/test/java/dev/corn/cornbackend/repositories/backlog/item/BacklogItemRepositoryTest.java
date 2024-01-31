@@ -2,6 +2,7 @@ package dev.corn.cornbackend.repositories.backlog.item;
 
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
+import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.repositories.backlog.item.data.BacklogItemRepositoryTestData;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class BacklogItemRepositoryTest {
+class BacklogItemRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -26,14 +27,19 @@ public class BacklogItemRepositoryTest {
     @Autowired
     private BacklogItemRepository backlogItemRepository;
 
-    private static BacklogItemRepositoryTestData TEST_DATA;
+    private static BacklogItemRepositoryTestData TEST_DATA = null;
+
+    private static final String OPTIONAL_PRESENT = "Backlog item optional should be present";
+    private static final String OPTIONAL_EMPTY = "Backlog item optional should be empty";
+    private static final String BACKLOG_ITEM_EQUAL = "Backlog items should be equal";
+    private static final String LIST_CORRECT_SIZE = "Backlog item list should have correct size";
 
     @BeforeEach
-    public void setUp() {
+    public final void setUp() {
         TEST_DATA = BacklogItemRepositoryTestDataBuilder.backlogItemRepositoryTestData(entityManager);
     }
     @Test
-    void test_findByIdWithProjectOwnerShouldReturnCorrectBacklogItem() {
+    final void test_findByIdWithProjectOwnerShouldReturnCorrectBacklogItem() {
         //given
         long id = TEST_DATA.backlogItem().getBacklogItemId();
         User user = TEST_DATA.owner();
@@ -42,12 +48,12 @@ public class BacklogItemRepositoryTest {
         Optional<BacklogItem> backlogItem = backlogItemRepository.findByIdWithProjectMember(id, user);
 
         //then
-        assertTrue(backlogItem.isPresent());
-        assertEquals(TEST_DATA.backlogItem(), backlogItem.get());
+        assertTrue(backlogItem.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.backlogItem(), backlogItem.get(), BACKLOG_ITEM_EQUAL);
     }
 
     @Test
-    void test_findByIdWithProjectMemberShouldReturnCorrectBacklogItem() {
+    final void test_findByIdWithProjectMemberShouldReturnCorrectBacklogItem() {
         //given
         long id = TEST_DATA.backlogItem().getBacklogItemId();
         User user = TEST_DATA.projectMember();
@@ -56,12 +62,12 @@ public class BacklogItemRepositoryTest {
         Optional<BacklogItem> backlogItem = backlogItemRepository.findByIdWithProjectMember(id, user);
 
         //then
-        assertTrue(backlogItem.isPresent());
-        assertEquals(TEST_DATA.backlogItem(), backlogItem.get());
+        assertTrue(backlogItem.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.backlogItem(), backlogItem.get(), BACKLOG_ITEM_EQUAL);
     }
 
     @Test
-    void test_findByIdWithUserNotInProjectShouldReturnEmptyOptional() {
+    final void test_findByIdWithUserNotInProjectShouldReturnEmptyOptional() {
         //given
         long id = TEST_DATA.backlogItem().getBacklogItemId();
         User user = TEST_DATA.nonProjectMember();
@@ -70,11 +76,11 @@ public class BacklogItemRepositoryTest {
         Optional<BacklogItem> backlogItem = backlogItemRepository.findByIdWithProjectMember(id, user);
 
         //then
-        assertTrue(backlogItem.isEmpty());
+        assertTrue(backlogItem.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
-    void test_getBySprintShouldReturnCorrectBacklogItems() {
+    final void test_getBySprintShouldReturnCorrectBacklogItems() {
         //given
         Sprint sprint = TEST_DATA.sprint();
 
@@ -82,20 +88,20 @@ public class BacklogItemRepositoryTest {
         List<BacklogItem> backlogItems = backlogItemRepository.getBySprint(sprint);
 
         //then
-        assertEquals(1, backlogItems.size());
-        assertEquals(TEST_DATA.backlogItem(), backlogItems.get(0));
+        assertEquals(1, backlogItems.size(), LIST_CORRECT_SIZE);
+        assertEquals(TEST_DATA.backlogItem(), backlogItems.get(0), BACKLOG_ITEM_EQUAL);
     }
 
     @Test
-    void test_getByProjectShouldReturnCorrectBacklogItems() {
+    final void test_getByProjectShouldReturnCorrectBacklogItems() {
         //given
-        dev.corn.cornbackend.entities.project.Project project = TEST_DATA.project();
+        Project project = TEST_DATA.project();
 
         //when
         List<BacklogItem> backlogItems = backlogItemRepository.getByProject(project);
 
         //then
-        assertEquals(1, backlogItems.size());
-        assertEquals(TEST_DATA.backlogItem(), backlogItems.get(0));
+        assertEquals(1, backlogItems.size(), LIST_CORRECT_SIZE);
+        assertEquals(TEST_DATA.backlogItem(), backlogItems.get(0), BACKLOG_ITEM_EQUAL);
     }
 }

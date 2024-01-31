@@ -16,18 +16,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class BacklogItemCommentRepositoryTest {
+class BacklogItemCommentRepositoryTest {
 
     @Autowired
-    TestEntityManager testEntityManager;
+    private TestEntityManager testEntityManager;
 
     @Autowired
-    BacklogItemCommentRepository backlogItemCommentRepository;
+    private BacklogItemCommentRepository backlogItemCommentRepository;
 
-    private static BacklogItemCommentRepositoryTestData TEST_DATA;
+    private static BacklogItemCommentRepositoryTestData TEST_DATA = null;
+
+    private static final String OPTIONAL_PRESENT = "Backlog item comment optional should be present";
+    private static final String OPTIONAL_EMPTY = "Backlog item comment optional should be empty";
+    private static final String BACKLOG_ITEM_COMMENT_EQUAL = "Backlog item comments should be equal";
 
     @BeforeEach
-    public void setUp() {
+    public final void setUp() {
         TEST_DATA = BacklogItemCommentRepositoryTestDataBuilder.backlogItemCommentRepositoryTestData(testEntityManager);
     }
 
@@ -41,8 +45,8 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByBacklogItemCommentIdAndUser(id, user);
 
         //then
-        assertTrue(backlogItemComment.isPresent());
-        assertEquals(TEST_DATA.comment(), backlogItemComment.get());
+        assertTrue(backlogItemComment.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.comment(), backlogItemComment.get(), BACKLOG_ITEM_COMMENT_EQUAL);
     }
 
     @Test
@@ -55,7 +59,7 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByBacklogItemCommentIdAndUser(id, user);
 
         //then
-        assertTrue(backlogItemComment.isEmpty());
+        assertTrue(backlogItemComment.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
@@ -68,7 +72,7 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByBacklogItemCommentIdAndUser(id, user);
 
         //then
-        assertTrue(backlogItemComment.isEmpty());
+        assertTrue(backlogItemComment.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
@@ -81,8 +85,8 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithUserOrOwner(id, user);
 
         //then
-        assertTrue(backlogItemComment.isPresent());
-        assertEquals(TEST_DATA.comment(), backlogItemComment.get());
+        assertTrue(backlogItemComment.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.comment(), backlogItemComment.get(), BACKLOG_ITEM_COMMENT_EQUAL);
     }
 
     @Test
@@ -95,8 +99,8 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithUserOrOwner(id, user);
 
         //then
-        assertTrue(backlogItemComment.isPresent());
-        assertEquals(TEST_DATA.comment(), backlogItemComment.get());
+        assertTrue(backlogItemComment.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.comment(), backlogItemComment.get(), BACKLOG_ITEM_COMMENT_EQUAL);
     }
 
     @Test
@@ -109,7 +113,7 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithUserOrOwner(id, user);
 
         //then
-        assertTrue(backlogItemComment.isEmpty());
+        assertTrue(backlogItemComment.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
@@ -122,7 +126,7 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithUserOrOwner(id, user);
 
         //then
-        assertTrue(backlogItemComment.isEmpty());
+        assertTrue(backlogItemComment.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
@@ -135,8 +139,8 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithProjectMember(id, user);
 
         //then
-        assertTrue(backlogItemComment.isPresent());
-        assertEquals(TEST_DATA.comment(), backlogItemComment.get());
+        assertTrue(backlogItemComment.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.comment(), backlogItemComment.get(), BACKLOG_ITEM_COMMENT_EQUAL);
     }
 
     @Test
@@ -149,8 +153,8 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithProjectMember(id, user);
 
         //then
-        assertTrue(backlogItemComment.isPresent());
-        assertEquals(TEST_DATA.comment(), backlogItemComment.get());
+        assertTrue(backlogItemComment.isPresent(), OPTIONAL_PRESENT);
+        assertEquals(TEST_DATA.comment(), backlogItemComment.get(), BACKLOG_ITEM_COMMENT_EQUAL);
     }
 
     @Test
@@ -163,7 +167,7 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithProjectMember(id, user);
 
         //then
-        assertTrue(backlogItemComment.isEmpty());
+        assertTrue(backlogItemComment.isEmpty(), OPTIONAL_EMPTY);
     }
 
     @Test
@@ -176,6 +180,6 @@ public class BacklogItemCommentRepositoryTest {
         Optional<BacklogItemComment> backlogItemComment = backlogItemCommentRepository.findByIdWithProjectMember(id, user);
 
         //then
-        assertTrue(backlogItemComment.isEmpty());
+        assertTrue(backlogItemComment.isEmpty(), OPTIONAL_EMPTY);
     }
 }
