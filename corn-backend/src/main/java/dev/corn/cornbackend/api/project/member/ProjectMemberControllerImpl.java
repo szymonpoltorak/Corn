@@ -3,6 +3,8 @@ package dev.corn.cornbackend.api.project.member;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberController;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
+import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
+import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,21 +29,24 @@ public class ProjectMemberControllerImpl implements ProjectMemberController {
     @Override
     @PostMapping(value = ADD_MEMBER_TO_PROJECT_MAPPING)
     public final ProjectMemberResponse addMemberToProject(@RequestParam String username,
-                                                          @RequestParam long projectId) {
-        return projectMemberService.addMemberToProject(username, projectId);
+                                                          @RequestParam long projectId,
+                                                          @JwtAuthed User user) {
+        return projectMemberService.addMemberToProject(username, projectId, user);
     }
 
     @Override
     @GetMapping(value = GET_MEMBERS_OF_PROJECT_MAPPING)
     public final List<ProjectMemberResponse> getProjectMembers(@RequestParam long projectId,
-                                                               @RequestParam int page) {
-        return projectMemberService.getProjectMembers(projectId, page);
+                                                               @RequestParam int page,
+                                                               @JwtAuthed User user) {
+        return projectMemberService.getProjectMembers(projectId, page, user);
     }
 
     @Override
     @DeleteMapping(value = REMOVE_MEMBER_FROM_PROJECT_MAPPING)
     public final ProjectMemberResponse removeMemberFromProject(@RequestParam String username,
-                                                               @RequestParam long projectId) {
-        return projectMemberService.removeMemberFromProject(username, projectId);
+                                                               @RequestParam long projectId,
+                                                               @JwtAuthed User user) {
+        return projectMemberService.removeMemberFromProject(username, projectId, user);
     }
 }

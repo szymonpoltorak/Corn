@@ -26,4 +26,14 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
 
     Optional<Project> findByProjectIdAndOwner(long projectId, User owner);
+
+    /**
+     * Checks if given User is already associated with Project of given id
+     *
+     * @param user user to check
+     * @param projectId id of Project
+     * @return true if User is owner or project member of given Project, false otherwise
+     */
+    @Query("SELECT CASE WHEN COUNT (p) > 0 THEN true ELSE false END FROM Project p WHERE p.projectId = :projectId AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p))")
+    boolean existsByProjectMemberAndProjectId(@Param("user") User user, @Param("projectId") long projectId);
 }

@@ -32,7 +32,7 @@ class ProjectMemberControllerTest {
 
 
     @Test
-    final void test_addMemberToProject_shouldAddMemberToProject() {
+    final void test_addMemberToProject_shouldAddMemberToProject_whenCalledByOwner() {
         // given
         User user = ADD_NEW_PROJECT_DATA.owner();
         long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
@@ -45,17 +45,17 @@ class ProjectMemberControllerTest {
 
 
         // when
-        when(projectMemberService.addMemberToProject(user.getUsername(), projectId))
+        when(projectMemberService.addMemberToProject(user.getUsername(), projectId, user))
                 .thenReturn(expected);
 
-        ProjectMemberResponse actual = projectMemberController.addMemberToProject(user.getUsername(), projectId);
+        ProjectMemberResponse actual = projectMemberController.addMemberToProject(user.getUsername(), projectId, user);
 
         // then
         assertEquals(expected, actual, "Should add member to project");
     }
 
     @Test
-    final void test_getProjectMembers_shouldAddMemberToProject() {
+    final void test_getProjectMembers_shouldGetProjectMembers_whenCalledByOwner() {
         // given
         User user = ADD_NEW_PROJECT_DATA.owner();
         long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
@@ -67,17 +67,17 @@ class ProjectMemberControllerTest {
         List<ProjectMemberResponse> expected = List.of(MAPPER.toProjectMemberResponse(projectMember));
 
         // when
-        when(projectMemberService.getProjectMembers(projectId, 0))
+        when(projectMemberService.getProjectMembers(projectId, 0, user))
                 .thenReturn(expected);
 
-        List<ProjectMemberResponse> actual = projectMemberController.getProjectMembers(projectId, 0);
+        List<ProjectMemberResponse> actual = projectMemberController.getProjectMembers(projectId, 0, user);
 
         // then
         assertEquals(expected, actual, "Should add member to project");
     }
 
     @Test
-    final void test_removeMemberFromProject_shouldAddMemberToProject() {
+    final void test_removeMemberFromProject_shouldAddMemberToProject_whenCalledByOwner() {
         // given
         User user = ADD_NEW_PROJECT_DATA.owner();
         long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
@@ -89,10 +89,10 @@ class ProjectMemberControllerTest {
         ProjectMemberResponse expected = MAPPER.toProjectMemberResponse(projectMember);
 
         // when
-        when(projectMemberService.removeMemberFromProject(user.getUsername(), projectId))
+        when(projectMemberService.removeMemberFromProject(user.getUsername(), projectId, user))
                 .thenReturn(expected);
 
-        ProjectMemberResponse actual = projectMemberController.removeMemberFromProject(user.getUsername(), projectId);
+        ProjectMemberResponse actual = projectMemberController.removeMemberFromProject(user.getUsername(), projectId, user);
 
         // then
         assertEquals(expected, actual, "Should add member to project");

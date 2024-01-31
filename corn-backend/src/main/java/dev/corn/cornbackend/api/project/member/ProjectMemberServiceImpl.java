@@ -10,6 +10,7 @@ import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepo
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.interfaces.UserRepository;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
+import dev.corn.cornbackend.utils.exceptions.project.member.InvalidUsernameException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.user.UserDoesNotExistException;
 import lombok.RequiredArgsConstructor;
@@ -33,18 +34,25 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberMapper projectMemberMapper;
 
+    private static final String PROJECT_NOT_FOUND = "Project with project id: %d does not exist";
+
     @Override
-    public final ProjectMemberResponse addMemberToProject(String username, long projectId) {
+    public final ProjectMemberResponse addMemberToProject(String username, long projectId, User user) {
+
         log.info("Adding member to project with username: {} and projectId: {}", username, projectId);
 
-        User user = getUserFromRepository(username);
-        Project project = getProjectFromRepository(projectId);
+        User userToAdd = getUserFromRepository(username);
+        Project project = getProjectFromRepositoryIfOwner(projectId, user);
 
-        log.info("Found user: {} and project: {}", user, project);
+        if(projectRepository.existsByProjectMemberAndProjectId(userToAdd, projectId)) {
+            throw new InvalidUsernameException(String.format("User: %s is already owner or member of this project", username));
+        }
+
+        log.info("Found user: {} and project: {}", userToAdd, project);
 
         ProjectMember projectMember = ProjectMember
                 .builder()
-                .user(user)
+                .user(userToAdd)
                 .project(project)
                 .backlogItems(Collections.emptyList())
                 .build();
@@ -56,12 +64,12 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final List<ProjectMemberResponse> getProjectMembers(long projectId, int page) {
+    public final List<ProjectMemberResponse> getProjectMembers(long projectId, int page, User user) {
         Pageable pageable = PageRequest.of(page, MEMBERS_PAGE_SIZE);
 
         log.info("Getting project members for projectId: {}", projectId);
 
-        Project project = getProjectFromRepository(projectId);
+        Project project = getProjectFromRepositoryIfOwnerOrMember(projectId, user);
 
         log.info("Found project: {}", project);
 
@@ -76,12 +84,17 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final ProjectMemberResponse removeMemberFromProject(String username, long projectId) {
+    public final ProjectMemberResponse removeMemberFromProject(String username, long projectId, User user) {
+
+        if(username.equals(user.getUsername())) {
+            throw new InvalidUsernameException("You cannot remove yourself from the project");
+        }
+
         log.info("Removing member from project with username: {} and projectId: {}", username, projectId);
 
-        User user = getUserFromRepository(username);
+        User userToRemove = getUserFromRepository(username);
         ProjectMember projectMember = projectMemberRepository
-                .findByProjectAndUser(getProjectFromRepository(projectId), user)
+                .findByProjectAndUser(getProjectFromRepositoryIfOwner(projectId, user), userToRemove)
                 .orElseThrow(() -> new ProjectMemberDoesNotExistException(String.format("Project member of id username %s in project %s does not exist", username, projectId))
                 );
         log.info("Found projectMember: {}", projectMember);
@@ -98,9 +111,15 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
                 );
     }
 
-    private Project getProjectFromRepository(long projectId) {
-        return projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectDoesNotExistException(String.format("Project with projectId: %d does not exist", projectId))
+    private Project getProjectFromRepositoryIfOwner(long projectId, User user) {
+        return projectRepository.findByProjectIdAndOwner(projectId, user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(String.format(PROJECT_NOT_FOUND, projectId))
+                );
+    }
+
+    private Project getProjectFromRepositoryIfOwnerOrMember(long projectId, User user) {
+        return projectRepository.findByIdWithProjectMember(projectId, user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(String.format(PROJECT_NOT_FOUND, projectId))
                 );
     }
 }

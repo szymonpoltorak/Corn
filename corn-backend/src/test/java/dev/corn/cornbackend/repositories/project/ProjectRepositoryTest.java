@@ -17,10 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class ProjectRepositoryTest {
+class ProjectRepositoryTest {
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -198,4 +199,45 @@ public class ProjectRepositoryTest {
         //then
         assertTrue(project.isEmpty());
     }
+
+    @Test
+    void test_existsByProjectMemberAndProjectId_ShouldReturnTrueIfUserIsOwner() {
+        //given
+        User owner = TEST_DATA.project1And2Owner();
+        long id = TEST_DATA.project1().getProjectId();
+
+        //when
+        boolean exists = projectRepository.existsByProjectMemberAndProjectId(owner, id);
+
+        //then
+        assertTrue(exists, "User should exist");
+    }
+
+    @Test
+    void test_existsByProjectMemberAndProjectId_ShouldReturnTrueIfUserIsMember() {
+        //given
+        User member = TEST_DATA.project1Member();
+        long id = TEST_DATA.project1().getProjectId();
+
+        //when
+        boolean exists = projectRepository.existsByProjectMemberAndProjectId(member, id);
+
+        //then
+        assertTrue(exists, "User should exist");
+    }
+
+    @Test
+    void test_existsByProjectMemberAndProjectId_ShouldReturnFalseIsUserIsNotAMemberNorOwner() {
+        //given
+        User nonMember = TEST_DATA.nonProjectMember();
+        long id = TEST_DATA.project1().getProjectId();
+
+        //when
+        boolean exists = projectRepository.existsByProjectMemberAndProjectId(nonMember, id);
+
+        //then
+        assertFalse(exists, "User should not exist");
+    }
+
+
 }
