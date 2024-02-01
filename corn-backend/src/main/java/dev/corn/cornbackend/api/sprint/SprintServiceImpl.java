@@ -78,6 +78,7 @@ public class SprintServiceImpl implements SprintService {
         log.info("Getting sprints in project {} on page: {} for user: {}", projectId, page, user);
 
         Pageable pageable = PageRequest.of(page, SPRINTS_PER_PAGE);
+
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, user, pageable);
 
         log.info("Sprints found on page : {}", sprints.getTotalElements());
@@ -106,7 +107,6 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public final SprintResponse updateSprintsDescription(String description, long sprintId, User user) {
         log.info("Updating sprint with id: {} description to: {}", sprintId, description);
-
 
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));

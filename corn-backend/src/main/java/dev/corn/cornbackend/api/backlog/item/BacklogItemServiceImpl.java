@@ -53,7 +53,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
     @Override
     public final BacklogItemResponse getById(long id, User user) {
-        log.info(GETTING_BY_ID, BACKLOG_ITEM,id);
+        log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
@@ -70,23 +70,10 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
-
-        Project project = projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
-                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
-
-        log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
-
-        ProjectMember assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
-                .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
-
-        log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
-
-        Sprint sprint = sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), project)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
+        BacklogItemBuilderDto builder = prepareDataForBacklogItemCreation(backlogItemRequest, user);
 
         BacklogItem newItem = buildUpdatedBacklogItem(id, backlogItemRequest.title(), backlogItemRequest.description(),
-                assignee, sprint, project, item.getStatus(), item.getComments());
+                builder, item.getStatus(), item.getComments());
 
         log.info(SAVING_AND_RETURNING_RESPONSE_OF, newItem);
 
@@ -111,24 +98,9 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
     @Override
     public final BacklogItemResponse create(BacklogItemRequest backlogItemRequest, User user) {
-        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
+        BacklogItemBuilderDto builder = prepareDataForBacklogItemCreation(backlogItemRequest, user);
 
-        Project project = projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
-                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
-
-        log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
-
-        ProjectMember assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
-                .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
-
-        log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
-
-        Sprint sprint = sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), project)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
-
-
-        BacklogItem item = buildNewBacklogItem(backlogItemRequest.title(), backlogItemRequest.description(),
-                assignee, sprint, project);
+        BacklogItem item = buildNewBacklogItem(backlogItemRequest.title(), backlogItemRequest.description(), builder);
 
         log.info(SAVING_AND_RETURNING_RESPONSE_OF, item);
 
@@ -185,30 +157,51 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         return backlogItemMapper.backlogItemToBacklogItemDetails(backlogItem);
     }
 
-    private BacklogItem buildNewBacklogItem(String title, String description, ProjectMember assignee,
-                                            Sprint sprint, Project project) {
+    private record BacklogItemBuilderDto(Sprint sprint, Project project, ProjectMember assignee) {
+    }
+
+    private BacklogItemBuilderDto prepareDataForBacklogItemCreation(BacklogItemRequest backlogItemRequest, User user) {
+        log.info(GETTING_BY_ID, PROJECT, backlogItemRequest.projectId());
+
+        Project project = projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
+
+        log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
+
+        ProjectMember assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
+                .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
+
+        log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
+
+        Sprint sprint = sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), project)
+                .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
+
+        return new BacklogItemBuilderDto(sprint, project, assignee);
+    }
+
+    private BacklogItem buildNewBacklogItem(String title, String description, BacklogItemBuilderDto builder) {
         return BacklogItem.builder()
                 .title(title)
                 .description(description)
                 .comments(Collections.emptyList())
                 .status(ItemStatus.TODO)
-                .assignee(assignee)
-                .sprint(sprint)
-                .project(project)
+                .assignee(builder.assignee())
+                .sprint(builder.sprint())
+                .project(builder.project())
                 .build();
     }
 
-    private BacklogItem buildUpdatedBacklogItem(long id, String title, String description, ProjectMember assignee,
-                                                Sprint sprint, Project project, ItemStatus status, List<BacklogItemComment> comments) {
+    private BacklogItem buildUpdatedBacklogItem(long id, String title, String description, BacklogItemBuilderDto builder,
+                                                ItemStatus status, List<BacklogItemComment> comments) {
         return BacklogItem.builder()
                 .backlogItemId(id)
                 .title(title)
                 .description(description)
                 .comments(comments)
                 .status(status)
-                .assignee(assignee)
-                .sprint(sprint)
-                .project(project)
+                .assignee(builder.assignee())
+                .sprint(builder.sprint())
+                .project(builder.project())
                 .build();
     }
 }
