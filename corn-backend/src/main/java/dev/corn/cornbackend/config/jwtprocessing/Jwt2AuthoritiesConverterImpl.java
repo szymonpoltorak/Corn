@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @Component
-public class Jwt2AuthoritiesConverter implements Converter<Jwt, Collection<? extends GrantedAuthority>> {
+public class Jwt2AuthoritiesConverterImpl implements Converter<Jwt, Collection<? extends GrantedAuthority>> {
 
     private static final String REALM_ACCESS = "realm_access";
     private static final String RESOURCE_ACCESS = "resource_access";
@@ -24,7 +24,7 @@ public class Jwt2AuthoritiesConverter implements Converter<Jwt, Collection<? ext
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends GrantedAuthority> convert(Jwt jwt) {
+    public final Collection<? extends GrantedAuthority> convert(Jwt jwt) {
         var realmAccess = (Map<String, Object>) jwt.getClaims().getOrDefault(REALM_ACCESS, Map.of());
         var realmRoles = (Collection<String>) realmAccess.getOrDefault(ROLES, List.of());
 

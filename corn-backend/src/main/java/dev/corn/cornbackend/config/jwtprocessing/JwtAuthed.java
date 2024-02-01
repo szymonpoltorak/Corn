@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@AuthenticationPrincipal(expression = "@jwt2UserConverter.convert(#this)")
+@AuthenticationPrincipal(expression = "@jwt2UserConverterImpl.convert(#this)")
 public @interface JwtAuthed {
 }

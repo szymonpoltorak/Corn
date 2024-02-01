@@ -1,7 +1,9 @@
 package dev.corn.cornbackend.config.jwtprocessing;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+@RequiredArgsConstructor
 public enum JwtClaim {
 
     USERNAME("preferred_username"),
@@ -10,11 +12,7 @@ public enum JwtClaim {
 
     private final String claimName;
 
-    JwtClaim(String claimName) {
-        this.claimName = claimName;
-    }
-
-    public String getClaim(Jwt jwt) {
+    final String getClaim(Jwt jwt) {
         return jwt.getClaim(claimName);
     }
 
