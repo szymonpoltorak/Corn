@@ -8,9 +8,9 @@ public interface BacklogItemCommentService {
 
     BacklogItemCommentResponse addNewComment(BacklogItemCommentRequest request, User user);
 
-    BacklogItemCommentResponse updateComment(long commentId, String comment);
+    BacklogItemCommentResponse updateComment(long commentId, String comment, User user);
 
-    BacklogItemCommentResponse deleteComment(long commentId);
+    BacklogItemCommentResponse deleteComment(long commentId, User user);
 
-    BacklogItemCommentResponse getComment(long commentId);
+    BacklogItemCommentResponse getComment(long commentId, User user);
 }

@@ -17,6 +17,7 @@ import dev.corn.cornbackend.test.backlog.item.data.BacklogItemDetailsTestData;
 import dev.corn.cornbackend.test.backlog.item.data.BacklogItemListTestData;
 import dev.corn.cornbackend.test.backlog.item.data.EntityData;
 import dev.corn.cornbackend.test.backlog.item.data.UpdateBacklogItemTestData;
+import dev.corn.cornbackend.test.user.UserTestDataBuilder;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -49,7 +50,9 @@ public final class BacklogItemTestDataBuilder {
                 .status(backlogItem.getStatus().toString())
                 .build();
 
-        return new AddBacklogItemTestData(backlogItemRequest, backlogItemResponse, backlogItem);
+        User user = UserTestDataBuilder.createSampleUser();
+
+        return new AddBacklogItemTestData(backlogItemRequest, backlogItemResponse, backlogItem, user);
     }
 
     public static UpdateBacklogItemTestData updateBacklogItemTestData() {

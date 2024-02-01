@@ -10,7 +10,7 @@ public interface ProjectController {
 
     List<ProjectResponse> getProjectsOnPage(int page, User user);
 
-    ProjectResponse updateProjectsName(String name, long projectId);
+    ProjectResponse updateProjectsName(String name, long projectId, User user);
 
-    ProjectResponse deleteProject(long projectId);
+    ProjectResponse deleteProject(long projectId, User user);
 }

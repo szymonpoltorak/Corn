@@ -4,6 +4,7 @@ import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentRequest;
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponse;
 import dev.corn.cornbackend.api.backlog.comment.interfaces.BacklogItemCommentController;
 import dev.corn.cornbackend.api.backlog.comment.interfaces.BacklogItemCommentService;
+import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
 import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +34,7 @@ public class BacklogItemCommentControllerImpl implements BacklogItemCommentContr
     @PostMapping(BACKLOG_ITEM_COMMENT_ADD_MAPPING)
     public final BacklogItemCommentResponse addNewComment(
             @RequestBody BacklogItemCommentRequest request,
-            @AuthenticationPrincipal User user) {
+            @JwtAuthed User user) {
         return backlogItemCommentService.addNewComment(request, user);
     }
 
@@ -41,20 +42,25 @@ public class BacklogItemCommentControllerImpl implements BacklogItemCommentContr
     @PutMapping(BACKLOG_ITEM_COMMENT_UPDATE_MAPPING)
     public final BacklogItemCommentResponse updateComment(
             @RequestParam long commentId,
-            @RequestBody String comment) {
-        return backlogItemCommentService.updateComment(commentId, comment);
+            @RequestBody String comment,
+            @JwtAuthed User user) {
+        return backlogItemCommentService.updateComment(commentId, comment, user);
     }
 
     @Override
     @DeleteMapping(BACKLOG_ITEM_COMMENT_DELETE_MAPPING)
-    public final BacklogItemCommentResponse deleteComment(@RequestParam long commentId) {
-        return backlogItemCommentService.deleteComment(commentId);
+    public final BacklogItemCommentResponse deleteComment(
+            @RequestParam long commentId,
+            @JwtAuthed User user) {
+        return backlogItemCommentService.deleteComment(commentId, user);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_COMMENT_GET_MAPPING)
-    public final BacklogItemCommentResponse getComment(@RequestParam long commentId) {
-        return backlogItemCommentService.getComment(commentId);
+    public final BacklogItemCommentResponse getComment(
+            @RequestParam long commentId,
+            @JwtAuthed User user) {
+        return backlogItemCommentService.getComment(commentId, user);
     }
 
 

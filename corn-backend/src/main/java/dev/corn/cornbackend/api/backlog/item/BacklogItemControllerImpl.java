@@ -5,7 +5,10 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemController;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
+import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
+import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,44 +38,51 @@ public class BacklogItemControllerImpl implements BacklogItemController {
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_MAPPING)
-    public final BacklogItemResponse getById(@RequestParam long id) {
-        return backlogItemService.getById(id);
+    public final BacklogItemResponse getById(@RequestParam long id,
+                                             @JwtAuthed User user) {
+        return backlogItemService.getById(id, user);
     }
 
     @Override
     @PutMapping(BACKLOG_ITEM_UPDATE_MAPPING)
     public final BacklogItemResponse update(@RequestParam long id,
-                                            @RequestBody BacklogItemRequest backlogItemRequest) {
-        return backlogItemService.update(id, backlogItemRequest);
+                                            @RequestBody BacklogItemRequest backlogItemRequest,
+                                            @JwtAuthed User user) {
+        return backlogItemService.update(id, backlogItemRequest, user);
     }
 
     @Override
     @DeleteMapping(BACKLOG_ITEM_DELETE_MAPPING)
-    public final BacklogItemResponse deleteById(@RequestParam long id) {
-        return backlogItemService.deleteById(id);
+    public final BacklogItemResponse deleteById(@RequestParam long id,
+                                                @JwtAuthed User user) {
+        return backlogItemService.deleteById(id, user);
     }
 
     @Override
     @PostMapping(BACKLOG_ITEM_ADD_MAPPING)
-    public final BacklogItemResponse create(@RequestBody BacklogItemRequest backlogItemRequest) {
-        return backlogItemService.create(backlogItemRequest);
+    public final BacklogItemResponse create(@RequestBody BacklogItemRequest backlogItemRequest,
+                                            @JwtAuthed User user) {
+        return backlogItemService.create(backlogItemRequest, user);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_BY_SPRINT_MAPPING)
-    public final List<BacklogItemResponse> getBySprintId(@RequestParam long sprintId) {
-        return backlogItemService.getBySprintId(sprintId);
+    public final List<BacklogItemResponse> getBySprintId(@RequestParam long sprintId,
+                                                         @JwtAuthed User user) {
+        return backlogItemService.getBySprintId(sprintId, user);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_BY_PROJECT_MAPPING)
-    public final List<BacklogItemResponse> getByProjectId(@RequestParam long projectId) {
-        return backlogItemService.getByProjectId(projectId);
+    public final List<BacklogItemResponse> getByProjectId(@RequestParam long projectId,
+                                                          @JwtAuthed User user) {
+        return backlogItemService.getByProjectId(projectId, user);
     }
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_DETAILS_MAPPING)
-    public final BacklogItemDetails getDetailsById(@RequestParam long id) {
-        return backlogItemService.getDetailsById(id);
+    public final BacklogItemDetails getDetailsById(@RequestParam long id,
+                                                   @JwtAuthed User user) {
+        return backlogItemService.getDetailsById(id, user);
     }
 }
