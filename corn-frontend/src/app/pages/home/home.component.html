@@ -1,16 +1,91 @@
-<div style="display: flex; justify-content: center; align-items: center; margin-top: 10em">
-    <mat-card style="width: 400px; height: 400px; display: flex; justify-content: center; align-items: center;">
-        <mat-card-header>The header of this card</mat-card-header>
+<mat-toolbar color="primary">
+    <div class="flex bg-dark-color-settings-container-background p-1.5 rounded-lg items-center">
+        <img class="m-1.5" src="../../../assets/corn-icons/icon-128x128.png" alt="icon" width="25" height="25">
 
-        <button color="primary" mat-raised-button>Welcome to my app</button>
+        <span class="text-white text-2xl">Corn</span>
+    </div>
 
-        <button color="accent" mat-raised-button>Accent color</button>
+    <span class="flex-auto"></span>
 
-        <button color="warn" mat-raised-button>Warn color</button>
-    </mat-card>
+    <button mat-raised-button aria-label="Login">
+        <mat-icon>login</mat-icon>
+        Login
+    </button>
 
-    <mat-form-field>
-        <input matInput placeholder="Some funny placeholder">
-        <mat-hint>Some funny hint</mat-hint>
-    </mat-form-field>
-</div>
+    <span class="m-3 bg-dark-color-settings-main-background w-0.5 h-7"></span>
+
+    <button mat-raised-button aria-label="register">
+        <mat-icon>app_registration</mat-icon>
+        Register
+    </button>
+</mat-toolbar>
+
+<section class="flex justify-center p-20">
+    <section class="flex items-center gap-10">
+        <article>
+            <p class="text-3xl my-2.5">Fast and simple, as all things should be</p>
+
+            <p class="text-sm">We offer simple, responsive app to manage small scrum teams</p>
+        </article>
+
+        <div class="bg-amber-300 w-96 h-96"></div>
+    </section>
+</section>
+
+<p class="flex bg-dark-color-settings-container-background text-3xl my-0 p-5 justify-center items-center">
+    Everything you need in one app
+</p>
+
+<mat-tab-group class="bg-dark-color-settings-container-background p-5">
+    @for (feature of features; track feature) {
+        <mat-tab label="{{ feature.label }}">
+            <app-feature [feature]="feature"></app-feature>
+        </mat-tab>
+    }
+</mat-tab-group>
+
+<section class="flex justify-center p-20">
+    <section class="flex items-center gap-10">
+        <article>
+            <p class="text-3xl my-2.5">Built with modern technologies</p>
+
+            <p class="text-sm">We offer simple, responsive app to manage small scrum teams</p>
+        </article>
+
+        <div class="bg-amber-300 w-96 h-96"></div>
+    </section>
+</section>
+
+<section class="bg-dark-color-settings-container-background flex justify-center p-20">
+    <section class="flex items-center gap-10">
+        <div class="bg-amber-300 w-96 h-96"></div>
+
+        <article>
+            <p class="text-3xl my-2.5">Well documented</p>
+
+            <p class="text-sm">Our app has well documented api and code. It is prepared for expansion.</p>
+        </article>
+    </section>
+</section>
+
+<section class="flex justify-center p-20">
+    <section class="flex items-center gap-10">
+        <article>
+            <p class="text-3xl my-2.5">Followed by the best practices</p>
+
+            <p class="text-sm">
+                We follow test driven development and material design to achieve best code and ui quality.
+            </p>
+        </article>
+
+        <div class="bg-amber-300 w-96 h-96"></div>
+    </section>
+</section>
+
+<footer class="flex bg-dark-color-settings-container-background p-20 text-sm justify-center">
+    <span class="m-3 cursor-pointer">&#169; 2024 Corn Technologies, Inc. | Warsaw, Poland</span>
+
+    <span class="m-3 cursor-pointer">Privacy Policy</span>
+
+    <span class="m-3 cursor-pointer">Contact us: support&#64;cornapp.com</span>
+</footer>
