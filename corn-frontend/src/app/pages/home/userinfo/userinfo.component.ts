@@ -19,7 +19,7 @@ import { MatListModule } from '@angular/material/list';
 })
 export class UserinfoComponent {
 
-    @Input() avatarUrl: string = '';
+    @Input() avatarUrl: string = 'https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png';
     @Input() fullName: string = '';
     @Input() username: string = '';
 
