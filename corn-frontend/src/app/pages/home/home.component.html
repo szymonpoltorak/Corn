@@ -37,47 +37,11 @@
 </p>
 
 <mat-tab-group class="bg-dark-color-settings-container-background p-5">
-    <mat-tab label="Manage Projects">
-        <section class="m-20 flex gap-10">
-            <div class="bg-amber-300 w-96 h-96"></div>
-
-            <p class="w-home-tab p-10 text-justify">
-                We offer easy way to manage your different projects. Each project is one place allowing you
-                to switch between them easily.
-            </p>
-        </section>
-    </mat-tab>
-
-    <mat-tab label="Manage Sprints">
-        <section class="m-20 flex gap-10">
-            <p class="w-home-tab p-10 text-justify">
-                You can easily plan new sprints and manage them. Everything is very simple.
-            </p>
-
-            <div class="bg-amber-300 w-96 h-96"></div>
-        </section>
-    </mat-tab>
-
-    <mat-tab label="Work with Tasks">
-        <section class="m-20 flex gap-10">
-            <div class="bg-amber-300 w-96 h-96"></div>
-
-            <p class="w-home-tab p-10 text-justify">
-                Add, remove and edit tasks in appropriate sprint. Manage descriptions,
-                add comments and assign them to users.
-            </p>
-        </section>
-    </mat-tab>
-
-    <mat-tab label="Deal with Backlog">
-        <section class="m-20 flex gap-10">
-            <p class="w-home-tab p-10 text-justify">
-                Manage your backlog entries to easily deal with work to do. Easy view for whole work.
-            </p>
-
-            <div class="bg-amber-300 w-96 h-96"></div>
-        </section>
-    </mat-tab>
+    @for (feature of features; track feature) {
+        <mat-tab label="{{ feature.label }}">
+            <app-feature [feature]="feature"></app-feature>
+        </mat-tab>
+    }
 </mat-tab-group>
 
 <section class="flex justify-center p-20">
@@ -119,9 +83,9 @@
 </section>
 
 <footer class="flex bg-dark-color-settings-container-background p-20 text-sm justify-center">
-    <span class="m-2 cursor-pointer">&#169; 2024 Corn Technologies, Inc. | Warsaw, Poland</span>
+    <span class="m-3 cursor-pointer">&#169; 2024 Corn Technologies, Inc. | Warsaw, Poland</span>
 
-    <span class="m-2 cursor-pointer">Privacy Policy</span>
+    <span class="m-3 cursor-pointer">Privacy Policy</span>
 
-    <span class="m-2 cursor-pointer">Contact us: support&#64;cornapp.com</span>
+    <span class="m-3 cursor-pointer">Contact us: support&#64;cornapp.com</span>
 </footer>
