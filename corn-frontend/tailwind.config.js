@@ -28,6 +28,9 @@ export const theme = {
                 'font': '#ffffff',
             },
         },
+        width: {
+            "home-tab": "30rem"
+        }
     },
 };
 export const plugins = [];

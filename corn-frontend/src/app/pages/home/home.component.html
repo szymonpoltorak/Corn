@@ -12,7 +12,7 @@
         Login
     </button>
 
-    <span class="m-3 bg-amber-50 w-0.5 h-7"></span>
+    <span class="m-3 bg-dark-color-settings-main-background w-0.5 h-7"></span>
 
     <button mat-raised-button aria-label="register">
         <mat-icon>app_registration</mat-icon>
@@ -38,27 +38,45 @@
 
 <mat-tab-group class="bg-dark-color-settings-container-background p-5">
     <mat-tab label="Manage Projects">
-        <div class="m-20 flex items-center gap-10">
+        <section class="m-20 flex gap-10">
             <div class="bg-amber-300 w-96 h-96"></div>
-        </div>
+
+            <p class="w-home-tab p-10 text-justify">
+                We offer easy way to manage your different projects. Each project is one place allowing you
+                to switch between them easily.
+            </p>
+        </section>
     </mat-tab>
 
     <mat-tab label="Manage Sprints">
-        <div class="m-20 flex items-center gap-10">
+        <section class="m-20 flex gap-10">
+            <p class="w-home-tab p-10 text-justify">
+                You can easily plan new sprints and manage them. Everything is very simple.
+            </p>
+
             <div class="bg-amber-300 w-96 h-96"></div>
-        </div>
+        </section>
     </mat-tab>
 
-    <mat-tab label="Assign Tasks">
-        <div class="m-20 flex items-center gap-10">
+    <mat-tab label="Work with Tasks">
+        <section class="m-20 flex gap-10">
             <div class="bg-amber-300 w-96 h-96"></div>
-        </div>
+
+            <p class="w-home-tab p-10 text-justify">
+                Add, remove and edit tasks in appropriate sprint. Manage descriptions,
+                add comments and assign them to users.
+            </p>
+        </section>
     </mat-tab>
 
     <mat-tab label="Deal with Backlog">
-        <div class="m-20 flex items-center gap-10">
+        <section class="m-20 flex gap-10">
+            <p class="w-home-tab p-10 text-justify">
+                Manage your backlog entries to easily deal with work to do. Easy view for whole work.
+            </p>
+
             <div class="bg-amber-300 w-96 h-96"></div>
-        </div>
+        </section>
     </mat-tab>
 </mat-tab-group>
 
