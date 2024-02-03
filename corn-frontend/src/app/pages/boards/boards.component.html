@@ -1,0 +1,35 @@
+<mat-drawer-container class="h-full">
+    <mat-drawer [opened]="sidebarShown" mode="side">
+        <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
+
+            <span class="text-center text-[20px] m-[4px]">{{projectName}}</span>
+
+            <div class="border-t border-gray-300 my-2"></div>
+
+            <sidebar-button (click)="navigateToTimeline()" [selected]="selected == 'timeline'"
+                [iconPath]="'assets/sidebar/timeline.svg'" [label]="'Timeline'"></sidebar-button>
+
+            <sidebar-button (click)="navigateToBacklog()" [selected]="selected == 'backlog'"
+                [iconPath]="'assets/sidebar/backlog.svg'" [label]="'Backlog'"></sidebar-button>
+
+            <sidebar-button (click)="{}" [selected]="selected == 'board'" [iconPath]="'assets/sidebar/board.svg'"
+                [label]="'Board'"></sidebar-button>
+
+            <sidebar-button (click)="{}" [selected]="selected == 'reports'" [iconPath]="'assets/sidebar/reports.svg'"
+                [label]="'Reports'"></sidebar-button>
+
+            <sidebar-button (click)="{}" [selected]="selected == 'goals'" [iconPath]="'assets/sidebar/goals.svg'"
+                [label]="'Goals'"></sidebar-button>
+
+            <sidebar-button (click)="{}" [selected]="selected == 'issues'" [iconPath]="'assets/sidebar/issues.svg'"
+                [label]="'Issues'"></sidebar-button>
+
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="p-[6px]">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-drawer-content>
+
+</mat-drawer-container>
