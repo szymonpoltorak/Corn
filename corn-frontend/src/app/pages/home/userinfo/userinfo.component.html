@@ -1,0 +1,26 @@
+<img class="w-[48px] h-[48px] object-cover rounded-full cursor-pointer" [src]="avatarUrl" [matMenuTriggerFor]="menu">
+
+<mat-menu #menu="matMenu">
+
+    <div mat-menu-item>
+        <div class="grid grid-cols-[36px,1fr] gap-7 mb-3">
+            <div class="flex items-center">
+                <img class="w-[36px] h-[36px] object-cover rounded-full cursor-pointer" [src]="avatarUrl">
+            </div>
+            <div class="items-center overflow-hidden break-all">
+                <span class="cursor-pointer text-lg">{{fullName}}</span>
+                <br>
+                <span class="cursor-pointer text-base">{{username}}</span>
+            </div>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="logout.emit()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+    </button>
+
+</mat-menu>
+
