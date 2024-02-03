@@ -4,7 +4,9 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "start-dev": "ng serve --host 0.0.0.0 --disable-host-check",
+        "start-dev": "concurrently \"npm:serve-dev\" \"npm:tailwind-dev\"",
+        "serve-dev": "ng serve --host 0.0.0.0 --disable-host-check",
+        "tailwind-dev": "tailwindcss build -o src/styles/tailwind.css --watch",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
         "test": "ng test"
@@ -22,6 +24,7 @@
         "@angular/platform-browser-dynamic": "^17.1.0",
         "@angular/router": "^17.1.0",
         "@angular/service-worker": "^17.1.0",
+        "concurrently": "^8.2.2",
         "keycloak-angular": "^15.1.0",
         "keycloak-js": "^23.0.5",
         "rxjs": "~7.8.0",
