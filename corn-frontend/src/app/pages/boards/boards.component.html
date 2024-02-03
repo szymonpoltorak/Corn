@@ -1,0 +1,16 @@
+<mat-drawer-container class="h-full">
+    <mat-drawer [opened]="sidebarShown" mode="side">
+        <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
+            <span class="text-center text-[20px] m-[4px]">{{projectName}}</span>
+            <sidebar-button (click)="navigateToBacklog()" [selected]="selected == 'backlog'" [iconName]="'menu'"
+                [label]="'Backlog'"></sidebar-button>
+            <sidebar-button (click)="navigateToTimeline()" [selected]="selected == 'timeline'" [iconName]="'menu'"
+                [label]="'Timeline'"></sidebar-button>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="p-[6px]">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
