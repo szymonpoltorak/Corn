@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -24,15 +24,14 @@ import { Location } from '@angular/common';
     ],
     templateUrl: './boards.component.html',
 })
-export class BoardsComponent {
+export class BoardsComponent implements OnInit {
 
-    @Input() sidebarShown: boolean = false;
-    @Input() projectName: string = '';
+    @Input() sidebarShown: boolean = true;
+    @Input() projectName: string = 'Your Project';
 
     selected: string = '';
 
     constructor(
-        readonly route: ActivatedRoute,
         readonly router: Router,
         readonly location: Location,
     ) { }
