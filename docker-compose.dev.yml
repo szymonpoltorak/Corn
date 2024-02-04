@@ -47,7 +47,7 @@ services:
         container_name: corn-keycloak-initializer
         image: corn-keycloak-initializer
         build:
-            context: keycloak-initializer
+            context: auth-server/keycloak-initializer
             dockerfile: Dockerfile.dev
         depends_on:
             corn-keycloak:
@@ -57,21 +57,21 @@ services:
             - KCCFG_LOGIN_THEME_NAME=corn
             - KC_SERVER_URL=http://corn-keycloak:8080
         volumes:
-            - "./keycloak-initializer:/keycloak-initializer"
+            - "./auth-server/keycloak-initializer:/keycloak-initializer"
             - "./.cache/keycloak-initializer/.gradle:/keycloak-initializer/.gradle"
             - "./.cache/keycloak-initializer/build:/keycloak-initializer/build"
     corn-keycloak-theme:
         container_name: corn-keycloak-theme
         image: corn-keycloak-theme
         build:
-            context: keycloak-theme
+            context: auth-server/keycloak-theme
             dockerfile: Dockerfile.dev
         depends_on:
             corn-keycloak:
                 condition: service_healthy
         tty: true
         volumes:
-            - "./keycloak-theme:/keycloak-theme"
+            - "./auth-server/keycloak-theme:/keycloak-theme"
             - "./.cache/keycloak-theme/node_modules:/keycloak-theme/node_modules"
     corn-keycloak:
         container_name: corn-keycloak
@@ -93,7 +93,7 @@ services:
             test: "curl -f http://localhost:8080/admin || exit 1"
         volumes:
             #- "./keycloak-theme/disable-theme-cache.cli:/opt/jboss/startup-scripts/disable-theme-cache.cli"
-            - "./keycloak-theme/themes/corn/:/opt/keycloak/themes/corn/"
+            - "./auth-server/keycloak-theme/themes/corn/:/opt/keycloak/themes/corn/"
     corn-keycloak-postgres:
         container_name: corn-keycloak-postgres
         image: postgres:alpine
