@@ -2,6 +2,7 @@ package dev.corn.cornbackend.entities.sprint;
 
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.constants.SprintConstants;
+import dev.corn.cornbackend.entities.sprint.interfaces.DateController;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import dev.corn.cornbackend.utils.validators.interfaces.LaterThan;
@@ -35,7 +36,7 @@ import java.util.Objects;
 @LaterThan(firstDateGetterName = SprintConstants.SPRINT_FIRST_DATE_GETTER_NAME,
         secondDateGetterName = SprintConstants.SPRINT_SECOND_DATE_GETTER_NAME,
         message = SprintConstants.SPRINT_LATER_THAN_MSG)
-public class Sprint implements Jsonable {
+public class Sprint implements Jsonable, DateController {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long sprintId;
@@ -94,19 +95,23 @@ public class Sprint implements Jsonable {
         return result;
     }
 
-    public boolean isStartBefore(LocalDate date) {
+    @Override
+    public final boolean isStartBefore(LocalDate date) {
         return sprintStartDate.isBefore(date);
     }
 
-    public boolean isStartAfter(LocalDate date) {
+    @Override
+    public final boolean isStartAfter(LocalDate date) {
         return sprintStartDate.isAfter(date);
     }
 
-    public boolean isEndBefore(LocalDate date) {
+    @Override
+    public final boolean isEndBefore(LocalDate date) {
         return sprintEndDate.isBefore(date);
     }
 
-    public boolean isEndAfter(LocalDate date) {
+    @Override
+    public final boolean isEndAfter(LocalDate date) {
         return sprintEndDate.isAfter(date);
     }
 

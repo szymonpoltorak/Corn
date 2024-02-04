@@ -41,6 +41,9 @@
             ],
             "@pages/*": [
                 "./src/app/pages/*"
+            ],
+            "@assets/*": [
+                "./src/assets/*"
             ]
         }
     },

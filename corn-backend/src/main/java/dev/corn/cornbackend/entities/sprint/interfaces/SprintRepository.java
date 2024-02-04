@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository for Sprint entity
+ */
 @Repository
 public interface SprintRepository extends JpaRepository<Sprint, Long> {
 
@@ -36,8 +39,20 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
     @Query("SELECT s FROM Sprint s WHERE s.sprintId = :id AND (s.project.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm WHERE pm.project = s.project))")
     Optional<Sprint> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
 
+    /**
+     * Finds a Sprint by id and checks if the user is the owner of the project associated with the Sprint
+     * @param sprintId id of Sprint
+     * @param project project
+     * @return an Optional containing the found Sprint if it exists, empty Optional otherwise
+     */
     Optional<Sprint> findBySprintIdAndProject(long sprintId, Project project);
 
+    /**
+     * Finds a Sprint by id and checks if the user is the owner of the project associated with the Sprint
+     * @param id id of Sprint
+     * @param user user requesting access
+     * @return an Optional containing the found Sprint if it exists, empty Optional otherwise
+     */
     @Query("SELECT s FROM Sprint s WHERE s.sprintId = :id AND s.project.owner = :user")
     Optional<Sprint> findByIdWithProjectOwner(@Param("id") long id, @Param("user") User user);
 
