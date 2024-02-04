@@ -1,4 +1,4 @@
-<section class="m-20 flex gap-10">
+<section class="m-20 flex gap-10 justify-center">
     @if (feature.isLeft) {
         <article>
             <p class="text-3xl my-2.5">
@@ -14,7 +14,7 @@
     <div class="bg-amber-300 w-96 h-96"></div>
 
     @if (!feature.isLeft) {
-        <article class="flex flex-col">
+        <article>
             <p class="text-3xl my-2.5">
                 {{ feature.title }}
             </p>
