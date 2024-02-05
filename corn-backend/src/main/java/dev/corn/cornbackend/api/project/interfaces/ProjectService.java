@@ -23,7 +23,7 @@ public interface ProjectService {
      *
      * @param page the page number
      * @param user the user who is getting the projects
-     * @return the list of projects
+     * @return the list of project responses
      */
     List<ProjectResponse> getProjectsOnPage(int page, User user);
 

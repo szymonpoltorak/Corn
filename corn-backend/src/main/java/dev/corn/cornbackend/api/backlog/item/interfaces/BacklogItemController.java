@@ -25,7 +25,7 @@ public interface BacklogItemController {
      *
      * @param id                 id of the backlog item
      * @param backlogItemRequest new data for the backlog item
-     * @param user               user to update the backlog item for
+     * @param user               backlog item owner
      * @return the updated backlog item
      */
     BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest, User user);

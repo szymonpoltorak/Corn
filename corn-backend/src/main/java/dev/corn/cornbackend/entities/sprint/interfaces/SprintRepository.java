@@ -40,7 +40,7 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
     Optional<Sprint> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
 
     /**
-     * Finds a Sprint by id and checks if the user is the owner of the project associated with the Sprint
+     * Finds a Sprint by id and by project
      * @param sprintId id of Sprint
      * @param project project
      * @return an Optional containing the found Sprint if it exists, empty Optional otherwise
