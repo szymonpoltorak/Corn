@@ -7,21 +7,21 @@
             <div class="border-t border-gray-300 my-2"></div>
 
             <sidebar-button (click)="navigateToTimeline()" [selected]="selected == 'timeline'"
-                [iconPath]="'assets/sidebar/timeline.svg'" [label]="'Timeline'"></sidebar-button>
+                [iconName]="'matViewTimeline'" [label]="'Timeline'"></sidebar-button>
 
             <sidebar-button (click)="navigateToBacklog()" [selected]="selected == 'backlog'"
-                [iconPath]="'assets/sidebar/backlog.svg'" [label]="'Backlog'"></sidebar-button>
+                [iconName]="'bootstrapArchiveFill'" [label]="'Backlog'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'board'" [iconPath]="'assets/sidebar/board.svg'"
+            <sidebar-button (click)="{}" [selected]="selected == 'board'" [iconName]="'akarClipboard'"
                 [label]="'Board'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'reports'" [iconPath]="'assets/sidebar/reports.svg'"
+            <sidebar-button (click)="{}" [selected]="selected == 'reports'" [iconName]="'octGraph'"
                 [label]="'Reports'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'goals'" [iconPath]="'assets/sidebar/goals.svg'"
+            <sidebar-button (click)="{}" [selected]="selected == 'goals'" [iconName]="'octGoal'"
                 [label]="'Goals'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'issues'" [iconPath]="'assets/sidebar/issues.svg'"
+            <sidebar-button (click)="{}" [selected]="selected == 'issues'" [iconName]="'matError'"
                 [label]="'Issues'"></sidebar-button>
 
         </div>
