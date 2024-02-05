@@ -78,11 +78,20 @@ public class User implements Jsonable, ServiceUser {
 
     @Override
     public final boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null) return false;
+        if (this == object) {
+            return true;
+        }
+        if (object == null) {
+            return false;
+        }
+
         Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
+
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+
         User user = (User) object;
         return getUserId() == user.getUserId();
     }
