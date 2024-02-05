@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -62,38 +63,6 @@ public class Sprint implements Jsonable {
     @Future(message = SprintConstants.SPRINT_END_DATE_FUTURE_MSG)
     private LocalDate sprintEndDate;
 
-    @Override
-    public final boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof Sprint sprint)) {
-            return false;
-        }
-        if (sprintId != sprint.sprintId || !Objects.equals(sprintName, sprint.sprintName)) {
-            return false;
-        }
-        if (!Objects.equals(sprintDescription, sprint.sprintDescription)) {
-            return false;
-        }
-        if (!Objects.equals(sprintStartDate, sprint.sprintStartDate)) {
-            return false;
-        }
-        return Objects.equals(sprintEndDate, sprint.sprintEndDate);
-    }
-
-    @Override
-    public final int hashCode() {
-        int result = (int) (sprintId ^ (sprintId >>> 32));
-
-        result = 31 * result + (sprintName != null ? sprintName.hashCode() : 0);
-        result = 31 * result + (sprintDescription != null ? sprintDescription.hashCode() : 0);
-        result = 31 * result + (sprintStartDate != null ? sprintStartDate.hashCode() : 0);
-        result = 31 * result + (sprintEndDate != null ? sprintEndDate.hashCode() : 0);
-
-        return result;
-    }
-
     public boolean isStartBefore(LocalDate date) {
         return sprintStartDate.isBefore(date);
     }
@@ -118,5 +87,21 @@ public class Sprint implements Jsonable {
     @Override
     public final String toPrettyJson() {
         return JsonMapper.toPrettyJson(this);
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null) return false;
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Sprint sprint = (Sprint) object;
+        return getSprintId() == sprint.getSprintId();
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

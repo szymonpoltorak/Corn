@@ -20,9 +20,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Builder
@@ -50,34 +50,6 @@ public class ProjectMember implements Jsonable {
     private User user;
 
     @Override
-    public final boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof ProjectMember member)) {
-            return false;
-        }
-        if (projectMemberId != member.projectMemberId || !Objects.equals(backlogItems, member.backlogItems)) {
-            return false;
-        }
-        if (!Objects.equals(project, member.project)) {
-            return false;
-        }
-        return Objects.equals(user, member.user);
-    }
-
-    @Override
-    public final int hashCode() {
-        int result = (int) (projectMemberId ^ (projectMemberId >>> 32));
-
-        result = 31 * result + (backlogItems != null ? backlogItems.hashCode() : 0);
-        result = 31 * result + (project != null ? project.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-
-        return result;
-    }
-
-    @Override
     public final String toJson() {
         return JsonMapper.toJson(this);
     }
@@ -85,5 +57,21 @@ public class ProjectMember implements Jsonable {
     @Override
     public final String toPrettyJson() {
         return JsonMapper.toPrettyJson(this);
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null) return false;
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        ProjectMember that = (ProjectMember) object;
+        return getProjectMemberId() == that.getProjectMemberId();
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
