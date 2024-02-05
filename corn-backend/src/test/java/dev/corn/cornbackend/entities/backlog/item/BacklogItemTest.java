@@ -61,19 +61,7 @@ class BacklogItemTest {
     }
 
     @Test
-    final void testEquals_DifferentDescription() {
-        // Given
-        BacklogItem item1 = createSampleBacklogItem();
-        BacklogItem item2 = createSampleBacklogItem();
-
-        item2.setDescription("dasdas");
-
-        // When-Then
-        assertNotEquals(item1, item2, "Backlog items should not be equal");
-    }
-
-    @Test
-    final void testEquals_DifferentStatus() {
+    final void testEquals_DifferentStatusSameID() {
         // Given
         BacklogItem item1 = createSampleBacklogItem();
         BacklogItem item2 = createSampleBacklogItem();
@@ -81,11 +69,11 @@ class BacklogItemTest {
         item2.setStatus(ItemStatus.IN_PROGRESS);
 
         // When-Then
-        assertNotEquals(item1, item2, "Backlog items should not be equal");
+        assertEquals(item1, item2, "Backlog items should be equal");
     }
 
     @Test
-    final void testEquals_DifferentSprint() {
+    final void testEquals_DifferentSprintSameID() {
         // Given
         BacklogItem item1 = createSampleBacklogItem();
         BacklogItem item2 = createSampleBacklogItem();
@@ -93,7 +81,7 @@ class BacklogItemTest {
         item2.setSprint(Sprint.builder().sprintName("dasdas").build());
 
         // When-Then
-        assertNotEquals(item1, item2, "Backlog items should not be equal");
+        assertEquals(item1, item2, "Backlog items should be equal");
     }
 
     @Test
@@ -129,7 +117,7 @@ class BacklogItemTest {
     }
 
     @Test
-    final void testHashCode_DifferentBacklogItems_HashCodeNotMatches() {
+    final void testHashCode_DifferentBacklogItems_HashCodeMatches() {
         // Given
         BacklogItem item1 = createSampleBacklogItem();
         BacklogItem item2 = createSampleBacklogItem();
@@ -137,7 +125,17 @@ class BacklogItemTest {
         item2.setBacklogItemId(2L);
 
         // When-Then
-        assertNotEquals(item1.hashCode(), item2.hashCode(), "Hash codes should not match");
+        assertEquals(item1.hashCode(), item2.hashCode(), "Hash codes should match");
+    }
+
+    @Test
+    final void testHashCode_DifferentObjects_HashCodeNotMatches() {
+        //Given
+        BacklogItem item1 = createSampleBacklogItem();
+        Object object = new Object();
+
+        // When-Then
+        assertNotEquals(item1.hashCode(), object.hashCode(), "Hash codes should not match");
     }
 
     @Test

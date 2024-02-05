@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
@@ -80,23 +81,23 @@ public class User implements Jsonable, ServiceUser {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof User user) || userId != user.userId) {
+        if (object == null) {
             return false;
         }
-        if (!Objects.equals(name, user.name) || !Objects.equals(surname, user.surname)) {
+
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+
+        if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-        return Objects.equals(username, user.username);
+
+        User user = (User) object;
+        return getUserId() == user.getUserId();
     }
 
     @Override
     public final int hashCode() {
-        int result = (int) (userId ^ (userId >>> 32));
-
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
-        result = 31 * result + (username != null ? username.hashCode() : 0);
-
-        return result;
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
