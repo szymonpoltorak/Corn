@@ -62,25 +62,25 @@ class SprintTest {
     }
 
     @Test
-    final void testEquals_differentDescription() {
+    final void testEquals_differentID() {
         // Given
-        Sprint sprint = Sprint.builder().sprintDescription("dasda").build();
-        Sprint sprint2 = new Sprint();
+        Sprint sprint = Sprint.builder().sprintId(1L).build();
+        Sprint sprint2 = Sprint.builder().sprintId(2L).build();
 
         // When-Then
         assertNotEquals(sprint, sprint2,
-                "Sprint should not be equal to another sprint with different description");
+                "Sprint should not be equal to another sprint with different id");
     }
 
     @Test
-    final void testEquals_differentStartDate() {
+    final void testEquals_differentStartDateSameID() {
         // Given
-        Sprint sprint = Sprint.builder().sprintStartDate(LocalDate.now()).build();
-        Sprint sprint2 = new Sprint();
+        Sprint sprint = Sprint.builder().sprintStartDate(LocalDate.now()).sprintId(1L).build();
+        Sprint sprint2 = Sprint.builder().sprintId(1L).build();
 
         // When-Then
-        assertNotEquals(sprint, sprint2,
-                "Sprint should not be equal to another sprint with different start date");
+        assertEquals(sprint, sprint2,
+                "Sprint should be equal to another sprint with different start date but the same id");
     }
 
     @Test
@@ -148,7 +148,7 @@ class SprintTest {
     }
 
     @Test
-    final void testHashCode_DifferentSprints_HashCodeNotMatches() {
+    final void testHashCode_DifferentSprints_HashCodeMatches() {
         // Given
         Sprint sprint1 = createSampleSprint();
         Sprint sprint2 = createSampleSprint();
@@ -156,7 +156,7 @@ class SprintTest {
         sprint2.setSprintId(2L);
 
         // When-Then
-        assertNotEquals(sprint1.hashCode(), sprint2.hashCode(), "Hash code should not match");
+        assertEquals(sprint1.hashCode(), sprint2.hashCode(), "Hash code should match");
     }
 
     @Test

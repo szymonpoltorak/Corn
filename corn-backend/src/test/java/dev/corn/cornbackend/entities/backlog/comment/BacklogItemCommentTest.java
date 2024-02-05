@@ -44,7 +44,7 @@ class BacklogItemCommentTest {
         BacklogItemComment item1 = createSampleBacklogItemComment();
         BacklogItemComment item2 = createSampleBacklogItemComment();
 
-        item2.setUser(User.builder().username("dasdas").build());
+        item2.setBacklogItemCommentId(2L);
 
         // When-Then
         assertNotEquals(item1, item2, "Backlog items should not be equal");
@@ -116,7 +116,7 @@ class BacklogItemCommentTest {
     }
 
     @Test
-    final void testHashCode_DifferentBacklogItemComments_HashCodeNotMatches() {
+    final void testHashCode_DifferentBacklogItemComments_HashCodeMatches() {
         // Given
         BacklogItemComment comment1 = createSampleBacklogItemComment();
         BacklogItemComment comment2 = createSampleBacklogItemComment();
@@ -124,7 +124,7 @@ class BacklogItemCommentTest {
         comment2.setBacklogItemCommentId(2L);
 
         // When-Then
-        assertNotEquals(comment1.hashCode(), comment2.hashCode(), "Hash codes should not match");
+        assertEquals(comment1.hashCode(), comment2.hashCode(), "Hash codes should match");
     }
 
     @Test

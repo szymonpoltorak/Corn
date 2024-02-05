@@ -63,7 +63,7 @@ class ProjectMemberTest {
         ProjectMember member1 = createSampleProjectMember();
         ProjectMember member2 = createSampleProjectMember();
 
-        member2.setProject(Project.builder().name("dasdas").build());
+        member2.setProjectMemberId(2L);
 
         // When-Then
         assertNotEquals(member1, member2, "Project members should not be equal");
@@ -103,7 +103,7 @@ class ProjectMemberTest {
     }
 
     @Test
-    final void testHashCode_DifferentProjectMembers_HashCodeNotMatches() {
+    final void testHashCode_DifferentProjectMembers_HashCodeMatches() {
         // Given
         ProjectMember member1 = createSampleProjectMember();
         ProjectMember member2 = createSampleProjectMember();
@@ -111,7 +111,7 @@ class ProjectMemberTest {
         member2.setProjectMemberId(2L);
 
         // When-Then
-        assertNotEquals(member1.hashCode(), member2.hashCode(), "Hash codes should not match");
+        assertEquals(member1.hashCode(), member2.hashCode(), "Hash codes should match");
     }
 
     @Test
