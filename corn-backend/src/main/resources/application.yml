@@ -1,6 +1,14 @@
 server:
     port: 8081
 
+    http2:
+        enabled: true
+
+    compression:
+        enabled: true
+        mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+        min-response-size: 1024
+
 spring:
     datasource:
         url: ${SPRING_DATASOURCE_URL}
@@ -11,12 +19,14 @@ spring:
         hibernate:
             ddl-auto: create-drop
         show-sql: true
+
         properties:
             hibernate:
                 jdbc:
                     lob:
                         non_contextual_creation: true
                 dialect: org.hibernate.dialect.PostgreSQLDialect
+
                 format_sql: true
     security:
         oauth2:

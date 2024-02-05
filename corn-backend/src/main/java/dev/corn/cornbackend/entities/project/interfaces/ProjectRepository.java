@@ -11,8 +11,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository for Project entity
+ */
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
+    /**
+     * Finds all Projects by owner
+     *
+     * @param owner owner of Projects
+     * @param pageable pagination information
+     * @return a Page of Projects
+     */
     Page<Project> findAllByOwnerOrderByName(User owner, Pageable pageable);
 
     /**
@@ -25,6 +35,13 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("SELECT p FROM Project p WHERE p.projectId = :id AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p))")
     Optional<Project> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
 
+    /**
+     * Finds a Project by id and owner
+     *
+     * @param projectId id of Project
+     * @param owner owner of Project
+     * @return an Optional containing the found Project if it exists, empty Optional otherwise
+     */
     Optional<Project> findByProjectIdAndOwner(long projectId, User owner);
 
     /**

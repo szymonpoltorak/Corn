@@ -5,6 +5,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import { FeatureComponent } from "@pages/home/feature/feature.component";
 import { Feature } from "@core/interfaces/home/feature.interface";
+import { NgOptimizedImage } from "@angular/common";
 
 @Component({
     selector: 'app-home',
@@ -15,7 +16,8 @@ import { Feature } from "@core/interfaces/home/feature.interface";
         MatButton,
         MatTabGroup,
         MatTab,
-        FeatureComponent
+        FeatureComponent,
+        NgOptimizedImage
     ],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
