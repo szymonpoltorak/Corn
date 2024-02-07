@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {NgIcon, provideIcons} from "@ng-icons/core";
-import {heroUserCircleSolid} from "@ng-icons/heroicons/solid";
 import {bootstrapArchiveFill} from "@ng-icons/bootstrap-icons";
 import {octGoal, octGraph} from "@ng-icons/octicons";
 import {akarClipboard} from "@ng-icons/akar-icons";

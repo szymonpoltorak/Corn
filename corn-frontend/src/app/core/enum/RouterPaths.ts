@@ -3,4 +3,5 @@ export enum RouterPaths {
 
     HOME_PATH = "home",
     BOARDS_PATH = "boards",
+    PROJECT_LIST_PATH = "projects"
 }
