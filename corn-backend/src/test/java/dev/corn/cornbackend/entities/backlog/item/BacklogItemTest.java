@@ -2,6 +2,8 @@ package dev.corn.cornbackend.entities.backlog.item;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemType;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
@@ -293,6 +295,7 @@ class BacklogItemTest {
                 .title("Sample Title")
                 .description("Sample description")
                 .status(ItemStatus.TODO)
+                .itemType(ItemType.TASK)
                 .comments(new ArrayList<>())
                 .assignee(new ProjectMember())
                 .sprint(new Sprint())
