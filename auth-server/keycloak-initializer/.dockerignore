@@ -1,0 +1,9 @@
+.dockerignore
+.gitignore
+README.md
+.idea
+.vscode
+Dockerfile.prod
+Dockerfile.dev
+out
+build

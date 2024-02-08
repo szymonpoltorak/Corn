@@ -1,0 +1,12 @@
+.gradle
+.idea
+gradlew
+gradle
+gradlew.bat
+README.md
+Dockerfile.prod
+Dockerfile.dev
+.gitignore
+out
+build
+.vscode

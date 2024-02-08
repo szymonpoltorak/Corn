@@ -1,15 +1,27 @@
-FROM gradle:8.2-jdk17-alpine
+FROM alpine:3.19.1 AS build
+
+RUN apk update --no-cache && apk add --no-cache gradle
 
 WORKDIR /keycloak-initializer
 
 COPY build.gradle .
+
 COPY settings.gradle .
 
 COPY src/ src/
 
-RUN gradle build
+RUN gradle build -x test
 
 RUN mv build/libs/keycloak-initializer-1.0.jar keycloak-initializer.jar
 
-CMD ["java", "-jar", "keycloak-initializer.jar"]
+FROM alpine:3.19.1
 
+WORKDIR /keycloak-initializer
+
+RUN apk update --no-cache && apk add --no-cache openjdk17-jre
+
+COPY --from=build /keycloak-initializer/keycloak-initializer.jar .
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "keycloak-initializer.jar"]
