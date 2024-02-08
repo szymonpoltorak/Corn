@@ -1,9 +1,12 @@
-.dockerignore
-.gitignore
-README.md
+.gradle
 .idea
-.vscode
+gradlew
+gradle
+gradlew.bat
+README.md
 Dockerfile.prod
 Dockerfile.dev
+.gitignore
 out
 build
+.vscode
