@@ -2,27 +2,27 @@
     <mat-drawer [opened]="sidebarShown" mode="side">
         <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
 
-            <span class="text-center text-[20px] m-[4px]">{{projectName}}</span>
+            <span class="text-center text-[20px] m-[4px]">{{ projectName }}</span>
 
             <div class="border-t border-gray-300 my-2"></div>
 
-            <sidebar-button (click)="navigateToTimeline()" [selected]="selected == 'timeline'"
-                [iconName]="'matViewTimeline'" [label]="'Timeline'"></sidebar-button>
+            <sidebar-button (click)="navigateToTimeline()" [iconName]="'matViewTimeline'"
+                            [label]="'Timeline'" [selected]="selected == 'timeline'"></sidebar-button>
 
-            <sidebar-button (click)="navigateToBacklog()" [selected]="selected == 'backlog'"
-                [iconName]="'bootstrapArchiveFill'" [label]="'Backlog'"></sidebar-button>
+            <sidebar-button (click)="navigateToBacklog()" [iconName]="'bootstrapArchiveFill'"
+                            [label]="'Backlog'" [selected]="selected == 'backlog'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'board'" [iconName]="'akarClipboard'"
-                [label]="'Board'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'akarClipboard'" [label]="'Board'"
+                            [selected]="selected == 'board'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'reports'" [iconName]="'octGraph'"
-                [label]="'Reports'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'octGraph'" [label]="'Reports'"
+                            [selected]="selected == 'reports'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'goals'" [iconName]="'octGoal'"
-                [label]="'Goals'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'octGoal'" [label]="'Goals'"
+                            [selected]="selected == 'goals'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'issues'" [iconName]="'matError'"
-                [label]="'Issues'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'matError'" [label]="'Issues'"
+                            [selected]="selected == 'issues'"></sidebar-button>
 
         </div>
     </mat-drawer>
