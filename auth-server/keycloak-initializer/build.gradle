@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
 mainClassName = 'keycloakinitializer.Main'
@@ -24,16 +25,11 @@ application {
     mainClass = mainClassName
 }
 
-jar {
+shadowJar {
+    mergeServiceFiles()
     manifest {
         attributes(
             'Main-Class': 'keycloakinitializer.Main'
         )
     }
-    
-    from configurations.runtimeClasspath.collect {
-        it.isDirectory() ? it : zipTree(it)
-    }
-
-    duplicatesStrategy = 'exclude'
 }

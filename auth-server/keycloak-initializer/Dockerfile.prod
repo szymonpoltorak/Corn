@@ -12,7 +12,7 @@ COPY src/ src/
 
 RUN gradle build -x test
 
-RUN mv build/libs/keycloak-initializer-1.0.jar keycloak-initializer.jar
+RUN mv build/libs/keycloak-initializer-1.0-all.jar keycloak-initializer.jar
 
 FROM alpine:3.19.1
 
