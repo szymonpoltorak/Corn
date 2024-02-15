@@ -7,15 +7,11 @@
 
     <span class="flex-auto"></span>
 
-    <ng-container *ngIf="isLoggedIn; else buttons;">
-        <ng-container *ngIf="userProfile;">
-            <userinfo [username]="userProfile!.username || ''"
-                [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName" (logout)="logout()">
-            </userinfo>
-        </ng-container>
-    </ng-container>
-
-    <ng-template #buttons>
+    @if (isLoggedIn && userProfile) {
+        <userinfo [username]="userProfile!.username || ''" [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"
+            (logout)="logout()">
+        </userinfo>
+    } @else {
         <button mat-raised-button aria-label="Login" (click)="login()">
             <mat-icon>login</mat-icon>
             Login
@@ -27,7 +23,7 @@
             <mat-icon>app_registration</mat-icon>
             Register
         </button>
-    </ng-template>
+    }
 
 </mat-toolbar>
 
@@ -49,9 +45,9 @@
 
 <mat-tab-group class="bg-dark-color-settings-container-background p-5">
     @for (feature of features; track feature) {
-    <mat-tab label="{{ feature.label }}">
-        <app-feature [feature]="feature"></app-feature>
-    </mat-tab>
+        <mat-tab label="{{ feature.label }}">
+            <app-feature [feature]="feature"></app-feature>
+        </mat-tab>
     }
 </mat-tab-group>
 
