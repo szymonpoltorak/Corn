@@ -53,6 +53,11 @@ export class BoardsComponent implements OnInit {
         this.router.navigate(['/boards/timeline']);
     }
 
+    navigateToBoard() {
+        //TODO substitute literals with values from BoardPaths.ts enum in these methods
+        this.router.navigate(['/boards/board']);
+    }
+
     toggleSidebar() {
         this.sidebarShown = !this.sidebarShown;
     }
