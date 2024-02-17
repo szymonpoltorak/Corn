@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButton } from "@angular/material/button";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon } from "@angular/material/icon";
@@ -24,12 +24,13 @@ import { Router } from '@angular/router';
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
     constructor(
         readonly router: Router,
         readonly keycloak: KeycloakService
-    ) { }
+    ) {
+    }
 
     ngOnInit() {
         if (this.keycloak.isLoggedIn()) {
@@ -38,11 +39,11 @@ export class HomeComponent {
         }
     }
 
-    login() {
+    login(): void {
         this.keycloak.login();
     }
 
-    register() {
+    register(): void {
         this.keycloak.register();
     }
 

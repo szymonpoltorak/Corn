@@ -4,17 +4,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {  MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule, Location } from '@angular/common';
 import { SidebarButton } from './sidebar-button/sidebar-button.component';
-import { Location } from '@angular/common';
 import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { FeatureComponent } from '@pages/home/feature/feature.component';
 import { UserinfoComponent } from '@pages/boards/userinfo/userinfo.component';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
-import {  MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
     selector: 'app-boards',
@@ -40,7 +39,7 @@ import {  MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
     templateUrl: './boards.component.html',
 })
 export class BoardsComponent implements OnInit {
-    
+
     @Input() sidebarShown: boolean = true;
     @Input() projectName: string = 'Your Project';
 
@@ -53,12 +52,13 @@ export class BoardsComponent implements OnInit {
         readonly router: Router,
         readonly location: Location,
         readonly keycloak: KeycloakService,
-    ) { }
+    ) {
+    }
 
     async ngOnInit() {
         this.selected = this.location.path().split('/').pop() || '';
         this.router.events.subscribe((val) => {
-            if(val instanceof NavigationEnd) {
+            if (val instanceof NavigationEnd) {
                 this.selected = val.url.split('/').pop() || '';
             }
         });
@@ -69,19 +69,19 @@ export class BoardsComponent implements OnInit {
         }
     }
 
-    navigateToBacklog() {
+    navigateToBacklog(): void {
         this.router.navigate(['/boards/backlog']);
     }
 
-    navigateToTimeline() {
+    navigateToTimeline(): void {
         this.router.navigate(['/boards/timeline']);
     }
 
-    toggleSidebar() {
+    toggleSidebar(): void {
         this.sidebarShown = !this.sidebarShown;
-    } 
+    }
 
-    logout() {
+    logout(): void {
         this.keycloak.logout();
     }
 
