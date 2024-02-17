@@ -1,4 +1,30 @@
-<mat-drawer-container class="h-full">
+<mat-toolbar color="primary">
+    <div class="flex space-x-4 items-center">
+        <button mat-icon-button (click)="toggleSidebar()">
+            <mat-icon>{{sidebarShown ? 'menu_open' : 'menu'}}</mat-icon>
+        </button>
+
+        <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+            Your Projects
+            <mat-icon iconPositionEnd>{{t.menuOpen ? 'expand_less' : 'expand_more'}}</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>Some Project</button>
+            <button mat-menu-item>Another Project</button>
+        </mat-menu>
+    </div>
+
+    <span class="flex-auto"></span>
+
+    @if (isLoggedIn && userProfile) {
+        <userinfo [username]="userProfile!.username || ''" [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"
+            (logout)="logout()">
+        </userinfo>
+    }
+</mat-toolbar>
+
+<mat-drawer-container style="min-height: calc(100vh - 64px);">
     <mat-drawer [opened]="sidebarShown" mode="side">
         <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
 
@@ -31,5 +57,4 @@
             <router-outlet></router-outlet>
         </div>
     </mat-drawer-content>
-
 </mat-drawer-container>

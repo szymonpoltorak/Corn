@@ -5,7 +5,9 @@ import { MatIcon } from "@angular/material/icon";
 import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import { FeatureComponent } from "@pages/home/feature/feature.component";
 import { Feature } from "@core/interfaces/home/feature.interface";
-import { NgOptimizedImage } from "@angular/common";
+import { KeycloakService } from 'keycloak-angular';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -17,12 +19,33 @@ import { NgOptimizedImage } from "@angular/common";
         MatTabGroup,
         MatTab,
         FeatureComponent,
-        NgOptimizedImage
+        CommonModule,
     ],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+
+    constructor(
+        readonly router: Router,
+        readonly keycloak: KeycloakService
+    ) { }
+
+    ngOnInit() {
+        if (this.keycloak.isLoggedIn()) {
+            //TODO implement proper auth guard
+            this.router.navigate(['/boards/backlog']);
+        }
+    }
+
+    login() {
+        this.keycloak.login();
+    }
+
+    register() {
+        this.keycloak.register();
+    }
+
     protected readonly features: Feature[] = [
         {
             content: "We offer easy way to manage your different projects. Each project is one place allowing you to switch between them easily.",
