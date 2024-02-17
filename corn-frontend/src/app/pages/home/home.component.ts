@@ -6,7 +6,7 @@ import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import { FeatureComponent } from "@pages/home/feature/feature.component";
 import { Feature } from "@core/interfaces/home/feature.interface";
 import { KeycloakService } from 'keycloak-angular';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
         MatTab,
         FeatureComponent,
         CommonModule,
+        NgOptimizedImage,
     ],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
