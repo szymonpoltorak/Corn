@@ -1,1 +1,40 @@
 <h1>Board</h1>
+
+<div class="w-400 max-w-full mr-0 mb-25 inline-block align-top ml-[24px] min-w-[300px]">
+    <h2 class="text-xl font-semibold mb-4">To do</h2>
+
+    <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo" [cdkDropListConnectedTo]="[doneList, inprogressList]"
+        class="border border-solid border-gray-900 min-h-[200px] container-background rounded-md overflow-hidden block"
+        (cdkDropListDropped)="drop2($event)">
+        @for (item of todo; track item) {
+            <app-taskcard cdkDrag [content]="item.content" [taskid]="item.taskid" [assigneeAvatarUrl]="item.assigneeAvatar" [assigneeName]="item.assigneeName">
+            </app-taskcard>
+        }
+    </div>
+</div>
+
+<div class="w-400 max-w-full mb-25 inline-block align-top ml-[24px] min-w-[300px]">
+    <h2 class="text-xl font-semibold mb-4">Done</h2>
+
+    <div cdkDropList #inprogressList="cdkDropList" [cdkDropListData]="inprogress" [cdkDropListConnectedTo]="[doneList, todoList]"
+        class="border border-solid border-gray-900 min-h-[200px] container-background rounded-md overflow-hidden block"
+        (cdkDropListDropped)="drop2($event)">
+        @for (item of inprogress; track item) {
+            <app-taskcard cdkDrag [content]="item.content" [taskid]="item.taskid" [assigneeAvatarUrl]="item.assigneeAvatar" [assigneeName]="item.assigneeName">
+            </app-taskcard>
+        }
+    </div>
+</div>
+
+<div class="w-400 max-w-full mb-25 inline-block align-top ml-[24px] min-w-[300px]">
+    <h2 class="text-xl font-semibold mb-4">In Progress</h2>
+
+    <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList, inprogressList]"
+        class="border border-solid border-gray-900 min-h-[200px] container-background rounded-md overflow-hidden block"
+        (cdkDropListDropped)="drop2($event)">
+        @for (item of done; track item) {
+            <app-taskcard cdkDrag [content]="item.content" [taskid]="item.taskid" [assigneeAvatarUrl]="item.assigneeAvatar" [assigneeName]="item.assigneeName">
+            </app-taskcard>
+        }
+    </div>
+</div>
