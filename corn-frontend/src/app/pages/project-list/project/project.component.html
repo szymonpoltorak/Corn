@@ -1,12 +1,14 @@
 <div class="background">
     <div matRipple>
         <div class="project">
+
             <div class="title">
                 <h1 matTooltip="{{title}}">{{ title }}</h1>
                 @if(title !== '') {
                     <div class="line"></div>
                 }
             </div>
+
             <div class="member-row">
                 @for (member of members | slice:0:3; track 1) {
                     <div class="member" matTooltip="{{member}}">
@@ -19,6 +21,7 @@
                     </div>
                 }
             </div>
+
         </div>
     </div>
 </div>

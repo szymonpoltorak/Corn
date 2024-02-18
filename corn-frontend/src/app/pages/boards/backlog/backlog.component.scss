@@ -1,0 +1,34 @@
+@import '../../../../styles/theme';
+$background-color: map-get($dark-color-settings, container-background-color);
+$background-color-hover: lighten($background-color, 5%);
+
+.circle {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle ng-icon {
+  font-size: 1.5em;
+}
+
+.todo {
+  background-color: #737373;
+}
+
+.in-progress {
+  background-color: #0089c5;
+}
+
+.done {
+  background-color: #029b40;
+}
+
+table .table-row:hover {
+  cursor: pointer;
+  background-color: $background-color-hover;
+  outline: 1.5px solid rgba(194, 194, 194, 0.8);
+}

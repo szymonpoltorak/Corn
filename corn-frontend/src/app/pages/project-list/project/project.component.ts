@@ -18,7 +18,6 @@ import {MatTooltip} from "@angular/material/tooltip";
 export class ProjectComponent {
 
   @Input() title: string = '';
-  @Input() owner: string = '';
   @Input() members: string[] = [];
 
   getInitials(member: string): string {
