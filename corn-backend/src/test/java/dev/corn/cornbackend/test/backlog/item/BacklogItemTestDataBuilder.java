@@ -7,7 +7,7 @@ import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
-import dev.corn.cornbackend.entities.backlog.item.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;

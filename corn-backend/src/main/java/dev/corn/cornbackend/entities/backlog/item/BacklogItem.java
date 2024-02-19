@@ -2,6 +2,8 @@ package dev.corn.cornbackend.entities.backlog.item;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemType;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
@@ -71,6 +73,10 @@ public class BacklogItem implements Jsonable {
     @ManyToOne
     @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_PROJECT_NULL_MSG)
     private Project project;
+
+    @Enumerated(value = EnumType.STRING)
+    @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_TYPE_NULL_MSG)
+    private ItemType itemType;
 
     @Override
     public final String toJson() {
