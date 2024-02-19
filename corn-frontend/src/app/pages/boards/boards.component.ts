@@ -49,9 +49,9 @@ export class BoardsComponent implements OnInit {
     userProfile?: KeycloakProfile;
 
     constructor(
-        readonly router: Router,
-        readonly location: Location,
-        readonly keycloak: KeycloakService,
+        protected readonly router: Router,
+        protected readonly location: Location,
+        protected readonly keycloak: KeycloakService,
     ) {
     }
 
