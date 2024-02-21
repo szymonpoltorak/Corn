@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+}
+
+mainClassName = 'keycloakinitializer.Main'
+
+group = 'keycloakinitializer'
+version = '1.0'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.keycloak:keycloak-admin-client:20.0.1'
+}
+
+application {
+    mainClass = mainClassName
+}
+
+shadowJar {
+    mergeServiceFiles()
+    manifest {
+        attributes(
+            'Main-Class': 'keycloakinitializer.Main'
+        )
+    }
+}

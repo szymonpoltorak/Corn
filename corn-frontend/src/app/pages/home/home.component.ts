@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButton } from "@angular/material/button";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon } from "@angular/material/icon";
@@ -6,9 +6,8 @@ import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import { FeatureComponent } from "@pages/home/feature/feature.component";
 import { Feature } from "@core/interfaces/home/feature.interface";
 import { KeycloakService } from 'keycloak-angular';
-import { KeycloakProfile } from 'keycloak-js';
-import { CommonModule } from '@angular/common';
-import { UserinfoComponent } from './userinfo/userinfo.component';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -20,37 +19,32 @@ import { UserinfoComponent } from './userinfo/userinfo.component';
         MatTabGroup,
         MatTab,
         FeatureComponent,
-        UserinfoComponent,
         CommonModule,
+        NgOptimizedImage,
     ],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
 })
-export class HomeComponent {
-
-    isLoggedIn: boolean = false;
-    userProfile?: KeycloakProfile;
+export class HomeComponent implements OnInit {
 
     constructor(
+        readonly router: Router,
         readonly keycloak: KeycloakService
-    ) { }
+    ) {
+    }
 
-    async ngOnInit() {
-        this.isLoggedIn = this.keycloak.isLoggedIn();
-        if (this.isLoggedIn) {
-            this.userProfile = await this.keycloak.loadUserProfile();
+    ngOnInit() {
+        if (this.keycloak.isLoggedIn()) {
+            //TODO implement proper auth guard
+            this.router.navigate(['/boards/backlog']);
         }
     }
 
-    login() {
+    login(): void {
         this.keycloak.login();
     }
 
-    logout() {
-        this.keycloak.logout();
-    }
-
-    register() {
+    register(): void {
         this.keycloak.register();
     }
 

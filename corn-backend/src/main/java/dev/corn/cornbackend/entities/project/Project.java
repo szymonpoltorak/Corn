@@ -22,9 +22,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Builder
@@ -54,30 +54,6 @@ public class Project implements Jsonable {
     private User owner;
 
     @Override
-    public final boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof Project project)) {
-            return false;
-        }
-        if (projectId != project.projectId || !Objects.equals(name, project.name)) {
-            return false;
-        }
-        return Objects.equals(sprints, project.sprints);
-    }
-
-    @Override
-    public final int hashCode() {
-        int result = (int) (projectId ^ (projectId >>> 32));
-
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (sprints != null ? sprints.hashCode() : 0);
-
-        return result;
-    }
-
-    @Override
     public final String toJson() {
         return JsonMapper.toJson(this);
     }
@@ -85,5 +61,30 @@ public class Project implements Jsonable {
     @Override
     public final String toPrettyJson() {
         return JsonMapper.toPrettyJson(this);
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null) {
+            return false;
+        }
+
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+
+        Project project = (Project) object;
+        return getProjectId() == project.getProjectId();
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

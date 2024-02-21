@@ -12,11 +12,25 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository for BacklogItem entities
+ */
 @Repository
 public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> {
-
+    /**
+     * Finds all BacklogItems associated with a Sprint
+     *
+     * @param sprint Sprint to find BacklogItems for
+     * @return List of BacklogItems associated with the Sprint
+     */
     List<BacklogItem> getBySprint(Sprint sprint);
 
+    /**
+     * Finds all BacklogItems associated with a Project
+     *
+     * @param project Project to find BacklogItems for
+     * @return List of BacklogItems associated with the Project
+     */
     List<BacklogItem> getByProject(Project project);
 
     /**

@@ -2,6 +2,7 @@ package dev.corn.cornbackend.entities.sprint;
 
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.constants.SprintConstants;
+import dev.corn.cornbackend.entities.sprint.interfaces.DateController;
 import dev.corn.cornbackend.utils.json.JsonMapper;
 import dev.corn.cornbackend.utils.json.interfaces.Jsonable;
 import dev.corn.cornbackend.utils.validators.interfaces.LaterThan;
@@ -21,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -35,7 +37,7 @@ import java.util.Objects;
 @LaterThan(firstDateGetterName = SprintConstants.SPRINT_FIRST_DATE_GETTER_NAME,
         secondDateGetterName = SprintConstants.SPRINT_SECOND_DATE_GETTER_NAME,
         message = SprintConstants.SPRINT_LATER_THAN_MSG)
-public class Sprint implements Jsonable {
+public class Sprint implements Jsonable, DateController {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long sprintId;
@@ -63,50 +65,22 @@ public class Sprint implements Jsonable {
     private LocalDate sprintEndDate;
 
     @Override
-    public final boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof Sprint sprint)) {
-            return false;
-        }
-        if (sprintId != sprint.sprintId || !Objects.equals(sprintName, sprint.sprintName)) {
-            return false;
-        }
-        if (!Objects.equals(sprintDescription, sprint.sprintDescription)) {
-            return false;
-        }
-        if (!Objects.equals(sprintStartDate, sprint.sprintStartDate)) {
-            return false;
-        }
-        return Objects.equals(sprintEndDate, sprint.sprintEndDate);
-    }
-
-    @Override
-    public final int hashCode() {
-        int result = (int) (sprintId ^ (sprintId >>> 32));
-
-        result = 31 * result + (sprintName != null ? sprintName.hashCode() : 0);
-        result = 31 * result + (sprintDescription != null ? sprintDescription.hashCode() : 0);
-        result = 31 * result + (sprintStartDate != null ? sprintStartDate.hashCode() : 0);
-        result = 31 * result + (sprintEndDate != null ? sprintEndDate.hashCode() : 0);
-
-        return result;
-    }
-
     public boolean isStartBefore(LocalDate date) {
         return sprintStartDate.isBefore(date);
     }
 
-    public boolean isStartAfter(LocalDate date) {
+    @Override
+    public final boolean isStartAfter(LocalDate date) {
         return sprintStartDate.isAfter(date);
     }
 
-    public boolean isEndBefore(LocalDate date) {
+    @Override
+    public final boolean isEndBefore(LocalDate date) {
         return sprintEndDate.isBefore(date);
     }
 
-    public boolean isEndAfter(LocalDate date) {
+    @Override
+    public final boolean isEndAfter(LocalDate date) {
         return sprintEndDate.isAfter(date);
     }
 
@@ -118,5 +92,30 @@ public class Sprint implements Jsonable {
     @Override
     public final String toPrettyJson() {
         return JsonMapper.toPrettyJson(this);
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null) {
+            return false;
+        }
+
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+
+        Sprint sprint = (Sprint) object;
+        return getSprintId() == sprint.getSprintId();
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

@@ -1,0 +1,11 @@
+# Required volumes:
+#     - "./keycloak-theme:/keycloak-theme"
+#     - "./.cache/keycloak-theme/node_modules:/keycloak-theme/node_modules"
+
+FROM alpine:3.19.1
+
+RUN apk update --no-cache && apk add --no-cache nodejs npm
+
+WORKDIR /keycloak-theme
+
+CMD ["/bin/sh", "-c", "npm install;npm run build:corn:dev"]

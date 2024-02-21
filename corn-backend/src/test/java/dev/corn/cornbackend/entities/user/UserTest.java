@@ -59,7 +59,7 @@ class UserTest {
         User user1 = createSampleUser();
         User user2 = createSampleUser();
 
-        user2.setName("John2");
+        user2.setUserId(2L);
 
         // When-Then
         assertNotEquals(user1, user2, "Users should not be equal");
@@ -109,7 +109,7 @@ class UserTest {
     }
 
     @Test
-    final void testHashCode_DifferentUsers_HashCodeNotMatches() {
+    final void testHashCode_DifferentUsers_HashCodeMatches() {
         // Given
         User user1 = createSampleUser();
         User user2 = createSampleUser();
@@ -117,7 +117,7 @@ class UserTest {
         user2.setUserId(2L);
 
         // When-Then
-        assertNotEquals(user1.hashCode(), user2.hashCode(), "Hash codes should not match");
+        assertEquals(user1.hashCode(), user2.hashCode(), "Hash codes should match");
     }
 
     @Test

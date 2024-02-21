@@ -2,7 +2,8 @@ package dev.corn.cornbackend.repositories;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
-import dev.corn.cornbackend.entities.backlog.item.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemType;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
@@ -21,6 +22,7 @@ public class SampleEntitiesBuilder {
                 .assignee(null)
                 .description("Description")
                 .project(null)
+                .itemType(ItemType.TASK)
                 .title("Title")
                 .status(ItemStatus.TODO)
                 .build();

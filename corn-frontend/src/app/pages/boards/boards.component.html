@@ -1,28 +1,54 @@
-<mat-drawer-container class="h-full">
+<mat-toolbar color="primary">
+    <div class="flex space-x-4 items-center">
+        <button mat-icon-button (click)="toggleSidebar()">
+            <mat-icon>{{sidebarShown ? 'menu_open' : 'menu'}}</mat-icon>
+        </button>
+
+        <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+            Your Projects
+            <mat-icon iconPositionEnd>{{t.menuOpen ? 'expand_less' : 'expand_more'}}</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>Some Project</button>
+            <button mat-menu-item>Another Project</button>
+        </mat-menu>
+    </div>
+
+    <span class="flex-auto"></span>
+
+    @if (isLoggedIn && userProfile) {
+        <userinfo [username]="userProfile!.username || ''" [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"
+            (logout)="logout()">
+        </userinfo>
+    }
+</mat-toolbar>
+
+<mat-drawer-container style="min-height: calc(100vh - 64px);">
     <mat-drawer [opened]="sidebarShown" mode="side">
         <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
 
-            <span class="text-center text-[20px] m-[4px]">{{projectName}}</span>
+            <span class="text-center text-[20px] m-[4px]">{{ projectName }}</span>
 
             <div class="border-t border-gray-300 my-2"></div>
 
-            <sidebar-button (click)="navigateToTimeline()" [selected]="selected == 'timeline'"
-                [iconPath]="'assets/sidebar/timeline.svg'" [label]="'Timeline'"></sidebar-button>
+            <sidebar-button (click)="navigateToTimeline()" [iconName]="'matViewTimeline'"
+                            [label]="'Timeline'" [selected]="selected == 'timeline'"></sidebar-button>
 
-            <sidebar-button (click)="navigateToBacklog()" [selected]="selected == 'backlog'"
-                [iconPath]="'assets/sidebar/backlog.svg'" [label]="'Backlog'"></sidebar-button>
+            <sidebar-button (click)="navigateToBacklog()" [iconName]="'bootstrapArchiveFill'"
+                            [label]="'Backlog'" [selected]="selected == 'backlog'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'board'" [iconPath]="'assets/sidebar/board.svg'"
-                [label]="'Board'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'akarClipboard'" [label]="'Board'"
+                            [selected]="selected == 'board'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'reports'" [iconPath]="'assets/sidebar/reports.svg'"
-                [label]="'Reports'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'octGraph'" [label]="'Reports'"
+                            [selected]="selected == 'reports'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'goals'" [iconPath]="'assets/sidebar/goals.svg'"
-                [label]="'Goals'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'octGoal'" [label]="'Goals'"
+                            [selected]="selected == 'goals'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [selected]="selected == 'issues'" [iconPath]="'assets/sidebar/issues.svg'"
-                [label]="'Issues'"></sidebar-button>
+            <sidebar-button (click)="{}" [iconName]="'matError'" [label]="'Issues'"
+                            [selected]="selected == 'issues'"></sidebar-button>
 
         </div>
     </mat-drawer>
@@ -31,5 +57,4 @@
             <router-outlet></router-outlet>
         </div>
     </mat-drawer-content>
-
 </mat-drawer-container>

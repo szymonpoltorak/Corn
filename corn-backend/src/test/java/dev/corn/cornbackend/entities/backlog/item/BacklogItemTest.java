@@ -2,6 +2,8 @@ package dev.corn.cornbackend.entities.backlog.item;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemType;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
@@ -61,19 +63,7 @@ class BacklogItemTest {
     }
 
     @Test
-    final void testEquals_DifferentDescription() {
-        // Given
-        BacklogItem item1 = createSampleBacklogItem();
-        BacklogItem item2 = createSampleBacklogItem();
-
-        item2.setDescription("dasdas");
-
-        // When-Then
-        assertNotEquals(item1, item2, "Backlog items should not be equal");
-    }
-
-    @Test
-    final void testEquals_DifferentStatus() {
+    final void testEquals_DifferentStatusSameID() {
         // Given
         BacklogItem item1 = createSampleBacklogItem();
         BacklogItem item2 = createSampleBacklogItem();
@@ -81,11 +71,11 @@ class BacklogItemTest {
         item2.setStatus(ItemStatus.IN_PROGRESS);
 
         // When-Then
-        assertNotEquals(item1, item2, "Backlog items should not be equal");
+        assertEquals(item1, item2, "Backlog items should be equal");
     }
 
     @Test
-    final void testEquals_DifferentSprint() {
+    final void testEquals_DifferentSprintSameID() {
         // Given
         BacklogItem item1 = createSampleBacklogItem();
         BacklogItem item2 = createSampleBacklogItem();
@@ -93,7 +83,7 @@ class BacklogItemTest {
         item2.setSprint(Sprint.builder().sprintName("dasdas").build());
 
         // When-Then
-        assertNotEquals(item1, item2, "Backlog items should not be equal");
+        assertEquals(item1, item2, "Backlog items should be equal");
     }
 
     @Test
@@ -129,7 +119,7 @@ class BacklogItemTest {
     }
 
     @Test
-    final void testHashCode_DifferentBacklogItems_HashCodeNotMatches() {
+    final void testHashCode_DifferentBacklogItems_HashCodeMatches() {
         // Given
         BacklogItem item1 = createSampleBacklogItem();
         BacklogItem item2 = createSampleBacklogItem();
@@ -137,7 +127,17 @@ class BacklogItemTest {
         item2.setBacklogItemId(2L);
 
         // When-Then
-        assertNotEquals(item1.hashCode(), item2.hashCode(), "Hash codes should not match");
+        assertEquals(item1.hashCode(), item2.hashCode(), "Hash codes should match");
+    }
+
+    @Test
+    final void testHashCode_DifferentObjects_HashCodeNotMatches() {
+        //Given
+        BacklogItem item1 = createSampleBacklogItem();
+        Object object = new Object();
+
+        // When-Then
+        assertNotEquals(item1.hashCode(), object.hashCode(), "Hash codes should not match");
     }
 
     @Test
@@ -295,6 +295,7 @@ class BacklogItemTest {
                 .title("Sample Title")
                 .description("Sample description")
                 .status(ItemStatus.TODO)
+                .itemType(ItemType.TASK)
                 .comments(new ArrayList<>())
                 .assignee(new ProjectMember())
                 .sprint(new Sprint())

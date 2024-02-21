@@ -2,6 +2,8 @@ package dev.corn.cornbackend.entities.backlog.item;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemType;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
@@ -25,9 +27,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Builder
@@ -72,40 +74,9 @@ public class BacklogItem implements Jsonable {
     @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_PROJECT_NULL_MSG)
     private Project project;
 
-    @Override
-    public final boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof BacklogItem that) || backlogItemId != that.backlogItemId) {
-            return false;
-        }
-        if (!Objects.equals(description, that.description) || !Objects.equals(title, that.title)) {
-            return false;
-        }
-        if (!Objects.equals(comments, that.comments) || status != that.status) {
-            return false;
-        }
-        if (!Objects.equals(sprint, that.sprint) || !Objects.equals(assignee, that.assignee)) {
-            return false;
-        }
-        return Objects.equals(project, that.project);
-    }
-
-    @Override
-    public final int hashCode() {
-        int result = (int) (backlogItemId ^ (backlogItemId >>> 32));
-
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (comments != null ? comments.hashCode() : 0);
-        result = 31 * result + (assignee != null ? assignee.hashCode() : 0);
-        result = 31 * result + (sprint != null ? sprint.hashCode() : 0);
-        result = 31 * result + (project != null ? project.hashCode() : 0);
-
-        return result;
-    }
+    @Enumerated(value = EnumType.STRING)
+    @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_TYPE_NULL_MSG)
+    private ItemType itemType;
 
     @Override
     public final String toJson() {
@@ -115,5 +86,30 @@ public class BacklogItem implements Jsonable {
     @Override
     public final String toPrettyJson() {
         return JsonMapper.toPrettyJson(this);
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null) {
+            return false;
+        }
+
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+
+        BacklogItem that = (BacklogItem) object;
+        return getBacklogItemId() == that.getBacklogItemId();
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

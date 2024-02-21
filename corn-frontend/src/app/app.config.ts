@@ -4,6 +4,8 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { ErrorInterceptor } from "@core/interceptors/error.interceptor";
 import { KeycloakService } from 'keycloak-angular';
 
 function initializeKeycloak(keycloak: KeycloakService) {
@@ -30,6 +32,11 @@ export const appConfig: ApplicationConfig = {
             registrationStrategy: 'registerWhenStable:30000'
         }),
         provideAnimations(),
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
+            multi: true
+        },
         {
             provide: APP_INITIALIZER,
             useFactory: initializeKeycloak,

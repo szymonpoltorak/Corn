@@ -7,11 +7,25 @@ import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * Mapper for the entity BacklogItem and its DTO BacklogItemResponse.
+ */
 @Mapper(componentModel = "spring", uses = SprintMapper.class)
 public interface BacklogItemMapper {
-
+    /**
+     * Maps a BacklogItem to a BacklogItemResponse.
+     *
+     * @param backlogItem The BacklogItem to map.
+     * @return The mapped BacklogItemResponse.
+     */
     BacklogItemResponse backlogItemToBacklogItemResponse(BacklogItem backlogItem);
 
+    /**
+     * Maps a BacklogItem to a BacklogItemDetails.
+     *
+     * @param backlogItem The BacklogItem to map.
+     * @return The mapped BacklogItemDetails.
+     */
     @Mapping(target = "sprint", source = "sprint")
     BacklogItemDetails backlogItemToBacklogItemDetails(BacklogItem backlogItem);
 }

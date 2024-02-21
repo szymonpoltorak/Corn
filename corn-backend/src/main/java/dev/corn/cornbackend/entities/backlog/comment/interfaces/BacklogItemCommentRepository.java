@@ -9,9 +9,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository for BacklogItemComment
+ */
 @Repository
 public interface BacklogItemCommentRepository extends JpaRepository<BacklogItemComment, Long> {
-
+    /**
+     * Finds a BacklogItemComment by id and user
+     *
+     * @param backlogItemCommentId id of BacklogItemComment
+     * @param user user requesting access
+     * @return an Optional containing the found BacklogItemComment if it exists, empty Optional otherwise
+     */
     Optional<BacklogItemComment> findByBacklogItemCommentIdAndUser(long backlogItemCommentId, User user);
 
     /**
