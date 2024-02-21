@@ -3,6 +3,7 @@ package dev.corn.cornbackend.api.backlog.item;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemMapper;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -53,7 +56,11 @@ class BacklogItemServiceImplTest {
 
     private final AddBacklogItemTestData BACKLOG_ITEM_TEST_DATA = BacklogItemTestDataBuilder.addBacklogItemTestData();
     private final EntityData ENTITY_DATA = BacklogItemTestDataBuilder.entityData();
-    private final UpdateBacklogItemTestData BACKLOG_ITEM_UPDATE_TEST_DATA = BacklogItemTestDataBuilder.updateBacklogItemTestData();
+    private final UpdateBacklogItemTestData BACKLOG_ITEM_UPDATE_TEST_DATA = BacklogItemTestDataBuilder
+            .updateBacklogItemTestData(ItemStatus.IN_PROGRESS);
+
+    private final UpdateBacklogItemTestData BACKLOG_ITEM_UPDATE_FINISH_DATA = BacklogItemTestDataBuilder
+            .updateBacklogItemTestData(ItemStatus.DONE);
     private final BacklogItemListTestData BACKLOG_ITEM_LIST_TEST_DATA = BacklogItemTestDataBuilder.backlogItemListTestData();
     private final BacklogItemDetailsTestData BACKLOG_ITEM_DETAILS_TEST_DATA = BacklogItemTestDataBuilder.backlogItemDetailsTestData();
 
@@ -202,9 +209,45 @@ class BacklogItemServiceImplTest {
 
         BacklogItemResponse expected = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemResponse();
 
+        BacklogItemResponse actual = backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER);
+
         //then
-        assertEquals(expected, backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER),
-                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+        assertEquals(expected, actual, SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+        assertNull(actual.taskFinishDate(), "Task finish date should be null on DONE status");
+    }
+
+    @Test
+    final void update_shouldReturnResponseWithTaskFinishDate() {
+        //given
+        long id = 1L;
+        BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_FINISH_DATA.backlogItemRequest();
+
+        //when
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.of(BACKLOG_ITEM_UPDATE_FINISH_DATA.backLogItem()));
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
+
+        when(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
+
+        when(backlogItemRepository.save(BACKLOG_ITEM_UPDATE_FINISH_DATA.updatedBacklogItem()))
+                .thenReturn(BACKLOG_ITEM_UPDATE_FINISH_DATA.updatedBacklogItem());
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_UPDATE_FINISH_DATA.updatedBacklogItem()))
+                .thenReturn(BACKLOG_ITEM_UPDATE_FINISH_DATA.backlogItemResponse());
+
+        BacklogItemResponse expected = BACKLOG_ITEM_UPDATE_FINISH_DATA.backlogItemResponse();
+
+        BacklogItemResponse actual = backlogItemServiceImpl.update(id, backlogItemRequest, SAMPLE_USER);
+
+        //then
+        assertEquals(expected, actual, SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+        assertNotNull(actual.taskFinishDate(), "Task finish date should not be null on not DONE status");
     }
 
     @Test

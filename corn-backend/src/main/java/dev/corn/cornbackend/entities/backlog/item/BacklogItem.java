@@ -29,6 +29,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -56,6 +57,8 @@ public class BacklogItem implements Jsonable {
     @Enumerated(value = EnumType.STRING)
     @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_STATUS_NULL_MSG)
     private ItemStatus status;
+
+    private LocalDate taskFinishDate;
 
     @OneToMany
     @ToString.Exclude
