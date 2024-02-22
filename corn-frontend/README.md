@@ -38,6 +38,7 @@ docker run -p 4200:80 corn-frontend
 * Keycloak Service,
 * Nginx,
 * NgIcons,
+* TypeScript,
 * Docker,
 * Tailwind CSS,
 * Scss
