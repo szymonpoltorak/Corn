@@ -1,4 +1,4 @@
 export enum BoardsPaths {
-    BACKLOG="backlog",
-    TIMELINE="timeline",
+    BACKLOG = "backlog",
+    TIMELINE = "timeline",
 }

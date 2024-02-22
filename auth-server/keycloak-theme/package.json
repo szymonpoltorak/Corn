@@ -1,22 +1,20 @@
 {
-  "name": "corn/keycloak-theme",
-  "version": "1.0.0",
-  "scripts": {
-    "build:corn:dev": "tailwindcss -i ./styles/styles.css -o ./themes/corn/login/resources/css/styles.css --watch",
-    "build:corn": "NODE_ENV=production tailwindcss -i ./styles/styles.css -o ./themes/corn/login/resources/css/styles.css --minify",
-    "prettify": "prettier --write '**/*.{js,jsx}'",
-    "prepare": "husky install"
-  },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "prettier --write"
-    ]
-  },
-  "devDependencies": {
-    "@tailwindcss/forms": "^0.5.0",
-    "husky": "^7.0.4",
-    "lint-staged": "^12.3.7",
-    "prettier": "^2.6.2",
-    "tailwindcss": "^3.4.0"
-  }
+    "name": "corn-theme",
+    "version": "1.0.0",
+    "scripts": {
+        "build:corn:dev": "tailwindcss -i ./styles/styles.css -o ./themes/corn/login/resources/css/styles.css --watch",
+        "build:corn:prod": "NODE_ENV=production tailwindcss -i ./styles/styles.css -o ./themes/corn/login/resources/css/styles.css --minify",
+        "prettify": "prettier --write '**/*.{js,jsx}'"
+    },
+    "lint-staged": {
+        "*.{js,jsx}": [
+            "prettier --write"
+        ]
+    },
+    "devDependencies": {
+        "@tailwindcss/forms": "^0.5.0",
+        "lint-staged": "^12.3.7",
+        "prettier": "^2.6.2",
+        "tailwindcss": "^3.4.0"
+    }
 }

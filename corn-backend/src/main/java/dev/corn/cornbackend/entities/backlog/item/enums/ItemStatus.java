@@ -1,4 +1,4 @@
-package dev.corn.cornbackend.entities.backlog.item;
+package dev.corn.cornbackend.entities.backlog.item.enums;
 
 public enum ItemStatus {
     TODO,

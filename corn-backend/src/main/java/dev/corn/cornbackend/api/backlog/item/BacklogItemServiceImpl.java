@@ -6,7 +6,7 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
-import dev.corn.cornbackend.entities.backlog.item.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemMapper;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.project.Project;
@@ -72,8 +72,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
         BacklogItemBuilderDto builder = prepareDataForBacklogItemCreation(backlogItemRequest, user);
 
-        BacklogItem newItem = buildUpdatedBacklogItem(id, backlogItemRequest.title(), backlogItemRequest.description(),
-                builder, item.getStatus(), item.getComments());
+        BacklogItem newItem = buildUpdatedBacklogItem(id, builder, item.getComments(), backlogItemRequest);
 
         log.info(SAVING_AND_RETURNING_RESPONSE_OF, newItem);
 
@@ -179,26 +178,28 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         return new BacklogItemBuilderDto(sprint, project, assignee);
     }
 
-    private BacklogItem buildNewBacklogItem(String title, String description, BacklogItemBuilderDto builder) {
+    private BacklogItem buildUpdatedBacklogItem(long id, BacklogItemBuilderDto builder,
+                                                List<BacklogItemComment> comments,
+                                                BacklogItemRequest request) {
         return BacklogItem.builder()
-                .title(title)
-                .description(description)
-                .comments(Collections.emptyList())
-                .status(ItemStatus.TODO)
+                .backlogItemId(id)
+                .title(request.title())
+                .description(request.description())
+                .comments(comments)
+                .status(request.itemStatus())
+                .itemType(request.itemType())
                 .assignee(builder.assignee())
                 .sprint(builder.sprint())
                 .project(builder.project())
                 .build();
     }
 
-    private BacklogItem buildUpdatedBacklogItem(long id, String title, String description, BacklogItemBuilderDto builder,
-                                                ItemStatus status, List<BacklogItemComment> comments) {
+    private BacklogItem buildNewBacklogItem(String title, String description, BacklogItemBuilderDto builder) {
         return BacklogItem.builder()
-                .backlogItemId(id)
                 .title(title)
                 .description(description)
-                .comments(comments)
-                .status(status)
+                .comments(Collections.emptyList())
+                .status(ItemStatus.TODO)
                 .assignee(builder.assignee())
                 .sprint(builder.sprint())
                 .project(builder.project())

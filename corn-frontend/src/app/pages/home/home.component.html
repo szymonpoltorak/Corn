@@ -1,23 +1,24 @@
 <mat-toolbar color="primary">
     <div class="flex bg-dark-color-settings-container-background p-1.5 rounded-lg items-center">
-        <img class="m-1.5" ngSrc="../../../assets/corn-icons/icon-128x128.png" alt="icon" width="25" height="25">
+        <img alt="icon" class="m-1.5" height="25" ngSrc="../../../assets/corn-icons/icon-128x128.png" width="25">
 
         <span class="text-white text-2xl">Corn</span>
     </div>
 
     <span class="flex-auto"></span>
 
-    <button mat-raised-button aria-label="Login">
+    <button mat-raised-button aria-label="Login" (click)="login()">
         <mat-icon>login</mat-icon>
         Login
     </button>
 
     <span class="m-3 bg-dark-color-settings-main-background w-0.5 h-7"></span>
 
-    <button mat-raised-button aria-label="register">
+    <button mat-raised-button aria-label="Register" (click)="register()">
         <mat-icon>app_registration</mat-icon>
         Register
     </button>
+
 </mat-toolbar>
 
 <section class="flex justify-center p-20">

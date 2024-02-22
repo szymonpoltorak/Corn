@@ -10,6 +10,7 @@ services:
             - POSTGRES_DB=corn
         ports:
             - "5000:5432"
+
     corn-backend:
         container_name: corn-backend
         image: corn-backend
@@ -26,6 +27,7 @@ services:
             dockerfile: Dockerfile.prod
         ports:
             - "8080:8081"
+
     corn-frontend:
         container_name: corn-frontend
         image: corn-frontend
@@ -41,7 +43,7 @@ services:
         container_name: corn-keycloak-initializer
         image: corn-keycloak-initializer
         build:
-            context: keycloak-initializer
+            context: auth-server/keycloak-initializer
             dockerfile: Dockerfile.prod
         depends_on:
             corn-keycloak:
@@ -49,6 +51,7 @@ services:
         environment:
             - KCCFG_OVERRIDE_EXISTING=false
             - KC_SERVER_URL=http://corn-keycloak:8080
+
     corn-keycloak:
         container_name: corn-keycloak
         image: quay.io/keycloak/keycloak:20.0.1
@@ -67,6 +70,11 @@ services:
             - '8081:8080'
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
+            interval: 1s
+            retries: 30
+            start_period: 15s
+            timeout: 5s
+
     corn-keycloak-postgres:
         container_name: corn-keycloak-postgres
         image: postgres:alpine
@@ -78,3 +86,7 @@ services:
             - "5001:5432"
         healthcheck:
             test: "pg_isready -U keycloak"
+            interval: 1s
+            retries: 30
+            start_period: 5s
+            timeout: 3s
