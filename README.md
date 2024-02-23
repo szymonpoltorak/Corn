@@ -6,6 +6,7 @@ application that is built of few components.
 * Frontend client,
 * Backend server,
 * Keycloak Auth Server,
+* Nginx Reverse Proxy,
 * Postgres database.
 
 Whole application has been made in spirit of clean code and architecture. We are thinking about security and performance
