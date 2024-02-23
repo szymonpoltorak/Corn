@@ -35,7 +35,7 @@ public interface BacklogItemCommentRepository extends JpaRepository<BacklogItemC
     Optional<BacklogItemComment> findByIdWithUserOrOwner(@Param ("id") long id, @Param("user") User user);
 
     /**
-     * Finds a BacklogItemComment by id and checks if the user is a member or the owner of the project associated
+     * Finds a BacklogItemComment by id and checks if the user is a assignee or the owner of the project associated
      * with the BacklogItemComment
      * @param id id of BacklogItemComment
      * @param user user requesting access

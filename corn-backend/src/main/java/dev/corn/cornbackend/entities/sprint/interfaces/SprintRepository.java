@@ -19,7 +19,7 @@ import java.util.Optional;
 public interface SprintRepository extends JpaRepository<Sprint, Long> {
 
     /**
-     * Finds all Sprints associated with Project of given projectId and checks if the user is a member
+     * Finds all Sprints associated with Project of given projectId and checks if the user is a assignee
      * or the owner of the project
      * @param projectId id of Project
      * @param user user requesting access
@@ -30,7 +30,7 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
     Page<Sprint> findAllByProjectId(@Param("projectId") long projectId, @Param("user") User user, Pageable pageable);
 
     /**
-     * Finds a Sprint by id and checks if the user is a member or the owner of the project associated
+     * Finds a Sprint by id and checks if the user is a assignee or the owner of the project associated
      * with the Sprint
      * @param id id of Sprint
      * @param user user requesting access

@@ -34,7 +34,7 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
     List<BacklogItem> getByProject(Project project);
 
     /**
-     * Finds a BacklogItem by id and checks if the user is a member or the owner of the project associated
+     * Finds a BacklogItem by id and checks if the user is a assignee or the owner of the project associated
      * with the BacklogItem
      * @param id id of BacklogItem
      * @param user user requesting access

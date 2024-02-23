@@ -26,7 +26,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByOwnerOrderByName(User owner, Pageable pageable);
 
     /**
-     * Finds a Project by id and checks if the user is a member or the owner of given project
+     * Finds a Project by id and checks if the user is a assignee or the owner of given project
      *
      * @param id id of Project
      * @param user user requesting access
@@ -49,7 +49,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      *
      * @param user user to check
      * @param projectId id of Project
-     * @return true if User is owner or project member of given Project, false otherwise
+     * @return true if User is owner or project assignee of given Project, false otherwise
      */
     @Query("SELECT CASE WHEN COUNT (p) > 0 THEN true ELSE false END FROM Project p WHERE p.projectId = :projectId AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p))")
     boolean existsByProjectMemberAndProjectId(@Param("user") User user, @Param("projectId") long projectId);

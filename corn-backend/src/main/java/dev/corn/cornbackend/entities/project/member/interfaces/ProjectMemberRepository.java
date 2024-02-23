@@ -26,20 +26,20 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
     Page<ProjectMember> findAllByProject(Project project, Pageable pageable);
 
     /**
-     * Find project member by project and user
+     * Find project assignee by project and user
      *
      * @param project project
      * @param user    user
-     * @return project member
+     * @return project assignee
      */
     Optional<ProjectMember> findByProjectAndUser(Project project, User user);
 
     /**
-     * Find project member by project member id and project
+     * Find project assignee by project assignee id and project
      *
-     * @param projectMemberId project member id
+     * @param projectMemberId project assignee id
      * @param project         project
-     * @return project member
+     * @return project assignee
      */
     Optional<ProjectMember> findByProjectMemberIdAndProject(long projectMemberId, Project project);
 

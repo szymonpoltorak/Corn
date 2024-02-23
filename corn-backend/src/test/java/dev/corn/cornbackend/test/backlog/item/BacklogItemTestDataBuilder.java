@@ -4,7 +4,6 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
@@ -12,6 +11,7 @@ import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.test.backlog.item.data.AddBacklogItemTestData;
 import dev.corn.cornbackend.test.backlog.item.data.BacklogItemDetailsTestData;
 import dev.corn.cornbackend.test.backlog.item.data.BacklogItemListTestData;
@@ -158,17 +158,19 @@ public final class BacklogItemTestDataBuilder {
                 .sprints(List.of(sprintResponse))
                 .name(project.getName())
                 .build();
-        ProjectMemberResponse projectMemberResponse = ProjectMemberResponse.builder()
-                .projectMemberId(projectMember.getProjectMemberId())
-                .fullName(projectMember.getUser().getFullName())
+        UserResponse projectMemberResponse = UserResponse
+                .builder()
                 .username(projectMember.getUser().getUsername())
+                .surname(projectMember.getUser().getSurname())
+                .name(projectMember.getUser().getName())
+                .userId(projectMember.getUser().getUserId())
                 .build();
 
         BacklogItemDetails backlogItemDetails = BacklogItemDetails.builder()
                 .sprint(sprintResponse)
                 .comments(Collections.emptyList())
-                .projectResponse(projectResponse)
-                .member(projectMemberResponse)
+                .project(projectResponse)
+                .assignee(projectMemberResponse)
                 .build();
 
         return new BacklogItemDetailsTestData(backlogItem, backlogItemDetails);
@@ -205,9 +207,6 @@ public final class BacklogItemTestDataBuilder {
                 .project(project())
                 .build();
     }
-
-
-
 
     private BacklogItemTestDataBuilder() {
 
