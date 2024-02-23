@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.Project;
@@ -102,6 +103,39 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         projectMemberRepository.deleteById(projectMember.getProjectMemberId());
 
         return projectMemberMapper.toProjectMemberResponse(projectMember);
+    }
+
+    @Override
+    public final List<ProjectMemberInfoResponse> getProjectMembersInfo(long projectId) {
+        Pageable pageable = PageRequest.of(0, 5);
+
+        log.info("Getting project members info for projectId: {}", projectId);
+
+        Page<ProjectMember> members = projectMemberRepository.findMembersByProjectIdForProjectInfo(projectId, pageable);
+
+        log.info("Found members: {}", members);
+
+        return members
+                .stream()
+                .map(ProjectMember::getUser)
+                .map(user -> ProjectMemberInfoResponse
+                        .builder()
+                        .fullName(user.getFullName())
+                        .userId(user.getUserId())
+                        .build()
+                )
+                .toList();
+    }
+
+    @Override
+    public final long getTotalNumberOfMembers(long projectId) {
+        log.info("Getting total number of members for projectId: {}", projectId);
+
+        long totalNumberOfMembers = projectMemberRepository.countByProjectProjectId(projectId);
+
+        log.info("Total number of members: {}", totalNumberOfMembers);
+
+        return totalNumberOfMembers;
     }
 
     private User getUserFromRepository(String username) {

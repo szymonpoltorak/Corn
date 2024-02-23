@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project;
 
+import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.interfaces.ProjectController;
 import dev.corn.cornbackend.api.project.interfaces.ProjectService;
@@ -33,15 +34,15 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     @PostMapping(value = ADD_PROJECT)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public final ProjectResponse addNewProject(@RequestParam String name,
+    public final ProjectInfoResponse addNewProject(@RequestParam String name,
                                                @JwtAuthed User user) {
         return projectService.addNewProject(name, user);
     }
 
     @Override
     @GetMapping(value = GET_PROJECTS_ON_PAGE)
-    public final List<ProjectResponse> getProjectsOnPage(@RequestParam int page,
-                                                         @JwtAuthed User user) {
+    public final List<ProjectInfoResponse> getProjectsOnPage(@RequestParam int page,
+                                                             @JwtAuthed User user) {
         return projectService.getProjectsOnPage(page, user);
     }
 

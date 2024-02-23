@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.interfaces;
 
+import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.entities.user.User;
 
@@ -14,18 +15,18 @@ public interface ProjectService {
      *
      * @param name the name of the project
      * @param user the user who is adding the project
-     * @return the response of the project
+     * @return the response of the project info
      */
-    ProjectResponse addNewProject(String name, User user);
+    ProjectInfoResponse addNewProject(String name, User user);
 
     /**
      * Gets a list of projects on a page
      *
      * @param page the page number
      * @param user the user who is getting the projects
-     * @return the list of project responses
+     * @return the list of project info responses
      */
-    List<ProjectResponse> getProjectsOnPage(int page, User user);
+    List<ProjectInfoResponse> getProjectsOnPage(int page, User user);
 
     /**
      * Updates the name of a project

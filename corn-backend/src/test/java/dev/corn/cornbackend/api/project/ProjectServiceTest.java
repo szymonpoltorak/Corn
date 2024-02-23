@@ -1,6 +1,9 @@
 package dev.corn.cornbackend.api.project;
 
+import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
+import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +37,9 @@ class ProjectServiceTest {
     private ProjectServiceImpl projectService;
 
     @Mock
+    private ProjectMemberService projectMemberService;
+
+    @Mock
     private ProjectRepository projectRepository;
 
     private static final AddNewProjectData ADD_PROJECT_DATA = ProjectTestDataBuilder.addNewProjectData();
@@ -45,15 +52,18 @@ class ProjectServiceTest {
     @Test
     final void test_addNewProject_shouldAddNewProject() {
         // given
-        ProjectResponse expected = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project());
+        final long totalNumberOfMembers = 0L;
+        ProjectInfoResponse expected = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), Collections.emptyList(), totalNumberOfMembers);
 
         // when
         when(projectRepository.save(ADD_PROJECT_DATA.project()))
                 .thenReturn(ADD_PROJECT_DATA.project());
-        when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project()))
+        when(projectMemberService.getProjectMembersInfo(ADD_PROJECT_DATA.project().getProjectId()))
+                .thenReturn(Collections.emptyList());
+        when(projectMapper.toProjectInfoResponse(ADD_PROJECT_DATA.project(), Collections.emptyList(), totalNumberOfMembers))
                 .thenReturn(expected);
 
-        ProjectResponse actual = projectService
+        ProjectInfoResponse actual = projectService
                 .addNewProject(ADD_PROJECT_DATA.project().getName(), ADD_PROJECT_DATA.owner());
 
         // then
@@ -64,18 +74,25 @@ class ProjectServiceTest {
     @Test
     final void test_getProjectsOnPage_shouldGetOneElementListOfProjects() {
         // given
+        final long totalNumberOfMembers = 1L;
         final int page = 0;
         Pageable pageable = PageRequest.of(page, 20);
-        ProjectResponse response = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project());
-        List<ProjectResponse> expected = List.of(response);
+        List<ProjectMemberInfoResponse> members = List.of(new ProjectMemberInfoResponse("full Name", 1L));
+
+        ProjectInfoResponse response = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers);
+        List<ProjectInfoResponse> expected = List.of(response);
 
         // when
         when(projectRepository.findAllByOwnerOrderByName(ADD_PROJECT_DATA.owner(), pageable))
                 .thenReturn(new PageImpl<>(List.of(ADD_PROJECT_DATA.project())));
-        when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project()))
+        when(projectMemberService.getTotalNumberOfMembers(ADD_PROJECT_DATA.project().getProjectId()))
+                .thenReturn(totalNumberOfMembers);
+        when(projectMemberService.getProjectMembersInfo(ADD_PROJECT_DATA.project().getProjectId()))
+                .thenReturn(members);
+        when(projectMapper.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers))
                 .thenReturn(response);
 
-        List<ProjectResponse> actual = projectService.getProjectsOnPage(page, ADD_PROJECT_DATA.owner());
+        List<ProjectInfoResponse> actual = projectService.getProjectsOnPage(page, ADD_PROJECT_DATA.owner());
 
         // then
         assertEquals(expected, actual, "List of ProjectResponse should be empty");
