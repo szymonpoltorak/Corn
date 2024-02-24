@@ -25,13 +25,13 @@ We have to different ways to start application.
 * If you want development environment run 
 
 ```bash 
-* docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.dev.yml up --build
 ```
 
 * If you want production environment run
 
 ```bash
-* docker-compose -f docker-compose.prod.yml up --build
+docker-compose -f docker-compose.prod.yml up --build
 ```
 
 2. Using scripts. We provided linux shell scripts that are able to run application in development and production mode. Just pick the right one and run it.
