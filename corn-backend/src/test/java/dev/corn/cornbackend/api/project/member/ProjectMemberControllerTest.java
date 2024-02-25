@@ -1,11 +1,11 @@
 package dev.corn.cornbackend.api.project.member;
 
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.ProjectMemberMapperImpl;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberMapper;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
 import org.junit.jupiter.api.Test;
@@ -41,17 +41,17 @@ class ProjectMemberControllerTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        ProjectMemberResponse expected = MAPPER.toProjectMemberResponse(projectMember);
+        UserResponse expected = MAPPER.mapProjectMememberToUserResponse(projectMember);
 
 
         // when
         when(projectMemberService.addMemberToProject(user.getUsername(), projectId, user))
                 .thenReturn(expected);
 
-        ProjectMemberResponse actual = projectMemberController.addMemberToProject(user.getUsername(), projectId, user);
+        UserResponse actual = projectMemberController.addMemberToProject(user.getUsername(), projectId, user);
 
         // then
-        assertEquals(expected, actual, "Should add member to project");
+        assertEquals(expected, actual, "Should add assignee to project");
     }
 
     @Test
@@ -64,16 +64,16 @@ class ProjectMemberControllerTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        List<ProjectMemberResponse> expected = List.of(MAPPER.toProjectMemberResponse(projectMember));
+        List<UserResponse> expected = List.of(MAPPER.mapProjectMememberToUserResponse(projectMember));
 
         // when
         when(projectMemberService.getProjectMembers(projectId, 0, user))
                 .thenReturn(expected);
 
-        List<ProjectMemberResponse> actual = projectMemberController.getProjectMembers(projectId, 0, user);
+        List<UserResponse> actual = projectMemberController.getProjectMembers(projectId, 0, user);
 
         // then
-        assertEquals(expected, actual, "Should add member to project");
+        assertEquals(expected, actual, "Should add assignee to project");
     }
 
     @Test
@@ -86,15 +86,15 @@ class ProjectMemberControllerTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        ProjectMemberResponse expected = MAPPER.toProjectMemberResponse(projectMember);
+        UserResponse expected = MAPPER.mapProjectMememberToUserResponse(projectMember);
 
         // when
         when(projectMemberService.removeMemberFromProject(user.getUsername(), projectId, user))
                 .thenReturn(expected);
 
-        ProjectMemberResponse actual = projectMemberController.removeMemberFromProject(user.getUsername(), projectId, user);
+        UserResponse actual = projectMemberController.removeMemberFromProject(user.getUsername(), projectId, user);
 
         // then
-        assertEquals(expected, actual, "Should add member to project");
+        assertEquals(expected, actual, "Should add assignee to project");
     }
 }

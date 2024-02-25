@@ -1,7 +1,7 @@
 package dev.corn.cornbackend.api.project.member.interfaces;
 
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 
 import java.util.List;
 
@@ -10,14 +10,14 @@ import java.util.List;
  */
 public interface ProjectMemberController {
     /**
-     * Adds a member to a project
+     * Adds a assignee to a project
      *
-     * @param username the username of the member to add
-     * @param projectId the id of the project to add the member to
+     * @param username the username of the assignee to add
+     * @param projectId the id of the project to add the assignee to
      * @param user the user making the request
-     * @return a ProjectMemberResponse object
+     * @return a UserResponse object
      */
-    ProjectMemberResponse addMemberToProject(String username, long projectId, User user);
+    UserResponse addMemberToProject(String username, long projectId, User user);
 
     /**
      * Gets a list of project members
@@ -25,17 +25,17 @@ public interface ProjectMemberController {
      * @param projectId the id of the project to get the members of
      * @param page the page number to get the members from
      * @param user the user making the request
-     * @return a list of ProjectMemberResponse objects
+     * @return a list of UserResponse objects
      */
-    List<ProjectMemberResponse> getProjectMembers(long projectId, int page, User user);
+    List<UserResponse> getProjectMembers(long projectId, int page, User user);
 
     /**
-     * Removes a member from a project
+     * Removes a assignee from a project
      *
-     * @param username the username of the member to remove
-     * @param projectId the id of the project to remove the member from
+     * @param username the username of the assignee to remove
+     * @param projectId the id of the project to remove the assignee from
      * @param user the user making the request
-     * @return a ProjectMemberResponse object
+     * @return a UserResponse object
      */
-    ProjectMemberResponse removeMemberFromProject(String username, long projectId, User user);
+    UserResponse removeMemberFromProject(String username, long projectId, User user);
 }

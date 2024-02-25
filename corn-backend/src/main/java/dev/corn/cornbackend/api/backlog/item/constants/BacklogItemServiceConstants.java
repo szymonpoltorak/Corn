@@ -5,7 +5,7 @@ public final class BacklogItemServiceConstants {
     public static final String GETTING_BY_ID = "Getting {} by id: {}";
     public static final String BACKLOG_ITEM_NOT_FOUND_MESSAGE = "Backlog item not found";
     public static final String RETURNING_RESPONSE_OF = "Returning response of: {}";
-    public static final String PROJECT_MEMBER_NOT_FOUND_MESSAGE = "Project member not found";
+    public static final String PROJECT_MEMBER_NOT_FOUND_MESSAGE = "Project assignee not found";
     public static final String SPRINT_NOT_FOUND_MESSAGE = "Sprint not found";
     public static final String PROJECT_NOT_FOUND_MESSAGE = "Project not found";
     public static final String BACKLOG_ITEM = "BacklogItem";
