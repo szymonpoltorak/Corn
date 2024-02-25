@@ -1,17 +1,19 @@
 import { Component, Input } from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
+import { Task } from '../model/model';
+import { ChangeAssigneeMenuComponent } from '../change_assignee_menu/change_assignee_menu.component';
 
 @Component({
-    selector: 'app-taskcard',
+    selector: 'taskcard',
     standalone: true,
-    imports: [MatCardModule],
+    imports: [
+        MatCardModule,
+        ChangeAssigneeMenuComponent,
+    ],
     templateUrl: './taskcard.component.html',
 })
 export class TaskcardComponent {
-    
-    @Input() content: string = '';
-    @Input() taskid: string = '';
-    @Input() assigneeAvatarUrl: string = '';
-    @Input() assigneeName: string = '';
+
+    @Input() task?: Task;
 
 }

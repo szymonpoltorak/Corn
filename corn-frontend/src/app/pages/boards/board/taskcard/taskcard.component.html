@@ -1,7 +1,15 @@
-<mat-card class="overflow-hidden shadow-md p-4 min-w-[300px] ">
-    <h1 class="text-xl font-bold mb-4">{{content}}</h1>
-    <div class="flex items-center justify-between mt-2">
-        <span class="text-gray-300 text-sm">{{taskid}}</span>
-        <img class="w-8 h-8 rounded-full" src="{{assigneeAvatarUrl}}" title="{{assigneeName}}">
-    </div>
-</mat-card>
+@if (task) {
+    <mat-card class="flex flex-col gap-[6px] shadow-md pt-1 pb-1 pl-2 pr-2">
+        <h1 class="font-bold">{{ task.content }}</h1>
+        <div class="flex items-center justify-between">
+            <span class="text-gray-300 text-sm">{{ task.taskid }}</span>
+            <change-assignee-menu [associatedTask]="task">
+                <img
+                    class="w-8 h-8 rounded-full cursor-pointer"
+                    src="{{ task.assignee.avatarUrl }}"
+                    title="{{ task.assignee.firstName + ' ' + task.assignee.familyName }}"
+                />
+            </change-assignee-menu>
+        </div>
+    </mat-card>
+}

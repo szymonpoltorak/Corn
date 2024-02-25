@@ -1,40 +1,58 @@
-<h1>Board</h1>
+<div class="flex flex-col gap-[16px]">
+    <h1 class="text-3xl">{{ modelService.sprintName }}</h1>
 
-<div class="w-400 max-w-full mr-0 mb-25 inline-block align-top ml-[24px] min-w-[300px]">
-    <h2 class="text-xl font-semibold mb-4">To do</h2>
+    <div class="flex items-center gap-4">
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Search</mat-label>
+            <input #filterField matInput type="text" (input)="updateFilterString(filterField.value)" />
+        </mat-form-field>
 
-    <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo" [cdkDropListConnectedTo]="[doneList, inprogressList]"
-        class="border border-solid border-gray-900 min-h-[200px] container-background rounded-md overflow-hidden block"
-        (cdkDropListDropped)="drop2($event)">
-        @for (item of todo; track item) {
-            <app-taskcard cdkDrag [content]="item.content" [taskid]="item.taskid" [assigneeAvatarUrl]="item.assigneeAvatar" [assigneeName]="item.assigneeName">
-            </app-taskcard>
+        <div class="flex flex-col gap-[1px]">
+            <span class="text-xs">Group by</span>
+            <button mat-raised-button [matMenuTriggerFor]="groupingMenu" color="primary">
+                <mat-icon>expand_more</mat-icon>
+                {{ taskGrouping }}
+            </button>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-[8px]">
+        <columnset>
+            <h2 todo class="font-bold m-auto p-1">TODO ({{ modelService.todoSize() }}/{{ modelService.allTasksSize() }})</h2>
+            <h2 inprogress class="font-bold m-auto p-1">INPROGRESS ({{ modelService.inprogressSize() }}/{{ modelService.allTasksSize() }})</h2>
+            <h2 done class="font-bold m-auto p-1">DONE ({{ modelService.doneSize() }}/{{ modelService.allTasksSize() }})</h2>
+        </columnset>
+
+        @for (slice of slicesModelService.slices; track slice) {
+            <div>
+                @if (taskGrouping == TaskGroupingEnum.NONE) {
+                    <slice [sliceDescriptor]="slice"></slice>
+                } @else if(taskGrouping == TaskGroupingEnum.BY_ASSIGNEE) {
+                    <button mat-button (click)="toggleHidden(sliceWrapper)">
+                        <mat-icon>
+                            {{ isHidden(sliceWrapper) ? "chevron_right" : "expand_more" }}
+                        </mat-icon>
+                        <div class="flex items-center space-x-1">
+                            <img class="w-5 h-5 rounded-full" src="{{ slice.metadata.avatarUrl }}" />
+                            <span>
+                                {{ slice.metadata.firstName + " " + slice.metadata.familyName }}
+                            </span>
+                        </div>
+                    </button>
+
+                    <div #sliceWrapper>
+                        <slice [sliceDescriptor]="slice"></slice>
+                    </div>
+                }
+            </div>
         }
     </div>
 </div>
 
-<div class="w-400 max-w-full mb-25 inline-block align-top ml-[24px] min-w-[300px]">
-    <h2 class="text-xl font-semibold mb-4">Done</h2>
-
-    <div cdkDropList #inprogressList="cdkDropList" [cdkDropListData]="inprogress" [cdkDropListConnectedTo]="[doneList, todoList]"
-        class="border border-solid border-gray-900 min-h-[200px] container-background rounded-md overflow-hidden block"
-        (cdkDropListDropped)="drop2($event)">
-        @for (item of inprogress; track item) {
-            <app-taskcard cdkDrag [content]="item.content" [taskid]="item.taskid" [assigneeAvatarUrl]="item.assigneeAvatar" [assigneeName]="item.assigneeName">
-            </app-taskcard>
-        }
-    </div>
-</div>
-
-<div class="w-400 max-w-full mb-25 inline-block align-top ml-[24px] min-w-[300px]">
-    <h2 class="text-xl font-semibold mb-4">In Progress</h2>
-
-    <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList, inprogressList]"
-        class="border border-solid border-gray-900 min-h-[200px] container-background rounded-md overflow-hidden block"
-        (cdkDropListDropped)="drop2($event)">
-        @for (item of done; track item) {
-            <app-taskcard cdkDrag [content]="item.content" [taskid]="item.taskid" [assigneeAvatarUrl]="item.assigneeAvatar" [assigneeName]="item.assigneeName">
-            </app-taskcard>
-        }
-    </div>
-</div>
+<mat-menu #groupingMenu="matMenu">
+    @for (taskGrouping of TASK_GROUPINGS; track taskGrouping) {
+        <button mat-menu-item (click)="updateTaskGrouping(taskGrouping)">
+            {{ taskGrouping }}
+        </button>
+    }
+</mat-menu>

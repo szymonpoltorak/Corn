@@ -1,0 +1,12 @@
+<div
+    class="flex flex-col items-center p-[6px] space-y-[6px] h-full min-h-[50px]"
+    cdkDropList
+    #droplistInstance="cdkDropList"
+    [cdkDropListData]="tasks"
+    [cdkDropListConnectedTo]="siblingDroplistInstances"
+    (cdkDropListDropped)="droppedHandler($event)"
+>
+    @for (item of tasks; track item) {
+        <taskcard class="w-full" cdkDrag [task]="item"></taskcard>
+    }
+</div>
