@@ -2,6 +2,8 @@ import {Component, Input} from '@angular/core';
 import {MatRipple} from "@angular/material/core";
 import {NgOptimizedImage, SlicePipe} from "@angular/common";
 import {MatTooltip} from "@angular/material/tooltip";
+import {User} from "@core/interfaces/boards/user";
+import {UserAvatarComponent} from "@pages/utils/user-avatar/user-avatar.component";
 
 @Component({
   selector: 'app-project',
@@ -10,7 +12,8 @@ import {MatTooltip} from "@angular/material/tooltip";
     MatRipple,
     SlicePipe,
     NgOptimizedImage,
-    MatTooltip
+    MatTooltip,
+    UserAvatarComponent
   ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss'
@@ -18,9 +21,5 @@ import {MatTooltip} from "@angular/material/tooltip";
 export class ProjectComponent {
 
   @Input() title: string = '';
-  @Input() members: string[] = [];
-
-  getInitials(member: string): string {
-    return member.split(' ').map(name => name[0]).join('');
-  }
+  @Input() members: User[] = [];
 }

@@ -11,13 +11,13 @@
 
             <div class="member-row">
                 @for (member of members | slice:0:3; track 1) {
-                    <div class="member" matTooltip="{{member}}">
-                        <h2>{{getInitials(member)}}</h2>
+                    <div class="member">
+                        <app-user-avatar [user]="member"></app-user-avatar>
                     </div>
                 }
                 @if (members.length > 3) {
-                    <div class="member" style="background-color: #365768; ">
-                        <h2>+{{members.length-3}}</h2>
+                    <div class="member">
+                        <app-user-avatar [usersLeft]="members.length - 3"></app-user-avatar>
                     </div>
                 }
             </div>
