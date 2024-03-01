@@ -85,11 +85,13 @@ export class BoardComponent implements OnInit {
         this.slicesModelService.rebuildSlices();
     }
 
-    protected toggleHidden(element: { hidden: boolean }) {
+    
+
+    protected toggleHidden(element: Hideable) {
         element.hidden = !element.hidden;
     }
 
-    protected isHidden(element: { hidden: boolean }) {
+    protected isHidden(element: Hideable) {
         return element.hidden;
     }
 
@@ -113,6 +115,8 @@ export class BoardComponent implements OnInit {
     };
 
 }
+
+type Hideable = { hidden: boolean };
 
 enum TaskGrouping {
     NONE = "None",
