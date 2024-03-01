@@ -46,71 +46,71 @@ export interface Task {
 export const SAMPLE_TASKS = {
     TODO: [
         {
-            taskid: "t1",
+            taskid: "DEV-1",
             content: "Buy groceries",
             assignee: SAMPLE_ASSIGNEES.JOHN_DOE,
         },
         {
-            taskid: "t2",
+            taskid: "DEV-2",
             content: "Read a book",
             assignee: SAMPLE_ASSIGNEES.JANE_DOE,
         },
         {
-            taskid: "t3",
+            taskid: "DEV-3",
             content: "Write code",
             assignee: SAMPLE_ASSIGNEES.ALICE_SMITH,
         },
         {
-            taskid: "t10",
+            taskid: "DEV-10",
             content: "Implement new feature",
             assignee: SAMPLE_ASSIGNEES.BOB_JOHNSON,
         },
         {
-            taskid: "t11",
+            taskid: "DEV-11",
             content: "Review and refactor code",
             assignee: SAMPLE_ASSIGNEES.JANE_DOE,
         },
     ],
     INPROGRESS: [
         {
-            taskid: "t4",
+            taskid: "DEV-4",
             content: "Design a website",
             assignee: SAMPLE_ASSIGNEES.BOB_JOHNSON,
         },
         {
-            taskid: "t7",
+            taskid: "DEV-7",
             content: "Clean the house",
             assignee: SAMPLE_ASSIGNEES.JOHN_DOE,
         },
         {
-            taskid: "t8",
+            taskid: "DEV-8",
             content: "Exercise for 30 minutes",
             assignee: SAMPLE_ASSIGNEES.JANE_DOE,
         },
         {
-            taskid: "t9",
+            taskid: "DEV-9",
             content: "Plan the week's schedule",
             assignee: SAMPLE_ASSIGNEES.ALICE_SMITH,
         },
     ],
     DONE: [
         {
-            taskid: "t5",
+            taskid: "DEV-5",
             content: "Finish project",
             assignee: SAMPLE_ASSIGNEES.CHARLIE_BROWN,
         },
         {
-            taskid: "t6",
+            taskid: "DEV-6",
             content: "Submit report",
             assignee: SAMPLE_ASSIGNEES.DIANA_MILLER,
         },
         {
-            taskid: "t12",
+            taskid: "DEV-12",
             content: "Publish blog post",
             assignee: SAMPLE_ASSIGNEES.JANE_DOE,
         },
         {
-            taskid: "t13",
+            taskid: "DEV-13",
             content: "Prepare presentation",
             assignee: SAMPLE_ASSIGNEES.DIANA_MILLER,
         },

@@ -2,7 +2,7 @@
     <h1 class="text-3xl">{{ modelService.sprintName }}</h1>
 
     <div class="flex items-center gap-4">
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field class="border-solid border-[1px] rounded-md border-dark-color-settings-container-background" subscriptSizing="dynamic">
             <mat-label>Search</mat-label>
             <input #filterField matInput type="text" (input)="updateFilterString(filterField.value)" />
         </mat-form-field>
