@@ -1,4 +1,4 @@
-import { Input } from '@angular/core';
+import { ElementRef, Input } from '@angular/core';
 import { Assignee, Task } from '../model/model';
 import { MatMenuModule } from '@angular/material/menu';
 import { Component, ViewChild } from '@angular/core';
@@ -28,7 +28,7 @@ export class ChangeAssigneeMenuComponent {
 
     @Input() associatedTask?: Task;
 
-    @ViewChild('filterStringInput') private input?: any;
+    @ViewChild('filterStringInput') private input?: ElementRef;
 
     constructor(
         protected readonly modelService: ModelService,

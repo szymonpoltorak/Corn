@@ -1,17 +1,18 @@
 import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TasklistComponent } from '../tasklist/tasklist.component';
+import { TaskListComponent } from '../task_list/task_list.component';
 import { SliceService } from './slice.service';
 import { SliceDescriptor } from './slice_descriptor';
 import { ColumnSetLayout } from '../layout.component';
 import { SlicesModelService } from './slices_model.service';
+import { CdkDropList } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'slice',
     standalone: true,
     imports: [
         CommonModule,
-        TasklistComponent,
+        TaskListComponent,
         ColumnSetLayout,
     ],
     templateUrl: './slice.component.html',
@@ -20,9 +21,9 @@ export class SliceComponent implements AfterViewInit, OnDestroy {
 
     @Input() sliceDescriptor?: SliceDescriptor;
 
-    @ViewChild('todoTasklist') private todoTasklist!: TasklistComponent;
-    @ViewChild('inprogressTasklist') private inprogressTasklist!: TasklistComponent;
-    @ViewChild('doneTasklist') private doneTasklist!: TasklistComponent;
+    @ViewChild('todoTasklist') private todoTasklist!: TaskListComponent;
+    @ViewChild('inprogressTasklist') private inprogressTasklist!: TaskListComponent;
+    @ViewChild('doneTasklist') private doneTasklist!: TaskListComponent;
 
     constructor(
         protected readonly sliceService: SliceService,
@@ -37,7 +38,7 @@ export class SliceComponent implements AfterViewInit, OnDestroy {
         this.sliceService.unregister(this);
     }
 
-    setSiblingDroplistInstances(instances: any[]) {
+    setSiblingDroplistInstances(instances: CdkDropList[]) {
         if (this.todoTasklist && this.inprogressTasklist && this.doneTasklist) {
             this.todoTasklist.siblingDroplistInstances = instances;
             this.inprogressTasklist.siblingDroplistInstances = instances;
@@ -45,7 +46,7 @@ export class SliceComponent implements AfterViewInit, OnDestroy {
         }
     }
 
-    getLocalDroplistInstances(): any[] {
+    getLocalDroplistInstances(): CdkDropList[] {
         return this.todoTasklist && this.inprogressTasklist && this.doneTasklist ? [
             this.todoTasklist.getDroplistInstance(),
             this.inprogressTasklist.getDroplistInstance(),

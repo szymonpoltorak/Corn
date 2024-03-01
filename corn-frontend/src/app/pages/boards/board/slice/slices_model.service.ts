@@ -7,7 +7,7 @@ import { ModelService } from '../model/model.service';
 export class SlicesModelService {
 
     @Input() filter?: (task: Task) => boolean;
-    @Input() grouper?: (ungrouped: Task[]) => { group: Task[], metadata: any }[];
+    @Input() grouper?: TaskGrouper;
 
     @Input() groupChangedHandler?: (event: TaskChangedGroupEvent) => void;
     @Input() columnChangedHandler?: (event: TaskChangedColumnEvent) => void;
@@ -99,6 +99,8 @@ export class SlicesModelService {
     }
 
 }
+
+export type TaskGrouper = (ungrouped: Task[]) => { group: Task[], metadata: any }[];
 
 export interface TaskMovedByDnDEvent {
     sourceArray: Task[],

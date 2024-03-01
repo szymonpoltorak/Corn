@@ -33,7 +33,11 @@
                             {{ isHidden(sliceWrapper) ? "chevron_right" : "expand_more" }}
                         </mat-icon>
                         <div class="flex items-center space-x-1">
-                            <img class="w-5 h-5 rounded-full" src="{{ slice.metadata.avatarUrl }}" />
+                            <img 
+                                class="w-5 h-5 rounded-full" 
+                                src="{{ slice.metadata.avatarUrl }}" 
+                                alt="slice.metadata.firstName + ' ' + slice.metadata.familyName"
+                            />
                             <span>
                                 {{ slice.metadata.firstName + " " + slice.metadata.familyName }}
                             </span>

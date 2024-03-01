@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { TaskcardComponent } from '../taskcard/taskcard.component';
+import { TaskCardComponent } from '../task_card/task_card.component';
 import { Task } from '../model/model';
 import { TaskMovedByDnDEvent } from '../slice/slices_model.service';
 
@@ -12,14 +12,14 @@ import { TaskMovedByDnDEvent } from '../slice/slices_model.service';
         CommonModule,
         CdkDropList,
         CdkDrag,
-        TaskcardComponent,
+        TaskCardComponent,
     ],
-    templateUrl: './tasklist.component.html',
+    templateUrl: './task_list.component.html',
 })
-export class TasklistComponent {
+export class TaskListComponent {
 
     @Input() tasks: Task[] = [];
-    @Input() siblingDroplistInstances: any[] = [];
+    @Input() siblingDroplistInstances: CdkDropList[] = [];
 
     @Output() taskMoved: EventEmitter<TaskMovedByDnDEvent> = new EventEmitter();
 

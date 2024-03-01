@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { SlicesModelService, TaskChangedColumnEvent, TaskChangedGroupEvent } from './slice/slices_model.service';
+import { SlicesModelService, TaskChangedColumnEvent, TaskChangedGroupEvent, TaskGrouper } from './slice/slices_model.service';
 import { SliceService } from './slice/slice.service';
 import { SliceComponent } from './slice/slice.component';
 import { Assignee, SAMPLE_ASSIGNEES, SAMPLE_TASKS, Task } from './model/model';
@@ -32,8 +32,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class BoardComponent implements OnInit {
 
-    protected filterString = "";
-    protected taskGrouping = TaskGrouping.BY_ASSIGNEE;
+    protected filterString: string = "";
+    protected taskGrouping: TaskGrouping = TaskGrouping.NONE;
 
     constructor(
         protected readonly modelService: ModelService,
@@ -85,17 +85,17 @@ export class BoardComponent implements OnInit {
         this.slicesModelService.rebuildSlices();
     }
 
-    protected toggleHidden(element: any) {
+    protected toggleHidden(element: { hidden: boolean }) {
         element.hidden = !element.hidden;
     }
 
-    protected isHidden(element: any) {
+    protected isHidden(element: { hidden: boolean }) {
         return element.hidden;
     }
 
-    protected readonly TaskGroupingEnum = TaskGrouping;
-    protected readonly TASK_GROUPINGS = Object.values(TaskGrouping);
-    protected readonly GROUPERS = {
+    protected readonly TaskGroupingEnum: typeof TaskGrouping = TaskGrouping;
+    protected readonly TASK_GROUPINGS: TaskGrouping[] = Object.values(TaskGrouping);
+    protected readonly GROUPERS: { [key in TaskGrouping]: TaskGrouper; } = {
         [TaskGrouping.NONE]: (ungrouped: Task[]) => {
             return [{ metadata: null, group: ungrouped }]
         },

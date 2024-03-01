@@ -10,9 +10,9 @@ import { ChangeAssigneeMenuComponent } from '../change_assignee_menu/change_assi
         MatCardModule,
         ChangeAssigneeMenuComponent,
     ],
-    templateUrl: './taskcard.component.html',
+    templateUrl: './task_card.component.html',
 })
-export class TaskcardComponent {
+export class TaskCardComponent {
 
     @Input() task?: Task;
 
