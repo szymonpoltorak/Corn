@@ -25,11 +25,11 @@ export class TaskListComponent {
 
     @ViewChild('droplistInstance') private droplistInstance!: CdkDropList;
 
-    getDroplistInstance() {
+    getDroplistInstance(): CdkDropList {
         return this.droplistInstance;
     }
 
-    protected droppedHandler(event: CdkDragDrop<Task[]>) {
+    protected droppedHandler(event: CdkDragDrop<Task[]>): void {
         if (event.previousContainer === event.container && event.previousIndex === event.currentIndex) {
             return;
         }

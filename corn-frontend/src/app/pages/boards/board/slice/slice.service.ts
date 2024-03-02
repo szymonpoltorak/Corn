@@ -6,17 +6,17 @@ export class SliceService {
 
     private slices: Set<SliceComponent> = new Set();
 
-    register(slice: SliceComponent) {
+    register(slice: SliceComponent): void {
         this.slices.add(slice);
         this.refresh();
     }
 
-    unregister(slice: SliceComponent) {
+    unregister(slice: SliceComponent): void {
         this.slices.delete(slice);
         this.refresh();
     }
 
-    refresh() {
+    refresh(): void {
         const droplistInstances = Array.from(this.slices)
             .map(slice => slice.getLocalDroplistInstances())
             .reduce((prev, curr) => [...prev, ...curr], []);

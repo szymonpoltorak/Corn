@@ -34,7 +34,7 @@ export class ChangeAssigneeMenuComponent {
         protected readonly modelService: ModelService,
     ) { }
 
-    protected update() {
+    protected update(): void {
         if (!this.input)
             return;
         const filterString = this.input.nativeElement.value.toLowerCase();
@@ -45,7 +45,7 @@ export class ChangeAssigneeMenuComponent {
         )
     }
 
-    protected assigneeChanged(assignee: Assignee) {
+    protected assigneeChanged(assignee: Assignee): void {
         if (!this.associatedTask)
             return;
         this.modelService.setAssigneeForTask(this.associatedTask, assignee);

@@ -18,7 +18,7 @@ export class SlicesModelService {
 
     slices: SliceDescriptor[] = [];
 
-    rebuildSlices() {
+    rebuildSlices(): void {
         const whole: SliceDescriptor = new SliceDescriptor(null, {
             todo: this.filter
                 ? this.modelService.todo.filter(this.filter)
@@ -35,7 +35,7 @@ export class SlicesModelService {
         ) : [whole];
     }
 
-    droppedHandler(event: TaskMovedByDnDEvent) {
+    droppedHandler(event: TaskMovedByDnDEvent): void {
         if (event.sourceArray === event.destinationArray) {
             const sliceInfo = this.findSliceInfo(event.destinationArray)!;
             if (!sliceInfo) {

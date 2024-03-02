@@ -38,7 +38,7 @@ export class SliceComponent implements AfterViewInit, OnDestroy {
         this.sliceService.unregister(this);
     }
 
-    setSiblingDroplistInstances(instances: CdkDropList[]) {
+    setSiblingDroplistInstances(instances: CdkDropList[]): void {
         if (this.todoTasklist && this.inprogressTasklist && this.doneTasklist) {
             this.todoTasklist.siblingDroplistInstances = instances;
             this.inprogressTasklist.siblingDroplistInstances = instances;

@@ -40,7 +40,7 @@ export class BoardComponent implements OnInit {
         protected readonly slicesModelService: SlicesModelService,
     ) { }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.modelService.modelChangeHandler = () => {
             this.slicesModelService.rebuildSlices();
         }
@@ -65,7 +65,7 @@ export class BoardComponent implements OnInit {
         this.updateTaskGrouping(this.taskGrouping);
     }
 
-    protected updateFilterString(filterString: string) {
+    protected updateFilterString(filterString: string): void {
         filterString = filterString.toLowerCase();
         this.filterString = filterString;
         const stringPredicate = (s: string) => s.toLowerCase().includes(filterString);
@@ -79,19 +79,17 @@ export class BoardComponent implements OnInit {
         this.slicesModelService.rebuildSlices();
     }
 
-    protected updateTaskGrouping(taskGrouping: TaskGrouping) {
+    protected updateTaskGrouping(taskGrouping: TaskGrouping): void {
         this.taskGrouping = taskGrouping;
         this.slicesModelService.grouper = this.GROUPERS[taskGrouping];
         this.slicesModelService.rebuildSlices();
     }
 
-    
-
-    protected toggleHidden(element: Hideable) {
+    protected toggleHidden(element: Hideable): void {
         element.hidden = !element.hidden;
     }
 
-    protected isHidden(element: Hideable) {
+    protected isHidden(element: Hideable): boolean {
         return element.hidden;
     }
 
