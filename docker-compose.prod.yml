@@ -25,8 +25,6 @@ services:
         build:
             context: corn-backend
             dockerfile: Dockerfile.prod
-        ports:
-            - "8080:8081"
 
     corn-frontend:
         container_name: corn-frontend
@@ -36,8 +34,6 @@ services:
         build:
             context: corn-frontend
             dockerfile: Dockerfile.prod
-        ports:
-            - "4200:80"
 
     corn-keycloak-initializer:
         container_name: corn-keycloak-initializer
@@ -66,8 +62,6 @@ services:
             - KC_DB_USERNAME=keycloak
             - KC_DB_PASSWORD=none
         command: start-dev
-        ports:
-            - '8081:8080'
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
             interval: 1s
@@ -90,3 +84,18 @@ services:
             retries: 30
             start_period: 5s
             timeout: 3s
+
+    corn-nginx:
+        container_name: corn-nginx
+        image: corn-nginx
+        build:
+            context: nginx
+            dockerfile: Dockerfile.dev
+        depends_on:
+            - corn-backend
+            - corn-frontend
+            - corn-keycloak
+        ports:
+            - "4200:4200"
+            - "8081:8080"
+

@@ -40,7 +40,7 @@ services:
             context: corn-frontend
             dockerfile: Dockerfile.dev
         ports:
-            - "4200:4200"
+            - "4201:4200"
         volumes:
             - "./corn-frontend:/corn-frontend"
             - "./.cache/corn-frontend/node_modules:/corn-frontend/node_modules"
@@ -93,7 +93,7 @@ services:
             - KC_DB_PASSWORD=none
         command: start-dev
         ports:
-            - '8081:8080'
+            - '8082:8080'
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
             interval: 1s
@@ -118,3 +118,17 @@ services:
             retries: 30
             start_period: 5s
             timeout: 3s
+
+    corn-nginx:
+        container_name: corn-nginx
+        image: corn-nginx
+        build:
+            context: nginx
+            dockerfile: Dockerfile.dev
+        depends_on:
+            - corn-backend
+            - corn-frontend
+            - corn-keycloak
+        ports:
+            - "4200:4200"
+            - "8081:8080"
