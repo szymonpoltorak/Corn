@@ -1,11 +1,11 @@
-<img class="w-[48px] h-[48px] object-cover rounded-full cursor-pointer" [src]="avatarUrl" [matMenuTriggerFor]="menu">
+<img class="w-[48px] h-[48px] object-cover rounded-full cursor-pointer" [ngSrc]="avatarUrl" [matMenuTriggerFor]="menu">
 
 <mat-menu #menu="matMenu">
 
     <div mat-menu-item>
         <div class="grid grid-cols-[36px,1fr] gap-2 mb-3">
             <div class="flex items-center">
-                <img class="w-[36px] h-[36px] object-cover rounded-full cursor-pointer" [src]="avatarUrl">
+                <img class="w-[36px] h-[36px] object-cover rounded-full cursor-pointer" [ngSrc]="avatarUrl">
             </div>
             <div class="items-center overflow-hidden">
                 <span class="cursor-pointer text-base">{{fullName}}</span>
