@@ -122,6 +122,8 @@ services:
     corn-nginx:
         container_name: corn-nginx
         image: corn-nginx
+        environment:
+            - FRONTEND_PORT_CONTAINER=4200
         build:
             context: nginx
             dockerfile: Dockerfile.dev
