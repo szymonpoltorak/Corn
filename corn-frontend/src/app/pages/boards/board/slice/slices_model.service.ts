@@ -1,7 +1,7 @@
 import { Injectable, Input } from '@angular/core';
 import { SliceDescriptor } from './slice_descriptor';
-import { Task } from '../model/model';
-import { ModelService } from '../model/model.service';
+import { ModelService } from '../model.service';
+import { Task } from '@core/interfaces/boards/board/task.interface';
 
 @Injectable()
 export class SlicesModelService {

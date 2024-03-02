@@ -6,10 +6,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SlicesModelService, TaskChangedColumnEvent, TaskChangedGroupEvent, TaskGrouper } from './slice/slices_model.service';
 import { SliceService } from './slice/slice.service';
 import { SliceComponent } from './slice/slice.component';
-import { Assignee, SAMPLE_ASSIGNEES, SAMPLE_TASKS, Task } from './model/model';
-import { ModelService } from './model/model.service';
+import { ModelService } from './model.service';
 import { ColumnSetLayout } from './layout.component';
 import { MatIconModule } from '@angular/material/icon';
+import { ASSIGNEES, TASKS } from './placeholder_data';
+import { Task } from '@core/interfaces/boards/board/task.interface';
+import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 
 @Component({
     selector: 'app-board',
@@ -44,10 +46,10 @@ export class BoardComponent implements OnInit {
         this.modelService.modelChangeHandler = () => {
             this.slicesModelService.rebuildSlices();
         }
-        this.modelService.assignees = Object.values(SAMPLE_ASSIGNEES);
-        this.modelService.todo = SAMPLE_TASKS.TODO;
-        this.modelService.inprogress = SAMPLE_TASKS.INPROGRESS;
-        this.modelService.done = SAMPLE_TASKS.DONE;
+        this.modelService.assignees = Object.values(ASSIGNEES);
+        this.modelService.todo = TASKS.TODO;
+        this.modelService.inprogress = TASKS.INPROGRESS;
+        this.modelService.done = TASKS.DONE;
         this.slicesModelService.groupChangedHandler = (event: TaskChangedGroupEvent) => {
             if (this.taskGrouping == TaskGrouping.BY_ASSIGNEE &&
                 event.sourceGroupMetadata != event.destinationGroupMetadata

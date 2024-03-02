@@ -1,5 +1,5 @@
 import { ElementRef, Input } from '@angular/core';
-import { Assignee, Task } from '../model/model';
+import { Assignee, Task } from '../placeholder_data';
 import { MatMenuModule } from '@angular/material/menu';
 import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { ModelService } from '../model/model.service';
+import { ModelService } from '../model.service';
 
 @Component({
     selector: 'change-assignee-menu',

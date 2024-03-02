@@ -1,4 +1,4 @@
-import { Task } from "../model/model";
+import { Task } from "@core/interfaces/boards/board/task.interface";
 
 export interface ISliceDescriptor {
     todo: Task[];

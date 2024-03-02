@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { Task } from '../model/model';
 import { ChangeAssigneeMenuComponent } from '../change_assignee_menu/change_assignee_menu.component';
+import { Task } from '@core/interfaces/boards/board/task.interface';
 
 @Component({
     selector: 'taskcard',

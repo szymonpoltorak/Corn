@@ -1,6 +1,7 @@
 import { Injectable, Input } from '@angular/core';
-import { Assignee, Task } from './model';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
+import { Task } from '@core/interfaces/boards/board/task.interface';
 
 @Injectable()
 export class ModelService {
