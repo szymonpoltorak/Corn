@@ -30,6 +30,9 @@ export const theme = {
         },
         width: {
             "home-tab": "30rem"
+        },
+        fontFamily: {
+            'logo': ['Helvetica Neue', 'sans-serif'],
         }
     },
 };
