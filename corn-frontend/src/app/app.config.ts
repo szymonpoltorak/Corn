@@ -1,12 +1,12 @@
-import { APP_INITIALIZER, ApplicationConfig, isDevMode } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { ErrorInterceptor } from "@core/interceptors/error.interceptor";
-import { KeycloakService } from 'keycloak-angular';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from '@core/interceptors/error.interceptor';
+import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
@@ -20,7 +20,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
                 onLoad: 'check-sso',
                 silentCheckSsoRedirectUri:
                     window.location.origin + '/assets/silent-check-sso.html'
-            }
+            },
         });
 }
 
@@ -36,6 +36,11 @@ export const appConfig: ApplicationConfig = {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorInterceptor,
             multi: true
+        },
+        importProvidersFrom(KeycloakAngularModule),
+        {
+            provide: KeycloakBearerInterceptor,
+            useClass: KeycloakBearerInterceptor,
         },
         {
             provide: APP_INITIALIZER,
