@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
@@ -14,7 +14,8 @@ import { MatListModule } from '@angular/material/list';
         MatMenuModule, 
         CommonModule, 
         MatIconModule,
-        MatListModule
+        MatListModule,
+        NgOptimizedImage,
     ]
 })
 export class UserinfoComponent {
