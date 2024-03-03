@@ -1,6 +1,6 @@
 FROM alpine:3.19.1 AS build
 
-RUN apk update --no-cache && apk add --no-cache gradle
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache gradle
 
 WORKDIR /home/corn
 
@@ -16,7 +16,7 @@ RUN mv build/libs/corn-backend-0.0.1-SNAPSHOT.jar corn.jar
 
 FROM alpine:3.19.1
 
-RUN apk update --no-cache && apk add --no-cache openjdk17-jre
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache openjdk17-jre
 
 WORKDIR /corn
 
