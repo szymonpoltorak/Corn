@@ -5,6 +5,13 @@
         "outDir": "./dist/out-tsc",
         "forceConsistentCasingInFileNames": true,
         "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+        "strictBindCallApply": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
         "noImplicitOverride": true,
         "noPropertyAccessFromIndexSignature": true,
         "noImplicitReturns": true,
@@ -44,13 +51,25 @@
             ],
             "@assets/*": [
                 "./src/assets/*"
-            ]
+            ],
+            "@services/*": [
+                "./src/app/services/*"
+            ],
+            "@interfaces/*": [
+                "./src/app/core/interfaces/*"
+            ],
         }
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false,
         "strictInjectionParameters": true,
         "strictInputAccessModifiers": true,
-        "strictTemplates": true
+        "strictTemplates": true,
+        "strictOutputEventTypes": true,
+        "strictDomEventTypes": true,
+        "strictSafeNavigationTypes": true,
+        "strictDomLocalRefTypes": true,
+        "strictAttributeTypes": true,
+        "strictContextGenerics": true
     }
 }
