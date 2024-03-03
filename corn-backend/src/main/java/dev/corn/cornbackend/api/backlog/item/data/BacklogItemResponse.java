@@ -5,5 +5,5 @@ import lombok.Builder;
 
 @Builder
 public record BacklogItemResponse(String title, String description, String status, UserResponse assignee,
-                                  String itemType) {
+                                  String itemType, String taskFinishDate) {
 }

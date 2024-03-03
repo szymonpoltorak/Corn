@@ -55,7 +55,7 @@ public final class BacklogItemTestDataBuilder {
         return new AddBacklogItemTestData(backlogItemRequest, backlogItemResponse, backlogItem, user);
     }
 
-    public static UpdateBacklogItemTestData updateBacklogItemTestData() {
+    public static UpdateBacklogItemTestData updateBacklogItemTestData(ItemStatus itemStatus) {
         AddBacklogItemTestData addBacklogItemTestData = addBacklogItemTestData();
         BacklogItem backlogItem = addBacklogItemTestData.backLogItem();
 
@@ -66,7 +66,7 @@ public final class BacklogItemTestDataBuilder {
                 .sprint(backlogItem.getSprint())
                 .project(backlogItem.getProject())
                 .assignee(backlogItem.getAssignee())
-                .status(backlogItem.getStatus())
+                .status(itemStatus)
                 .build();
 
         BacklogItemRequest updateRequest = BacklogItemRequest.builder()
@@ -75,12 +75,14 @@ public final class BacklogItemTestDataBuilder {
                 .projectId(updatedBacklogItem.getProject().getProjectId())
                 .projectMemberId(updatedBacklogItem.getAssignee().getProjectMemberId())
                 .sprintId(updatedBacklogItem.getSprint().getSprintId())
+                .itemStatus(itemStatus)
                 .build();
 
         BacklogItemResponse updatedResponse = BacklogItemResponse.builder()
                 .title(updatedBacklogItem.getTitle())
                 .description(updatedBacklogItem.getDescription())
-                .status(updatedBacklogItem.getStatus().toString())
+                .status(itemStatus.name())
+                .taskFinishDate(itemStatus == ItemStatus.DONE ? LocalDate.now().toString() : null)
                 .build();
 
         return new UpdateBacklogItemTestData(
