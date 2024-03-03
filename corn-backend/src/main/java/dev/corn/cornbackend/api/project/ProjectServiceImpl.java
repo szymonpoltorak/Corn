@@ -8,6 +8,8 @@ import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
+import dev.corn.cornbackend.entities.project.member.ProjectMember;
+import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
     private static final long NEW_PROJECT_MEMBER_NUMBER = 0L;
     private static final String PROJECT_DOES_NOT_EXIST = "Project does not exist!";
     private final ProjectRepository projectRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final ProjectMapper projectMapper;
     private final ProjectMemberService projectMemberService;
 
@@ -41,11 +44,21 @@ public class ProjectServiceImpl implements ProjectService {
                 .owner(user)
                 .sprints(Collections.emptyList())
                 .build();
-        log.info("Created project: {}", project);
 
         Project newProject = projectRepository.save(project);
 
-        log.info("Saved project: {}", newProject);
+        log.info("Created project: {}", newProject);
+
+        ProjectMember projectMember = ProjectMember
+                .builder()
+                .user(user)
+                .project(newProject)
+                .backlogItems(Collections.emptyList())
+                .build();
+
+        ProjectMember newProjectMember = projectMemberRepository.save(projectMember);
+
+        log.info("Created project member: {}", newProjectMember);
 
         return mapToProjectInfoResponse(newProject, NEW_PROJECT_MEMBER_NUMBER);
     }

@@ -6,6 +6,8 @@ import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
+import dev.corn.cornbackend.entities.project.member.ProjectMember;
+import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
@@ -26,6 +28,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +41,9 @@ class ProjectServiceTest {
 
     @Mock
     private ProjectMemberService projectMemberService;
+
+    @Mock
+    private ProjectMemberRepository projectMemberRepository;
 
     @Mock
     private ProjectRepository projectRepository;
@@ -62,6 +68,8 @@ class ProjectServiceTest {
                 .thenReturn(Collections.emptyList());
         when(projectMapper.toProjectInfoResponse(ADD_PROJECT_DATA.project(), Collections.emptyList(), totalNumberOfMembers))
                 .thenReturn(expected);
+        when(projectMemberRepository.save(ProjectMember.builder().build()))
+                .thenReturn(ProjectMember.builder().build());
 
         ProjectInfoResponse actual = projectService
                 .addNewProject(ADD_PROJECT_DATA.project().getName(), ADD_PROJECT_DATA.owner());
