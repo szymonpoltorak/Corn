@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,7 +47,7 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     @Override
-    @PatchMapping(value = UPDATE_PROJECTS_NAME)
+    @PutMapping(value = UPDATE_PROJECTS_NAME)
     public final ProjectResponse updateProjectsName(@RequestParam String name,
                                                     @RequestParam long projectId,
                                                     @JwtAuthed User user) {
