@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SliceComponent } from '../../../../../pages/boards/board/slice/slice.component';
+import { SliceComponent } from '@pages/boards/board/slice/slice.component';
 
 @Injectable()
 export class SliceService<T> {
