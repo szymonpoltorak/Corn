@@ -4,7 +4,7 @@ import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 
 @Injectable()
-export class ModelService {
+export class BoardModelService {
 
     sprintName: string = 'Sprint 1';
     assignees: Assignee[] = [];
@@ -31,23 +31,23 @@ export class ModelService {
         this.modelChangeHandler && this.modelChangeHandler();
     }
 
-    todoSize() {
+    todoSize(): number {
         return this.todo.length;
     }
 
-    inprogressSize() {
+    inprogressSize(): number {
         return this.inprogress.length;
     }
 
-    doneSize() {
+    doneSize(): number {
         return this.done.length;
     }
 
-    assigneesSize() {
+    assigneesSize(): number {
         return this.assignees.length;
     }
 
-    allTasksSize() {
+    allTasksSize(): number {
         return this.todo.length + this.inprogress.length + this.done.length;
     }
 

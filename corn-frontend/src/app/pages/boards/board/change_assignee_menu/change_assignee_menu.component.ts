@@ -1,13 +1,13 @@
 import { ElementRef, Input } from '@angular/core';
-import { Assignee, Task } from '../placeholder_data';
 import { MatMenuModule } from '@angular/material/menu';
 import { Component, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { ModelService } from '../model.service';
+import { BoardModelService } from '../../../../core/services/boards/board/model.service';
+import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
+import { Task } from '@core/interfaces/boards/board/task.interface';
 
 @Component({
     selector: 'change-assignee-menu',
@@ -23,7 +23,6 @@ import { ModelService } from '../model.service';
 })
 export class ChangeAssigneeMenuComponent {
 
-    protected myControl = new FormControl('');
     protected filteredAssignees: Assignee[] = [];
 
     @Input() associatedTask?: Task;
@@ -31,7 +30,7 @@ export class ChangeAssigneeMenuComponent {
     @ViewChild('filterStringInput') private input?: ElementRef;
 
     constructor(
-        protected readonly modelService: ModelService,
+        private readonly modelService: BoardModelService,
     ) { }
 
     protected update(): void {

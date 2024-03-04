@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskListComponent } from '../task_list/task_list.component';
-import { SliceService } from './slice.service';
+import { SliceService } from '../../../../core/services/boards/board/slice/slice.service';
 import { SliceDescriptor } from './slice_descriptor';
-import { ColumnSetLayout } from '../layout.component';
-import { SlicesModelService } from './slices_model.service';
+import { SlicesModelService } from '../../../../core/services/boards/board/slice/slices_model.service';
 import { CdkDropList } from '@angular/cdk/drag-drop';
+import { ColumnSetLayout } from '../layout/column_set_layout.component';
 
 @Component({
     selector: 'slice',
@@ -17,17 +17,17 @@ import { CdkDropList } from '@angular/cdk/drag-drop';
     ],
     templateUrl: './slice.component.html',
 })
-export class SliceComponent implements AfterViewInit, OnDestroy {
+export class SliceComponent<T> implements AfterViewInit, OnDestroy {
 
-    @Input() sliceDescriptor?: SliceDescriptor;
+    @Input() sliceDescriptor?: SliceDescriptor<T>;
 
     @ViewChild('todoTasklist') private todoTasklist!: TaskListComponent;
     @ViewChild('inprogressTasklist') private inprogressTasklist!: TaskListComponent;
     @ViewChild('doneTasklist') private doneTasklist!: TaskListComponent;
 
     constructor(
-        protected readonly sliceService: SliceService,
-        protected readonly sliceModelService: SlicesModelService,
+        private readonly sliceService: SliceService<T>,
+        protected readonly sliceModelService: SlicesModelService<T>,
     ) { }
 
     ngAfterViewInit(): void {

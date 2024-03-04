@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { CdkDrag, CdkDragDrop, CdkDropList, } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { TaskCardComponent } from '../task_card/task_card.component';
-import { TaskMovedByDnDEvent } from '../slice/slices_model.service';
 import { Task } from '@core/interfaces/boards/board/task.interface';
+import { TaskMovedByDnDEvent } from '@core/interfaces/boards/board/task_moved_by_dnd_event.interface';
 
 @Component({
     selector: 'tasklist',

@@ -3,15 +3,21 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { SlicesModelService, TaskChangedColumnEvent, TaskChangedGroupEvent, TaskGrouper } from './slice/slices_model.service';
-import { SliceService } from './slice/slice.service';
+import { SlicesModelService } from '../../../core/services/boards/board/slice/slices_model.service';
+import { SliceService } from '../../../core/services/boards/board/slice/slice.service';
 import { SliceComponent } from './slice/slice.component';
-import { ModelService } from './model.service';
-import { ColumnSetLayout } from './layout.component';
+import { BoardModelService } from '../../../core/services/boards/board/model.service';
 import { MatIconModule } from '@angular/material/icon';
 import { ASSIGNEES, TASKS } from './placeholder_data';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
+import { TaskGrouping } from '@core/enum/boards/board/TaskGrouping';
+import { ColumnSetLayout } from './layout/column_set_layout.component';
+import { GroupingMetadata } from '@core/types/board/boards/GroupingMetadata';
+import { TaskGrouper } from '@core/types/board/boards/TaskGrouper';
+import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
+import { TaskChangedColumnEvent } from '@core/interfaces/boards/board/task_changed_column_event.interface';
+import { Hideable } from '@core/interfaces/boards/board/hideable.interface';
 
 @Component({
     selector: 'app-board',
@@ -26,7 +32,7 @@ import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
         ColumnSetLayout,
     ],
     providers: [
-        ModelService,
+        BoardModelService,
         SlicesModelService,
         SliceService,
     ],
@@ -38,8 +44,8 @@ export class BoardComponent implements OnInit {
     protected taskGrouping: TaskGrouping = TaskGrouping.NONE;
 
     constructor(
-        protected readonly modelService: ModelService,
-        protected readonly slicesModelService: SlicesModelService,
+        protected readonly modelService: BoardModelService,
+        protected readonly slicesModelService: SlicesModelService<GroupingMetadata>,
     ) { }
 
     ngOnInit(): void {
@@ -97,7 +103,7 @@ export class BoardComponent implements OnInit {
 
     protected readonly TaskGroupingEnum: typeof TaskGrouping = TaskGrouping;
     protected readonly TASK_GROUPINGS: TaskGrouping[] = Object.values(TaskGrouping);
-    protected readonly GROUPERS: { [key in TaskGrouping]: TaskGrouper; } = {
+    protected readonly GROUPERS: { [key in TaskGrouping]: TaskGrouper<GroupingMetadata>; } = {
         [TaskGrouping.NONE]: (ungrouped: Task[]) => {
             return [{ metadata: null, group: ungrouped }]
         },
@@ -114,11 +120,4 @@ export class BoardComponent implements OnInit {
         },
     };
 
-}
-
-type Hideable = { hidden: boolean };
-
-enum TaskGrouping {
-    NONE = "None",
-    BY_ASSIGNEE = "By assignee",
 }
