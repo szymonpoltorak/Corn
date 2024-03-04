@@ -1,5 +1,5 @@
 import { Injectable, Input } from '@angular/core';
-import { SliceDescriptor } from '../../../../../pages/boards/board/slice/slice_descriptor';
+import { SliceDescriptor } from './slice_descriptor';
 import { BoardModelService } from '../model.service';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 import { TaskGrouper } from '@core/types/board/boards/TaskGrouper';
