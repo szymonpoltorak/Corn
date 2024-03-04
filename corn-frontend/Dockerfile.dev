@@ -3,7 +3,9 @@
 #     - "./.cache/corn-frontend/node_modules:/corn-frontend/node_modules"
 #     - "./.cache/corn-frontend/dist:/corn-frontend/dist"
 
-FROM node:18.15-alpine as node
+FROM alpine:3.19.1
+
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache nodejs npm
 
 WORKDIR /corn-frontend
 

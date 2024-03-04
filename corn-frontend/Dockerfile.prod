@@ -1,19 +1,23 @@
-FROM node:18.15-alpine as node
+FROM alpine:3.19.1 AS build
 
-WORKDIR /corn-frontend
+WORKDIR /corn
+
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache nodejs npm
 
 COPY package*.json ./
+
+RUN npm cache clean --force
 
 RUN npm install
 
 COPY . .
 
-RUN npm run ng build --configuration=docker
+RUN npm run ng build --configuration=production
 
 FROM nginx:alpine
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /corn/dist/corn-frontend/browser /etc/nginx/html
 
-COPY --from=node /corn-frontend/dist/corn-frontend /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80

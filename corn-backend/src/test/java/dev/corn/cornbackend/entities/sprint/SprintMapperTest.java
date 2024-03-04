@@ -3,10 +3,7 @@ package dev.corn.cornbackend.entities.sprint;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
-import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapperImpl;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -29,6 +26,8 @@ class SprintMapperTest {
         // given
         SprintMapper sprintMapper = new SprintMapperImpl();
         Sprint sprint = new Sprint();
+
+        sprint.setProject(new Project());
 
         // when
         SprintResponse actual = sprintMapper.toSprintResponse(sprint);

@@ -1,7 +1,9 @@
 package dev.corn.cornbackend.api.project;
 
+import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.interfaces.ProjectService;
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
@@ -12,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Collections;
 import java.util.List;
 
 import static dev.corn.cornbackend.api.project.ProjectServiceTest.PROJECT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED;
@@ -34,13 +37,13 @@ class ProjectControllerTest {
     final void test_addNewProject_shouldAddNewProject() {
         // given
         Project project = ADD_PROJECT_DATA.project();
-        ProjectResponse expected = MAPPER.toProjectResponse(project);
+        ProjectInfoResponse expected = MAPPER.toProjectInfoResponse(project, Collections.emptyList(), 0L);
 
         // when
         when(projectService.addNewProject(ADD_PROJECT_DATA.project().getName(), ADD_PROJECT_DATA.owner()))
                 .thenReturn(expected);
 
-        ProjectResponse actual = projectController
+        ProjectInfoResponse actual = projectController
                 .addNewProject(ADD_PROJECT_DATA.project().getName(), ADD_PROJECT_DATA.owner());
 
         // then
@@ -51,14 +54,15 @@ class ProjectControllerTest {
     final void test_getProjectsOnPage_shouldGetProjects() {
         // given
         Project project = ADD_PROJECT_DATA.project();
-        List<ProjectResponse> expected = List.of(MAPPER.toProjectResponse(project));
+        List<ProjectMemberInfoResponse> members = List.of(new ProjectMemberInfoResponse("full Name", 1L));
+        List<ProjectInfoResponse> expected = List.of(MAPPER.toProjectInfoResponse(project, members, 1L));
         int page = 0;
 
         // when
         when(projectService.getProjectsOnPage(page, ADD_PROJECT_DATA.owner()))
                 .thenReturn(expected);
 
-        List<ProjectResponse> actual = projectController
+        List<ProjectInfoResponse> actual = projectController
                 .getProjectsOnPage(page, ADD_PROJECT_DATA.owner());
 
         // then

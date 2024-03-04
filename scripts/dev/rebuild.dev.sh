@@ -1,6 +1,6 @@
 #!/bin/sh
 
-COMPOSE_FILE = "../../docker-compose.dev.yml"
+COMPOSE_FILE="../../docker-compose.dev.yml"
 
 docker compose -f "${COMPOSE_FILE}" down --rmi all --remove-orphans
 [ "$?" = 0 ] || exit 1

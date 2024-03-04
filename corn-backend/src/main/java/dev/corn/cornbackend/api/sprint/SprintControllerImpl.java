@@ -9,8 +9,8 @@ import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,14 +56,14 @@ public class SprintControllerImpl implements SprintController {
     }
 
     @Override
-    @PatchMapping(value = UPDATE_SPRINTS_NAME)
+    @PutMapping(value = UPDATE_SPRINTS_NAME)
     public final SprintResponse updateSprintsName(@RequestParam String name, @RequestParam long sprintId,
                                                   @JwtAuthed User user) {
         return sprintService.updateSprintsName(name, sprintId, user);
     }
 
     @Override
-    @PatchMapping(value = UPDATE_SPRINTS_DESCRIPTION)
+    @PutMapping(value = UPDATE_SPRINTS_DESCRIPTION)
     public final SprintResponse updateSprintsDescription(@RequestParam String description,
                                                          @RequestParam long sprintId,
                                                          @JwtAuthed User user) {
@@ -71,7 +71,7 @@ public class SprintControllerImpl implements SprintController {
     }
 
     @Override
-    @PatchMapping(value = UPDATE_SPRINTS_START_DATE)
+    @PutMapping(value = UPDATE_SPRINTS_START_DATE)
     public final SprintResponse updateSprintsStartDate(@RequestParam LocalDate startDate,
                                                        @RequestParam long sprintId,
                                                        @JwtAuthed User user) {
@@ -79,7 +79,7 @@ public class SprintControllerImpl implements SprintController {
     }
 
     @Override
-    @PatchMapping(value = UPDATE_SPRINTS_END_DATE)
+    @PutMapping(value = UPDATE_SPRINTS_END_DATE)
     public final SprintResponse updateSprintsEndDate(@RequestParam LocalDate endDate, @RequestParam long sprintId,
                                                      @JwtAuthed User user) {
         return sprintService.updateSprintsEndDate(endDate, sprintId, user);

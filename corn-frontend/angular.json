@@ -8,6 +8,9 @@
             "schematics": {
                 "@schematics/angular:component": {
                     "style": "scss"
+                },
+                "@schematics/angular:application": {
+                    "strict": true
                 }
             },
             "root": "",
@@ -43,8 +46,6 @@
                             "namedChunks": false,
                             "aot": true,
                             "extractLicenses": true,
-                            "vendorChunk": false,
-                            "buildOptimizer": true,
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -112,5 +113,8 @@
                 }
             }
         }
+    },
+    "cli": {
+      "analytics": false
     }
 }

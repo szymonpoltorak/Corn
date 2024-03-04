@@ -3,11 +3,14 @@
 #    - "./.cache/corn-backend/.gradle:/home/corn/.gradle"
 #    - "./.cache/corn-backend/build:/home/corn/build"
 
-FROM gradle:8.2-jdk17-alpine
+FROM alpine:3.19.1
+
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache gradle
 
 WORKDIR /home/corn
 
 EXPOSE 8080
+
 EXPOSE 5005
 
 CMD ["gradle", "bootRun"]

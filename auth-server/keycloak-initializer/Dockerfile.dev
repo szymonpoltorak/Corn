@@ -3,7 +3,9 @@
 #     - "./.cache/keycloak-initializer/.gradle:/keycloak-initializer/.gradle"
 #     - "./.cache/keycloak-initializer/build:/keycloak-initializer/build"
 
-FROM gradle:8.2-jdk17-alpine
+FROM alpine:3.19.1
+
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache gradle
 
 WORKDIR /keycloak-initializer
 

@@ -1,0 +1,26 @@
+<img class="object-cover rounded-full cursor-pointer" [ngSrc]="avatarUrl" width="48" height="48" [matMenuTriggerFor]="menu">
+
+<mat-menu #menu="matMenu">
+
+    <div mat-menu-item>
+        <div class="grid grid-cols-[36px,1fr] gap-2 mb-3">
+            <div class="flex items-center">
+                <img class="object-cover rounded-full cursor-pointer" [ngSrc]="avatarUrl" width="36" height="36">
+            </div>
+            <div class="items-center overflow-hidden">
+                <span class="cursor-pointer text-base">{{fullName}}</span>
+                <br>
+                <span class="cursor-pointer text-xs break-all">{{username}}</span>
+            </div>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="logout.emit()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+    </button>
+
+</mat-menu>
+

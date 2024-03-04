@@ -1,7 +1,7 @@
 package dev.corn.cornbackend.entities.project.member.interfaces;
 
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 
 /**
  * Mapper for ProjectMember
@@ -14,5 +14,5 @@ public interface ProjectMemberMapper {
      * @param projectMember the ProjectMember to map
      * @return the ProjectMemberResponse
      */
-    ProjectMemberResponse toProjectMemberResponse(ProjectMember projectMember);
+    UserResponse mapProjectMememberToUserResponse(ProjectMember projectMember);
 }

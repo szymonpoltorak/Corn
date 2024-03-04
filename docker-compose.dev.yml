@@ -10,6 +10,7 @@ services:
             - POSTGRES_DB=corn
         ports:
             - "5000:5432"
+
     corn-backend:
         container_name: corn-backend
         image: corn-backend
@@ -31,6 +32,7 @@ services:
             - "./corn-backend:/home/corn"
             - "./.cache/corn-backend/.gradle:/home/corn/.gradle"
             - "./.cache/corn-backend/build:/home/corn/build"
+
     corn-frontend:
         container_name: corn-frontend
         image: corn-frontend
@@ -38,11 +40,12 @@ services:
             context: corn-frontend
             dockerfile: Dockerfile.dev
         ports:
-            - "4200:4200"
+            - "4201:4200"
         volumes:
             - "./corn-frontend:/corn-frontend"
             - "./.cache/corn-frontend/node_modules:/corn-frontend/node_modules"
             - "./.cache/corn-frontend/dist:/corn-frontend/dist"
+
     corn-keycloak-initializer:
         container_name: corn-keycloak-initializer
         image: corn-keycloak-initializer
@@ -60,6 +63,7 @@ services:
             - "./auth-server/keycloak-initializer:/keycloak-initializer"
             - "./.cache/keycloak-initializer/.gradle:/keycloak-initializer/.gradle"
             - "./.cache/keycloak-initializer/build:/keycloak-initializer/build"
+
     corn-keycloak-theme:
         container_name: corn-keycloak-theme
         image: corn-keycloak-theme
@@ -73,6 +77,7 @@ services:
         volumes:
             - "./auth-server/keycloak-theme:/keycloak-theme"
             - "./.cache/keycloak-theme/node_modules:/keycloak-theme/node_modules"
+
     corn-keycloak:
         container_name: corn-keycloak
         image: quay.io/keycloak/keycloak:20.0.1
@@ -88,12 +93,16 @@ services:
             - KC_DB_PASSWORD=none
         command: start-dev
         ports:
-            - '8081:8080'
+            - '8082:8080'
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
+            interval: 1s
+            retries: 30
+            start_period: 15s
+            timeout: 5s
         volumes:
-            #- "./keycloak-theme/disable-theme-cache.cli:/opt/jboss/startup-scripts/disable-theme-cache.cli"
             - "./auth-server/keycloak-theme/themes/corn/:/opt/keycloak/themes/corn/"
+
     corn-keycloak-postgres:
         container_name: corn-keycloak-postgres
         image: postgres:alpine
@@ -105,3 +114,23 @@ services:
             - "5001:5432"
         healthcheck:
             test: "pg_isready -U keycloak"
+            interval: 1s
+            retries: 30
+            start_period: 5s
+            timeout: 3s
+
+    corn-nginx:
+        container_name: corn-nginx
+        image: corn-nginx
+        environment:
+            - FRONTEND_PORT_CONTAINER=4200
+        build:
+            context: nginx
+            dockerfile: Dockerfile.dev
+        depends_on:
+            - corn-backend
+            - corn-frontend
+            - corn-keycloak
+        ports:
+            - "4200:4200"
+            - "8081:8080"
