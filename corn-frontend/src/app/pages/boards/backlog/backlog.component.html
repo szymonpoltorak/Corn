@@ -5,7 +5,7 @@
             <div class="status-background" [ngClass]="getStatusClass(backlogItem.status)">
                 <mat-select [panelWidth]="null" [(value)]="backlogItem.status">
                     @for (status of statuses; track status) {
-                        <mat-option class="status-panel-{{getStatusClass(status)}}" [value]="status">{{status}}</mat-option>
+                        <mat-option (click)="updateStatus(backlogItem)" class="status-panel-{{getStatusClass(status)}}" [value]="status">{{status}}</mat-option>
                     }
                 </mat-select>
             </div>
@@ -66,3 +66,5 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr class="table-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+
+<button style="margin-left: 0.1em; margin-top: 0.5em; height: 2em; font-weight: 550;" mat-raised-button color="primary" (click)="showItemForm()">Add Backlog Item</button>

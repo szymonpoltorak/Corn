@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Add Backlog Item</h2>
+<mat-dialog-content style="height: 500px;">
+    <form [formGroup]="itemForm" (ngSubmit)="submitForm()">
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title">
+
+            @if(itemForm.controls.title.hasError('required')) {
+                <mat-error>Title is <strong>required</strong></mat-error>
+            } @else if (itemForm.controls.title.hasError('maxlength')) {
+                <mat-error>Title cannot be more than <strong>100</strong> characters</mat-error>
+            } @else if (itemForm.controls.title.hasError('notWhitespace')) {
+                <mat-error>Title cannot be only <strong>whitespace</strong></mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description">
+
+            @if(itemForm.controls.description.hasError('required')) {
+                <mat-error>Description is <strong>required</strong></mat-error>
+            } @else if (itemForm.controls.description.hasError('maxlength')) {
+                <mat-error>Description cannot be more than <strong>1000</strong> characters</mat-error>
+            } @else if (itemForm.controls.description.hasError('notWhitespace')) {
+                <mat-error>Description cannot be only <strong>whitespace</strong></mat-error>
+            }
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

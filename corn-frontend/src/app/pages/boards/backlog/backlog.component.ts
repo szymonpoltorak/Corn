@@ -15,13 +15,11 @@ import {
 import {BacklogItem} from '@core/interfaces/boards/backlog.item';
 import {Observable, ReplaySubject} from "rxjs";
 import {NgIcon, provideIcons} from "@ng-icons/core";
-import {matTask, matTurnedInNot} from "@ng-icons/material-icons/baseline";
-import {aspectsInProgress} from "@ng-icons/ux-aspects";
-import {matDoneOutline} from "@ng-icons/material-icons/outline";
+import {matTask} from "@ng-icons/material-icons/baseline";
 import {BacklogItemStatus} from "@core/enum/BacklogItemStatus";
 import {BacklogItemType} from "@core/enum/BacklogItemType";
 import {User} from "@core/interfaces/boards/user";
-import {MatOption, MatSelect} from "@angular/material/select";
+import {MatFormField, MatLabel, MatOption, MatSelect} from "@angular/material/select";
 import {NgClass, NgForOf} from "@angular/common";
 import {UserAvatarComponent} from "@pages/utils/user-avatar/user-avatar.component";
 import {bootstrapBugFill} from "@ng-icons/bootstrap-icons";
@@ -29,6 +27,14 @@ import {MatTooltip} from "@angular/material/tooltip";
 import {featherBook} from "@ng-icons/feather-icons";
 import {octContainer} from "@ng-icons/octicons";
 import {MatSort, MatSortHeader} from "@angular/material/sort";
+import {MatButton, MatFabButton} from "@angular/material/button";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {MatInput} from "@angular/material/input";
+import {CustomValidators} from "@core/validators/custom-validators";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatDialog} from "@angular/material/dialog";
+import {BacklogFormComponent} from "@pages/boards/backlog/backlog-form/backlog-form.component";
 
 @Component({
     selector: 'app-backlog',
@@ -52,7 +58,15 @@ import {MatSort, MatSortHeader} from "@angular/material/sort";
         UserAvatarComponent,
         MatTooltip,
         MatSortHeader,
-        MatSort
+        MatSort,
+        MatButton,
+        MatFabButton,
+        FormsModule,
+        ReactiveFormsModule,
+        MatLabel,
+        MatInput,
+        MatFormField,
+        MatFormFieldModule
     ],
     templateUrl: './backlog.component.html',
     styleUrl: './backlog.component.scss',
@@ -60,6 +74,9 @@ import {MatSort, MatSortHeader} from "@angular/material/sort";
     encapsulation: ViewEncapsulation.None
 })
 export class BacklogComponent implements AfterViewInit{
+
+    constructor(private snackBar: MatSnackBar,
+                public dialog: MatDialog) {}
     ngAfterViewInit(): void {
        this.dataSource.sort = this.sort;
        this.dataSource.sortData = (data: BacklogItem[], sort: MatSort) => {
@@ -131,6 +148,22 @@ export class BacklogComponent implements AfterViewInit{
     getStatusClass(status: BacklogItemStatus) {
         return status.replace(' ', '_');
     }
+
+    showItemForm() {
+        this.dialog.open(BacklogFormComponent, {
+           width: '500px',
+           enterAnimationDuration: '5000ms',
+           exitAnimationDuration: '100ms',
+        });
+    }
+
+    updateStatus(item: BacklogItem) {
+        //only for example purposes
+        this.snackBar.open('Setting status: ' + item.status + ' for item: ' + item.title, 'Close');
+
+        //TODO real interaction with backend
+    }
+
 
     protected readonly BacklogItemType = BacklogItemType;
 }
