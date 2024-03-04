@@ -25,6 +25,11 @@ export const routes: Routes = [
                 loadComponent: () => import("@pages/boards/timeline/timeline.component")
                     .then(c => c.TimelineComponent)
             },
+            {
+                path: BoardsPaths.BOARD,
+                loadComponent: () => import("@pages/boards/board/board.component")
+                    .then(c => c.BoardComponent)
+            },
         ],
     },
     {
