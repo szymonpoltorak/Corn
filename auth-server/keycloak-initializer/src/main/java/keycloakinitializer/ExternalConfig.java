@@ -9,23 +9,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ExternalConfig {
+public final class ExternalConfig {
 
-    public static final String KCCFG_OVERRIDE_EXISTING = System.getenv("KCCFG_OVERRIDE_EXISTING");
+    private static final String KCCFG_OVERRIDE_EXISTING = System.getenv("KCCFG_OVERRIDE_EXISTING");
 
     public static final String KCCFG_LOGIN_THEME_NAME = System.getenv("KCCFG_LOGIN_THEME_NAME");
 
-    public static final String KC_SERVER_URL = System.getenv("KC_SERVER_URL");
+    private static final String KC_SERVER_URL = System.getenv("KC_SERVER_URL");
 
-    public static final String GITHUB_CLIENT_ID = System.getenv("GITHUB_CLIENT_ID");
-    public static final String GITHUB_CLIENT_SECRET = System.getenv("GITHUB_CLIENT_SECRET");
+    private static final String GITHUB_CLIENT_ID = System.getenv("GITHUB_CLIENT_ID");
+    private static final String GITHUB_CLIENT_SECRET = System.getenv("GITHUB_CLIENT_SECRET");
 
-    public static final String GOOGLE_CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
-    public static final String GOOGLE_CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
+    private static final String GOOGLE_CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
+    private static final String GOOGLE_CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
 
-    //
+    private ExternalConfig() {
+    }
 
-    public static Keycloak getAdmin() {
+    static Keycloak getAdmin() {
         if(KC_SERVER_URL == null) {
             throw new IllegalStateException("env KC_SERVER_URL not found");
         }
@@ -38,41 +39,37 @@ public class ExternalConfig {
                 .build();
     }
 
-    public static boolean shouldOverrideExistingConfiguration() {
-        return KCCFG_OVERRIDE_EXISTING != null && KCCFG_OVERRIDE_EXISTING.equalsIgnoreCase("true");
+    static boolean shouldOverrideExistingConfiguration() {
+        return "true".equalsIgnoreCase(KCCFG_OVERRIDE_EXISTING);
     }
 
     public static List<IdentityProviderRepresentation> getIdentityProviders() {
-        ArrayList<IdentityProviderRepresentation> providers = new ArrayList<>();
-        if(GITHUB_CLIENT_ID != null && !GITHUB_CLIENT_ID.isBlank() && GITHUB_CLIENT_SECRET != null && !GITHUB_CLIENT_SECRET.isBlank()) {
-            providers.add(new IdentityProviderRepresentation() {{
-                setAlias("github");
-                setEnabled(true);
-                setProviderId("github");
-                setConfig(Map.of(
-                        "clientId", GITHUB_CLIENT_ID,
-                        "clientSecret", GITHUB_CLIENT_SECRET
-                ));
-                // V czy wymusić aktualizację danych profilu po pierwszym zalogowaniu przez oauth2
-                //setUpdateProfileFirstLoginMode("on");
-                // V ??
-                //setFirstBrokerLoginFlowAlias("first broker login");
-                // V napis na ekranie logowania
-                //setDisplayName("Zaloguj sie przez ~GITHUB~");
-            }});
+        List<IdentityProviderRepresentation> providers = new ArrayList<>(3);
+
+        if(isIdentityProviderConfigured(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET)) {
+            providers.add(newInstance("github", GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET));
         }
-        if(GOOGLE_CLIENT_ID != null && !GOOGLE_CLIENT_ID.isBlank() && GOOGLE_CLIENT_SECRET != null && !GOOGLE_CLIENT_SECRET.isBlank()) {
-            providers.add(new IdentityProviderRepresentation() {{
-                setAlias("google");
-                setEnabled(true);
-                setProviderId("google");
-                setConfig(Map.of(
-                        "clientId", GOOGLE_CLIENT_ID,
-                        "clientSecret", GOOGLE_CLIENT_SECRET
-                ));
-            }});
+        if(isIdentityProviderConfigured(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)) {
+            providers.add(newInstance("google", GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET));
         }
         return Collections.unmodifiableList(providers);
+    }
+
+    private static IdentityProviderRepresentation newInstance(String provider, String clientId, String clientSecret) {
+        IdentityProviderRepresentation idp = new IdentityProviderRepresentation();
+
+        idp.setAlias(provider);
+        idp.setEnabled(true);
+        idp.setProviderId(provider);
+        idp.setConfig(Map.of(
+                "clientId", clientId,
+                "clientSecret", clientSecret
+        ));
+        return idp;
+    }
+
+    private static boolean isIdentityProviderConfigured(String clientId, String clientSecret) {
+        return clientId != null && !clientId.isBlank() && clientSecret != null && !clientSecret.isBlank();
     }
 
 }

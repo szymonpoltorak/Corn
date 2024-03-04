@@ -1,12 +1,12 @@
 package dev.corn.cornbackend.api.project.member;
 
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberResponse;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.ProjectMemberMapperImpl;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberMapper;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.entities.user.interfaces.UserRepository;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
@@ -67,7 +67,7 @@ class ProjectMemberServiceTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        ProjectMemberResponse expected = MAPPER.toProjectMemberResponse(projectMember);
+        UserResponse expected = MAPPER.mapProjectMememberToUserResponse(projectMember);
         String username = "abababababababab";
 
         // when
@@ -79,14 +79,14 @@ class ProjectMemberServiceTest {
                 .thenReturn(false);
         when(projectMemberRepository.save(any(ProjectMember.class)))
                 .thenReturn(projectMember);
-        when(projectMemberMapper.toProjectMemberResponse(projectMember))
+        when(projectMemberMapper.mapProjectMememberToUserResponse(projectMember))
                 .thenReturn(expected);
 
-        ProjectMemberResponse actual = projectMemberService
+        UserResponse actual = projectMemberService
                 .addMemberToProject(username, projectId, user);
 
         // then
-        assertEquals(expected, actual, "Should add member to project");
+        assertEquals(expected, actual, "Should add assignee to project");
         verify(projectMemberRepository).save(any(ProjectMember.class));
     }
 
@@ -157,17 +157,17 @@ class ProjectMemberServiceTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        List<ProjectMemberResponse> expected = List.of(MAPPER.toProjectMemberResponse(projectMember));
+        List<UserResponse> expected = List.of(MAPPER.mapProjectMememberToUserResponse(projectMember));
 
         // when
         when(projectRepository.findByIdWithProjectMember(projectId, user))
                 .thenReturn(Optional.of(ADD_NEW_PROJECT_DATA.project()));
         when(projectMemberRepository.findAllByProject(eq(ADD_NEW_PROJECT_DATA.project()), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(projectMember)));
-        when(projectMemberMapper.toProjectMemberResponse(projectMember))
-                .thenReturn(MAPPER.toProjectMemberResponse(projectMember));
+        when(projectMemberMapper.mapProjectMememberToUserResponse(projectMember))
+                .thenReturn(MAPPER.mapProjectMememberToUserResponse(projectMember));
 
-        List<ProjectMemberResponse> actual = projectMemberService.getProjectMembers(projectId, page, user);
+        List<UserResponse> actual = projectMemberService.getProjectMembers(projectId, page, user);
 
         // then
         assertEquals(expected, actual, "Should get project members");
@@ -200,7 +200,7 @@ class ProjectMemberServiceTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        ProjectMemberResponse expected = MAPPER.toProjectMemberResponse(projectMember);
+        UserResponse expected = MAPPER.mapProjectMememberToUserResponse(projectMember);
         String username = "abababababababab";
 
         // when
@@ -210,13 +210,13 @@ class ProjectMemberServiceTest {
                 .thenReturn(Optional.of(ADD_NEW_PROJECT_DATA.project()));
         when(projectMemberRepository.findByProjectAndUser(ADD_NEW_PROJECT_DATA.project(), user))
                 .thenReturn(Optional.of(projectMember));
-        when(projectMemberMapper.toProjectMemberResponse(projectMember))
+        when(projectMemberMapper.mapProjectMememberToUserResponse(projectMember))
                 .thenReturn(expected);
 
-        ProjectMemberResponse actual = projectMemberService.removeMemberFromProject(username, projectId, user);
+        UserResponse actual = projectMemberService.removeMemberFromProject(username, projectId, user);
 
         // then
-        assertEquals(expected, actual, "Should remove member from project");
+        assertEquals(expected, actual, "Should remove assignee from project");
         verify(projectMemberRepository).deleteById(projectMember.getProjectMemberId());
     }
 
@@ -238,7 +238,7 @@ class ProjectMemberServiceTest {
         // then
         assertThrows(ProjectMemberDoesNotExistException.class, () -> projectMemberService
                         .removeMemberFromProject(username, projectId, user),
-                "Should throw exception when project member does not exist");
+                "Should throw exception when project assignee does not exist");
     }
 
     @Test
@@ -255,7 +255,7 @@ class ProjectMemberServiceTest {
         // then
         assertThrows(UserDoesNotExistException.class, () -> projectMemberService
                         .removeMemberFromProject(username, projectId, user),
-                "Should throw exception when project member does not exist");
+                "Should throw exception when project assignee does not exist");
     }
 
     @Test
@@ -274,7 +274,7 @@ class ProjectMemberServiceTest {
         // then
         assertThrows(ProjectDoesNotExistException.class, () -> projectMemberService
                         .removeMemberFromProject(username, projectId, user),
-                "Should throw exception when project member does not exist");
+                "Should throw exception when project assignee does not exist");
     }
 
     @Test

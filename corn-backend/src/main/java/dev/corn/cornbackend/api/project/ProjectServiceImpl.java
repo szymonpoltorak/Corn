@@ -1,10 +1,15 @@
 package dev.corn.cornbackend.api.project;
 
+import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.interfaces.ProjectService;
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
+import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
+import dev.corn.cornbackend.entities.project.member.ProjectMember;
+import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -23,12 +27,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private static final int PROJECTS_PER_PAGE = 20;
+    private static final long NEW_PROJECT_MEMBER_NUMBER = 0L;
     private static final String PROJECT_DOES_NOT_EXIST = "Project does not exist!";
     private final ProjectRepository projectRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final ProjectMapper projectMapper;
+    private final ProjectMemberService projectMemberService;
 
     @Override
-    public final ProjectResponse addNewProject(String name, User user) {
+    public final ProjectInfoResponse addNewProject(String name, User user) {
         log.info("Adding new project with name: {} and user: {}", name, user);
 
         Project project = Project
@@ -37,17 +44,27 @@ public class ProjectServiceImpl implements ProjectService {
                 .owner(user)
                 .sprints(Collections.emptyList())
                 .build();
-        log.info("Created project: {}", project);
 
         Project newProject = projectRepository.save(project);
 
-        log.info("Saved project: {}", newProject);
+        log.info("Created project: {}", newProject);
 
-        return projectMapper.toProjectResponse(newProject);
+        ProjectMember projectMember = ProjectMember
+                .builder()
+                .user(user)
+                .project(newProject)
+                .backlogItems(Collections.emptyList())
+                .build();
+
+        ProjectMember newProjectMember = projectMemberRepository.save(projectMember);
+
+        log.info("Created project member: {}", newProjectMember);
+
+        return mapToProjectInfoResponse(newProject, NEW_PROJECT_MEMBER_NUMBER);
     }
 
     @Override
-    public final List<ProjectResponse> getProjectsOnPage(int page, User user) {
+    public final List<ProjectInfoResponse> getProjectsOnPage(int page, User user) {
         log.info("Getting projects on page: {} for user: {}", page, user);
 
         Pageable pageable = PageRequest.of(page, PROJECTS_PER_PAGE);
@@ -57,7 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projects
                 .stream()
-                .map(projectMapper::toProjectResponse)
+                .map(this::mapToProjectInfoResponse)
                 .toList();
     }
 
@@ -91,5 +108,17 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.deleteById(projectId);
 
         return projectMapper.toProjectResponse(projectToDelete);
+    }
+
+    private ProjectInfoResponse mapToProjectInfoResponse(Project project) {
+        long totalNumberOfUsers = projectMemberService.getTotalNumberOfMembers(project.getProjectId());
+
+        return mapToProjectInfoResponse(project, totalNumberOfUsers);
+    }
+
+    private ProjectInfoResponse mapToProjectInfoResponse(Project project, long totalNumberOfUsers) {
+        List<ProjectMemberInfoResponse> members = projectMemberService.getProjectMembersInfo(project.getProjectId());
+
+        return projectMapper.toProjectInfoResponse(project, members, totalNumberOfUsers);
     }
 }

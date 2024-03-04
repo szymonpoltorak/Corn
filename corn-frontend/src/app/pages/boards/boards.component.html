@@ -38,8 +38,8 @@
             <sidebar-button (click)="navigateToBacklog()" [iconName]="'bootstrapArchiveFill'"
                             [label]="'Backlog'" [selected]="selected == 'backlog'"></sidebar-button>
 
-            <sidebar-button (click)="{}" [iconName]="'akarClipboard'" [label]="'Board'"
-                            [selected]="selected == 'board'"></sidebar-button>
+            <sidebar-button (click)="navigateToBoard()" [selected]="selected == 'board'"
+                [iconName]="'akarClipboard'" [label]="'Board'"></sidebar-button>
 
             <sidebar-button (click)="{}" [iconName]="'octGraph'" [label]="'Reports'"
                             [selected]="selected == 'reports'"></sidebar-button>
@@ -53,7 +53,7 @@
         </div>
     </mat-drawer>
     <mat-drawer-content>
-        <div class="p-[6px]">
+        <div class="pl-[24px] pt-[24px]">
             <router-outlet></router-outlet>
         </div>
     </mat-drawer-content>

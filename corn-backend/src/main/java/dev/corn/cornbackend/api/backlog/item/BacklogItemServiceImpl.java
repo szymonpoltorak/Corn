@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -189,6 +190,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
                 .status(request.itemStatus())
                 .itemType(request.itemType())
                 .assignee(builder.assignee())
+                .taskFinishDate(request.itemStatus() == ItemStatus.DONE ? LocalDate.now() : null)
                 .sprint(builder.sprint())
                 .project(builder.project())
                 .build();

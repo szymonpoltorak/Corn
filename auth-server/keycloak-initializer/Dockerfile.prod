@@ -1,6 +1,6 @@
 FROM alpine:3.19.1 AS build
 
-RUN apk update --no-cache && apk add --no-cache gradle
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache gradle
 
 WORKDIR /keycloak-initializer
 
@@ -18,7 +18,7 @@ FROM alpine:3.19.1
 
 WORKDIR /keycloak-initializer
 
-RUN apk update --no-cache && apk add --no-cache openjdk17-jre
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache openjdk17-jre
 
 COPY --from=build /keycloak-initializer/keycloak-initializer.jar .
 
