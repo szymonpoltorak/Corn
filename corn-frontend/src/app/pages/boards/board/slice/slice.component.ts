@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskListComponent } from '../task_list/task_list.component';
-import { SliceService } from '../../../../core/services/boards/board/slice/slice.service';
+import { SliceService } from '@core/services/boards/board/slice/slice.service';
 import { SliceDescriptor } from './slice_descriptor';
-import { SlicesModelService } from '../../../../core/services/boards/board/slice/slices_model.service';
+import { SlicesModelService } from '@core/services/boards/board/slice/slices_model.service';
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { ColumnSetLayout } from '../layout/column_set_layout.component';
 
