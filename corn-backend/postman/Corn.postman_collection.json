@@ -1,0 +1,1122 @@
+{
+	"info": {
+		"_postman_id": "64fe62d4-07b6-40b7-ad59-fe040c72217f",
+		"name": "Corn",
+		"description": "Documentation for Corn project api.\n\nCheck variables tab for important variables to be set for endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28494266"
+	},
+	"item": [
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "AddNewProject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/project/addProject?name=newProjectName",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"project",
+								"addProject"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "newProjectName",
+									"description": "Name for the new project"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProjectsOnPage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/project/getProjectsOnPage?page=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"project",
+								"getProjectsOnPage"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page for pageable to get next 20 pages"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateProject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/project/updateProjectsName?name=updatedProjectName&projectId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"project",
+								"updateProjectsName"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "updatedProjectName",
+									"description": "New name for an existing project"
+								},
+								{
+									"key": "projectId",
+									"value": "0",
+									"description": "Id of a project to update"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteProject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/project/deleteProject?projectId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"project",
+								"deleteProject"
+							],
+							"query": [
+								{
+									"key": "projectId",
+									"value": "0",
+									"description": "Id of a project to be deleted"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for project : /api/v1/project"
+		},
+		{
+			"name": "ProjectMember",
+			"item": [
+				{
+					"name": "AddMemberToProject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/project/assignee/addMember?username=jacek@gmail.com&projectId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"project",
+								"assignee",
+								"addMember"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "jacek@gmail.com",
+									"description": "The username of the user that you want to add to project"
+								},
+								{
+									"key": "projectId",
+									"value": "0",
+									"description": "The Id of project to which you want to a user to"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProjectMembers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/project/assignee/getMembers?projectId=0&page=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"project",
+								"assignee",
+								"getMembers"
+							],
+							"query": [
+								{
+									"key": "projectId",
+									"value": "0",
+									"description": "Id of project which members you want to get"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page for pageable of size 20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RemoveMemberFromProject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/project/assignee/removeMember?username=jacek@gmail.com&projectId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"project",
+								"assignee",
+								"removeMember"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "jacek@gmail.com",
+									"description": "Username of user to be deleted from project"
+								},
+								{
+									"key": "projectId",
+									"value": "0",
+									"description": "Id of project of which you can delete user from"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for project members api : /api/v1/project/member"
+		},
+		{
+			"name": "Sprint",
+			"item": [
+				{
+					"name": "AddNewSprint",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"projectId\": 0,\r\n    \"name\": \"NameOfSprint\",\r\n    \"startDate\": \"2000-01-01\",\r\n    \"endDate\": \"2000-01-21\",\r\n    \"description\": \"Example description of project\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/addSprint",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"addSprint"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSprintById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/getSprintById?sprintId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"getSprintById"
+							],
+							"query": [
+								{
+									"key": "sprintId",
+									"value": "0",
+									"description": "Id of a sprint"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSprintsOnPage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/getSprintsOnPage?page=0&projectId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"getSprintsOnPage"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page of pageable to get sprints for a project"
+								},
+								{
+									"key": "projectId",
+									"value": "0",
+									"description": "Id of a project of which we want to get sprints from"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateSprintsName",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/updateSprintsName?name=newSprintsName&sprintId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"updateSprintsName"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "newSprintsName",
+									"description": "New name for a sprint"
+								},
+								{
+									"key": "sprintId",
+									"value": "0",
+									"description": "Id of a sprint to be updated"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateSprintsDescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/updateSprintsDescription?description=\"This is my new description for sprint\"&sprintId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"updateSprintsDescription"
+							],
+							"query": [
+								{
+									"key": "description",
+									"value": "\"This is my new description for sprint\"",
+									"description": "The new description for sprint"
+								},
+								{
+									"key": "sprintId",
+									"value": "0",
+									"description": "Id of sprint to be updated"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateSprintsStartDate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/updateSprintsStartDate?startDate=2024-01-01&sprintId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"updateSprintsStartDate"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-01-01",
+									"description": "New start date of sprint"
+								},
+								{
+									"key": "sprintId",
+									"value": "0",
+									"description": "Id of sprint to update"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateSprintsEndDate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/updateSprintsEndDate?endDate=2024-01-01&sprintId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"updateSprintsEndDate"
+							],
+							"query": [
+								{
+									"key": "endDate",
+									"value": "2024-01-01",
+									"description": "New end date of sprint"
+								},
+								{
+									"key": "sprintId",
+									"value": "0",
+									"description": "Id of a sprint"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteSprint",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/sprint/deleteSprint?sprintId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"sprint",
+								"deleteSprint"
+							],
+							"query": [
+								{
+									"key": "sprintId",
+									"value": "0",
+									"description": "Id of a sprint to be deleted"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for api : /api/v1/sprint"
+		},
+		{
+			"name": "BacklogItemComment",
+			"item": [
+				{
+					"name": "AddNewComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comment\": \"A comment for a backlog item\",\r\n    \"backlogItemId\": 0\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/comment/add",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"comment",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/comment/update?commentId=0&comment=\"New comment text\"",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"comment",
+								"update"
+							],
+							"query": [
+								{
+									"key": "commentId",
+									"value": "0",
+									"description": "id of a backlog item comment"
+								},
+								{
+									"key": "comment",
+									"value": "\"New comment text\"",
+									"description": "The text for a comment"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/comment/delete?commentId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"comment",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "commentId",
+									"value": "0",
+									"description": "id of comment to be deleted"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/comment/get?commentId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"comment",
+								"get"
+							],
+							"query": [
+								{
+									"key": "commentId",
+									"value": "0",
+									"description": "Id of comment we want to get"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for api of backlog item comments : /api/v1/backlog/comment",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "BacklogItem",
+			"item": [
+				{
+					"name": "GetById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/item/get?id=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"item",
+								"get"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "0",
+									"description": "id of a backlog item"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBacklogItem",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"The title of an backlog item\",\r\n    \"description\": \"The description of a backlog item\",\r\n    \"projectMemberId\": 0,\r\n    \"sprintId\": 1,\r\n    \"itemType\": \"TASK\", // STORY BUG TASK or EPIC\r\n    \"itemStatus\": \"TODO\" // TODO IN_PROGRESS DONE\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/item/update?id=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"item",
+								"update"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "0",
+									"description": "Item of a backlog item"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteById",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "payload",
+									"value": "{}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/item/delete?id=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"item",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "0",
+									"description": "id of a backlog item to be deleted"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBacklogItem",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"The title of an backlog item\",\r\n    \"description\": \"The description of a backlog item\",\r\n    \"projectMemberId\": 0,\r\n    \"sprintId\": 1,\r\n    \"itemType\": \"TASK\", // STORY BUG TASK or EPIC\r\n    \"itemStatus\": \"TODO\" // TODO IN_PROGRESS DONE\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/item/add",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"item",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetItemsBySprintId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/item/getBySprint?sprintId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"item",
+								"getBySprint"
+							],
+							"query": [
+								{
+									"key": "sprintId",
+									"value": "0",
+									"description": "Id of a sprint backlog items to get"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetItemsByProjectId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/item/getByProject?projectId=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"item",
+								"getByProject"
+							],
+							"query": [
+								{
+									"key": "projectId",
+									"value": "0",
+									"description": "Id of project to get backlog items of"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetItemDetailsById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ backendApiUrl }}/backlog/item/getDetails?id=0",
+							"host": [
+								"{{ backendApiUrl }}"
+							],
+							"path": [
+								"backlog",
+								"item",
+								"getDetails"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "0",
+									"description": "Get details of backlog item of this id"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": " backendApiUrl ",
+			"value": "http://localhost:8080/api/v1"
+		},
+		{
+			"key": "jwt",
+			"value": "PlaceHereYourJwt"
+		}
+	]
+}
