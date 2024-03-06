@@ -89,7 +89,7 @@ class ProjectMemberTest {
 
         // When-Then
         assertNotEquals(member, nonMemberObject,
-                "Project member should not be equal to non-project member object");
+                "Project assignee should not be equal to non-project assignee object");
     }
 
     @Test
@@ -184,7 +184,7 @@ class ProjectMemberTest {
                         projectMember,
                         ProjectMemberConstants.PROJECT_MEMBER_PROJECT_FIELD_NAME,
                         ProjectMemberConstants.PROJECT_MEMBER_PROJECT_NULL_MSG),
-                "Should return null member violation");
+                "Should return null assignee violation");
         assertTrue(validateField(
                         projectMember,
                         ProjectMemberConstants.PROJECT_MEMBER_USER_FIELD_NAME,
@@ -202,7 +202,7 @@ class ProjectMemberTest {
 
         // then
         assertEquals(0, violations.size(),
-                "Should return no violations on correct project member");
+                "Should return no violations on correct project assignee");
     }
 
     private ProjectMember createSampleProjectMember() {

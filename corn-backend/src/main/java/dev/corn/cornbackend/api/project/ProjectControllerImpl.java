@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project;
 
+import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.interfaces.ProjectController;
 import dev.corn.cornbackend.api.project.interfaces.ProjectService;
@@ -9,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,20 +34,20 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     @PostMapping(value = ADD_PROJECT)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public final ProjectResponse addNewProject(@RequestParam String name,
+    public final ProjectInfoResponse addNewProject(@RequestParam String name,
                                                @JwtAuthed User user) {
         return projectService.addNewProject(name, user);
     }
 
     @Override
     @GetMapping(value = GET_PROJECTS_ON_PAGE)
-    public final List<ProjectResponse> getProjectsOnPage(@RequestParam int page,
-                                                         @JwtAuthed User user) {
+    public final List<ProjectInfoResponse> getProjectsOnPage(@RequestParam int page,
+                                                             @JwtAuthed User user) {
         return projectService.getProjectsOnPage(page, user);
     }
 
     @Override
-    @PatchMapping(value = UPDATE_PROJECTS_NAME)
+    @PutMapping(value = UPDATE_PROJECTS_NAME)
     public final ProjectResponse updateProjectsName(@RequestParam String name,
                                                     @RequestParam long projectId,
                                                     @JwtAuthed User user) {

@@ -1,0 +1,17 @@
+<columnset>
+    <tasklist todo
+        #todoTasklist
+        [tasks]="sliceDescriptor ? sliceDescriptor.todo : []"
+        (taskMoved)="sliceModelService.droppedHandler($event)"
+    ></tasklist>
+    <tasklist inprogress
+        #inprogressTasklist
+        [tasks]="sliceDescriptor ? sliceDescriptor.inprogress : []"
+        (taskMoved)="sliceModelService.droppedHandler($event)"
+    ></tasklist>
+    <tasklist done
+        #doneTasklist
+        [tasks]="sliceDescriptor ? sliceDescriptor.done : []"
+        (taskMoved)="sliceModelService.droppedHandler($event)"
+    ></tasklist>
+</columnset>

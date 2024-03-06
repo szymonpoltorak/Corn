@@ -29,6 +29,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -56,6 +57,8 @@ public class BacklogItem implements Jsonable {
     @Enumerated(value = EnumType.STRING)
     @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_STATUS_NULL_MSG)
     private ItemStatus status;
+
+    private LocalDate taskFinishDate;
 
     @OneToMany
     @ToString.Exclude
@@ -93,23 +96,26 @@ public class BacklogItem implements Jsonable {
         if (this == object) {
             return true;
         }
-        if (object == null) {
+        if (!(object instanceof BacklogItem)) {
             return false;
         }
 
-        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy
+                .getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy
+                .getHibernateLazyInitializer().getPersistentClass() : this.getClass();
 
         if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-
         BacklogItem that = (BacklogItem) object;
-        return getBacklogItemId() == that.getBacklogItemId();
+
+        return backlogItemId == that.backlogItemId;
     }
 
     @Override
     public final int hashCode() {
-        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy
+                .getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

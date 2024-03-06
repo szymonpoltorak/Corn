@@ -1,0 +1,31 @@
+<div [matMenuTriggerFor]="instance" (click)="update()">
+    <ng-content></ng-content>
+</div>
+
+<mat-menu #instance>
+    <mat-form-field (click)="$event.stopPropagation()" subscriptSizing="dynamic">
+        <mat-label>Search members</mat-label>
+        <input matInput #filterStringInput type="text" (click)="$event.stopPropagation()" (input)="update()" />
+    </mat-form-field>
+
+    <mat-divider></mat-divider>
+
+    @for(item of filteredAssignees; track item) {
+        <button mat-menu-item (click)="assigneeChanged(item)">
+            <div class="flex items-center space-x-3">
+                <ng-container *ngTemplateOutlet="zerowidthspace"></ng-container>
+                <img
+                    class="w-6 h-6 rounded-full"
+                    src="{{ item.avatarUrl }}"
+                    title="{{ item.firstName + ' ' + item.familyName }}"
+                    alt="{{ item.firstName + ' ' + item.familyName }}"
+                />
+                <span>
+                    {{ item.firstName + " " + item.familyName }}
+                </span>
+            </div>
+        </button>
+    }
+</mat-menu>
+
+<ng-template #zerowidthspace>​</ng-template>

@@ -5,7 +5,7 @@
 
 FROM alpine:3.19.1
 
-RUN apk update --no-cache && apk add --no-cache gradle
+RUN apk update --no-cache && apk upgrade --no-cache && apk add --no-cache gradle
 
 WORKDIR /keycloak-initializer
 

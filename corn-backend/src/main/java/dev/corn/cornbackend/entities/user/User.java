@@ -82,23 +82,26 @@ public class User implements Jsonable, ServiceUser {
         if (this == object) {
             return true;
         }
-        if (object == null) {
+        if (!(object instanceof User)) {
             return false;
         }
 
-        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        Class<?> oEffectiveClass = object instanceof HibernateProxy hibernateProxy ? hibernateProxy
+                .getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy ? hibernateProxy
+                .getHibernateLazyInitializer().getPersistentClass() : this.getClass();
 
         if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-
         User user = (User) object;
-        return getUserId() == user.getUserId();
+
+        return userId == user.userId;
     }
 
     @Override
     public final int hashCode() {
-        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+        return this instanceof HibernateProxy hibernateProxy ? hibernateProxy
+                .getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

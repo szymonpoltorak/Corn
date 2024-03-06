@@ -1,13 +1,12 @@
 package dev.corn.cornbackend.entities.sprint.interfaces;
 
-import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
-import org.mapstruct.Mapper;
+import dev.corn.cornbackend.entities.sprint.Sprint;
 
 /**
  * Mapper for Sprint entity
  */
-@Mapper(componentModel = "spring")
+@FunctionalInterface
 public interface SprintMapper {
     /**
      * Maps Sprint to SprintResponse
