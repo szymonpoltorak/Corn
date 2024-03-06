@@ -16,7 +16,7 @@
 
         <mat-form-field class="mb-3">
             <mat-label>Description</mat-label>
-            <textarea matInput #textArea maxlength="500" formControlName="description"></textarea>
+            <textarea [cdkTextareaAutosize]="true" matInput #textArea maxlength="500" formControlName="description"></textarea>
             <mat-hint align="end">{{textArea.textLength}} / {{textArea.maxLength}}</mat-hint>
 
             @if(itemForm.controls.description.hasError('required')) {
