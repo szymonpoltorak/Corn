@@ -29,9 +29,8 @@ import {octContainer} from "@ng-icons/octicons";
 import {MatSort, MatSortHeader} from "@angular/material/sort";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
-import {CustomValidators} from "@core/validators/custom-validators";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatDialog} from "@angular/material/dialog";
 import {BacklogFormComponent} from "@pages/boards/backlog/backlog-form/backlog-form.component";
@@ -150,11 +149,25 @@ export class BacklogComponent implements AfterViewInit{
     }
 
     showItemForm() {
-        this.dialog.open(BacklogFormComponent, {
+        const dialogRef = this.dialog.open(BacklogFormComponent, {
            width: '500px',
-           enterAnimationDuration: '5000ms',
+           enterAnimationDuration: '300ms',
            exitAnimationDuration: '100ms',
         });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result) {
+                this.dataToDisplay.push({
+                    id: this.dataToDisplay.length,
+                    title: result.title,
+                    description: result.description,
+                    status: BacklogItemStatus.TODO,
+                    type: result.type,
+                    assignee: this.users.find(user => user.userId === result.assignee)!
+                });
+                this.dataSource.data = this.dataToDisplay;
+            }
+        })
     }
 
     updateStatus(item: BacklogItem) {

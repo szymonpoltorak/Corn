@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Add Backlog Item</h2>
-<mat-dialog-content style="height: 500px;">
-    <form [formGroup]="itemForm" (ngSubmit)="submitForm()">
-        <mat-form-field>
+<mat-dialog-content class="h-96">
+    <form [formGroup]="itemForm" (ngSubmit)="submitForm()" class="flex flex-col">
+        <mat-form-field class="mb-3">
             <mat-label>Title</mat-label>
             <input matInput formControlName="title">
 
@@ -14,20 +14,133 @@
             }
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="mb-3">
             <mat-label>Description</mat-label>
-            <input matInput formControlName="description">
+            <textarea matInput #textArea maxlength="500" formControlName="description"></textarea>
+            <mat-hint align="end">{{textArea.textLength}} / {{textArea.maxLength}}</mat-hint>
 
             @if(itemForm.controls.description.hasError('required')) {
                 <mat-error>Description is <strong>required</strong></mat-error>
             } @else if (itemForm.controls.description.hasError('maxlength')) {
-                <mat-error>Description cannot be more than <strong>1000</strong> characters</mat-error>
+                <mat-error>Description cannot be more than <strong>500</strong> characters</mat-error>
             } @else if (itemForm.controls.description.hasError('notWhitespace')) {
                 <mat-error>Description cannot be only <strong>whitespace</strong></mat-error>
             }
         </mat-form-field>
+
+
+
+        <div class="flex flex-row justify-between items-center space-x-3">
+            <div class="flex flex-col space-y-2 items-center justify-center">
+                <h3 class="text-lg font-bold">Type</h3>
+                <mat-form-field appearance="outline" class="w-24 h-24 flex items-center justify-center">
+                    <mat-select (selectionChange)="changeCurrentType($event)" required [panelWidth]="null" formControlName="type">
+                        <mat-select-trigger>
+                            @switch(currentType) {
+                                @case (BacklogItemType.BUG) {
+                                    <div class="bg-red-600 h-8 w-8 rounded-full flex justify-center items-center">
+                                        <ng-icon name="bootstrapBugFill"></ng-icon>
+                                    </div>
+                                }
+
+                                @case (BacklogItemType.STORY) {
+                                    <div class="bg-blue-800 h-8 w-8 rounded-full flex justify-center items-center">
+                                        <ng-icon name="featherBook"></ng-icon>
+                                    </div>
+                                }
+
+                                @case (BacklogItemType.TASK) {
+                                    <div class="bg-green-600 h-8 w-8 rounded-full flex justify-center items-center">
+                                        <ng-icon name="matTask"></ng-icon>
+                                    </div>
+                                }
+
+                                @case (BacklogItemType.EPIC) {
+                                    <div class="bg-purple-900 h-8 w-8 rounded-full flex justify-center items-center">
+                                        <ng-icon name="octContainer"></ng-icon>
+                                    </div>
+                                }
+                            }
+                        </mat-select-trigger>
+                        @for (type of types; track type) {
+                            <mat-option [value]="type">
+                                @switch (type) {
+                                    @case (BacklogItemType.BUG) {
+                                        <div class="flex flex-row items-center justify-center space-x-2">
+                                            <div class="bg-red-600 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="bootstrapBugFill"></ng-icon>
+                                            </div>
+                                            <h3>Bug</h3>
+                                        </div>
+                                    }
+
+                                    @case (BacklogItemType.STORY) {
+                                        <div class="flex flex-row items-center justify-center space-x-2">
+                                            <div class="bg-blue-800 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="featherBook"></ng-icon>
+                                            </div>
+                                            <h3>Story</h3>
+                                        </div>
+                                    }
+
+                                    @case (BacklogItemType.TASK) {
+                                        <div class="flex flex-row items-center justify-center space-x-2">
+                                            <div class="bg-green-600 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="matTask"></ng-icon>
+                                            </div>
+                                            <h3>Task</h3>
+                                        </div>
+                                    }
+
+                                    @case (BacklogItemType.EPIC) {
+                                        <div class="flex flex-row items-center justify-center space-x-2">
+                                            <div class="bg-purple-900 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="octContainer"></ng-icon>
+                                            </div>
+                                            <h3>Epic</h3>
+                                        </div>
+                                    }
+                                }
+                            </mat-option>
+                        }
+                    </mat-select>
+
+                    @if(itemForm.controls.type.hasError('required')) {
+                        <mat-error>Type is <strong>required</strong></mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="flex flex-col space-y-2 items-center justify-center">
+                <h3 class="text-lg font-bold">Assignee</h3>
+                <mat-form-field appearance="outline" class="w-24 h-24 flex flex-col items-center justify-center">
+                    <mat-select (selectionChange)="changeCurrentUser($event)" [panelWidth]="null" required formControlName="assignee">
+                        <mat-select-trigger>
+                            <div class="h-8 w-8">
+                                <app-user-avatar [user]="currentUser"></app-user-avatar>
+                            </div>
+                        </mat-select-trigger>
+                        @for (user of users; track user) {
+                            <mat-option [value]="user.userId">
+                                <div class="w-8 h-8">
+                                    <app-user-avatar [user]="user"></app-user-avatar>
+                                </div>
+                            </mat-option>
+                        }
+                    </mat-select>
+
+                    @if(itemForm.controls.assignee.hasError('required')) {
+                        <mat-error>Assignee is <strong>required</strong></mat-error>
+                    }
+                </mat-form-field>
+            </div>
+        </div>
     </form>
 </mat-dialog-content>
+
 <mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
+    <div class="flex flex-row justify-between items-center">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button [disabled]="itemForm.invalid" (click)="submitForm()">Submit</button>
+    </div>
 </mat-dialog-actions>
