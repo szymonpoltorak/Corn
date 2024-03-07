@@ -10,6 +10,11 @@ export const routes: Routes = [
             .then(c => c.HomeComponent)
     },
     {
+        path: RouterPaths.PROJECT_LIST_PATH,
+        loadComponent: () => import("@pages/project-list/project-list.component")
+            .then(c => c.ProjectListComponent)
+    },
+    {
         path: RouterPaths.BOARDS_PATH,
         loadComponent: () => import("@pages/boards/boards.component")
             .then(c => c.BoardsComponent),

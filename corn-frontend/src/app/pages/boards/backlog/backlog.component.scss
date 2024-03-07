@@ -1,0 +1,107 @@
+@import '../../../../styles/theme';
+$background-color: map-get($dark-color-settings, container-background-color);
+$background-color-hover: lighten($background-color, 5%);
+
+.todo {
+  background-color: #737373;
+}
+
+.in-progress {
+  background-color: #0089c5;
+}
+
+.done {
+  background-color: #029b40;
+}
+
+table .table-row:hover {
+  cursor: pointer;
+  background-color: $background-color-hover;
+  outline: 1.5px solid rgba(194, 194, 194, 0.8);
+}
+
+.status-background {
+  border-radius: 5px;
+  width: max-content;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-background:hover {
+  cursor: pointer;
+}
+
+.status-background.TODO {
+  background-color: #464444;
+}
+
+.status-background.TODO:hover {
+  background-color: lighten(#464444, 10%);
+}
+
+.status-background.IN_PROGRESS {
+  background-color: rgba(67,183,239,0.35);
+}
+
+.status-background.IN_PROGRESS:hover {
+  background-color: lighten(rgba(67,183,239,0.35), 10%);
+}
+
+.status-background.DONE {
+  background-color: rgba(14,168,4,0.35);
+}
+
+.status-background.DONE:hover {
+  background-color: lighten(rgba(14,168,4,0.35), 10%);
+}
+
+.status-panel {
+  font-size: 0.5em;
+  width: 3em;
+}
+
+.status-panel-TODO {
+  background-color: #464444!important;
+}
+
+.status-panel-TODO:hover {
+  background-color: lighten(#464444, 10%)!important;
+}
+
+.status-panel-IN_PROGRESS {
+  background-color: rgba(67,183,239,0.35)!important;
+}
+
+.status-panel-IN_PROGRESS:hover {
+  background-color: lighten(rgba(67,183,239,0.35), 10%)!important;
+}
+
+.status-panel-DONE {
+  background-color: rgba(14,168,4, 0.55)!important;
+}
+
+.status-panel-DONE:hover {
+  background-color: lighten(rgba(14,168,4, 0.55), 10%)!important;
+}
+
+.type-icon {
+  height: 2em;
+  width: 2em;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+mat-select {
+  width: max-content;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.avatar-container {
+  width: 2.5em;
+  height: 2.5em;
+}
