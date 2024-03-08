@@ -18,6 +18,10 @@ public final class CornRealm extends RealmRepresentation {
         setRememberMe(true);
         setBruteForceProtected(true);
 
+        if(ExternalConfig.shouldCreatePlaceholderUsers()) {
+            setUsers(PlaceholderUsers.generate());
+        }
+
         if(ExternalConfig.KCCFG_LOGIN_THEME_NAME != null) {
             setLoginTheme(ExternalConfig.KCCFG_LOGIN_THEME_NAME);
         }
