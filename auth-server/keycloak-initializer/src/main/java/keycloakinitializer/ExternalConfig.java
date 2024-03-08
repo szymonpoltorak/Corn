@@ -13,6 +13,8 @@ public final class ExternalConfig {
 
     private static final String KCCFG_OVERRIDE_EXISTING = System.getenv("KCCFG_OVERRIDE_EXISTING");
 
+    private static final String KCCFG_CREATE_PLACEHOLDER_USERS = System.getenv("KCCFG_CREATE_PLACEHOLDER_USERS");
+
     public static final String KCCFG_LOGIN_THEME_NAME = System.getenv("KCCFG_LOGIN_THEME_NAME");
 
     private static final String KC_SERVER_URL = System.getenv("KC_SERVER_URL");
@@ -41,6 +43,10 @@ public final class ExternalConfig {
 
     static boolean shouldOverrideExistingConfiguration() {
         return "true".equalsIgnoreCase(KCCFG_OVERRIDE_EXISTING);
+    }
+
+    public static boolean shouldCreatePlaceholderUsers() {
+        return "true".equalsIgnoreCase(KCCFG_CREATE_PLACEHOLDER_USERS);
     }
 
     public static List<IdentityProviderRepresentation> getIdentityProviders() {
