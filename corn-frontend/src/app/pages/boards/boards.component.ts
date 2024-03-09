@@ -14,6 +14,8 @@ import { UserinfoComponent } from '@pages/boards/userinfo/userinfo.component';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { RouterPaths } from '@core/enum/RouterPaths';
+import { BoardsPaths } from '@core/enum/BoardsPaths';
 
 @Component({
     selector: 'app-boards',
@@ -70,16 +72,15 @@ export class BoardsComponent implements OnInit {
     }
 
     navigateToBacklog(): void {
-        this.router.navigate(['/boards/backlog']);
+        this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.BACKLOG}`]);
     }
 
     navigateToTimeline(): void {
-        this.router.navigate(['/boards/timeline']);
+        this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.TIMELINE}`]);
     }
 
     navigateToBoard(): void {
-        //TODO substitute literals with values from BoardPaths.ts enum in these methods
-        this.router.navigate(['/boards/board']);
+        this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.BOARD}`]);
     }
 
     toggleSidebar(): void {
