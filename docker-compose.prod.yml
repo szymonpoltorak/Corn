@@ -51,10 +51,15 @@ services:
 
     corn-keycloak:
         container_name: corn-keycloak
-        image: quay.io/keycloak/keycloak:20.0.1
+        image: corn-keycloak
+        build:
+            context: auth-server/keycloak
+            dockerfile: Dockerfile.prod
         depends_on:
             corn-keycloak-postgres:
                 condition: service_healthy
+            corn-keycloak-theme:
+                condition: service_completed_successfully
         environment:
             - KC_DB=postgres
             - KC_DB_URL=jdbc:postgresql://corn-keycloak-postgres:5432/keycloak
