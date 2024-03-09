@@ -52,7 +52,7 @@ public class PlaceholderData implements CommandLineRunner {
     private final ProjectMemberRepository projectMemberRepository;
     private final Random random = new Random(0);
 
-    @Value("${CREATE_PLACEHOLDER_DATA}")
+    @Value("${CREATE_PLACEHOLDER_DATA:false}")
     private String CREATE_PLACEHOLDER_DATA;
 
     @Override
