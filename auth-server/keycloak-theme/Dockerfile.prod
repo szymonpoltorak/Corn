@@ -1,6 +1,6 @@
 FROM alpine:3.19.1 AS build
 
-WORKDIR /corn
+WORKDIR /keycloak-theme
 
 RUN apk update --no-cache && apk add --no-cache nodejs npm
 
@@ -12,10 +12,13 @@ COPY . .
 
 RUN npm run build:corn:prod
 
+
 FROM alpine:3.19.1
 
-WORKDIR /corn-theme
+RUN apk update --no-cache && apk add --no-cache zip
 
-COPY --from=build /corn/styles ./styles
+COPY --from=build /keycloak-theme/themes ./theme
+COPY --from=build /keycloak-theme/META-INF ./META-INF
+RUN zip -r corn-theme.jar theme META-INF
 
-COPY --from=build /corn/themes ./themes
+CMD ["/bin/sh", "-c", "cp /corn-theme.jar /artifacts"]
