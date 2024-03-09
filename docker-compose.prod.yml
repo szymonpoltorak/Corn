@@ -86,6 +86,14 @@ services:
             start_period: 5s
             timeout: 3s
 
+    corn-keycloak-theme:
+        container_name: corn-keycloak-theme
+        image: corn-keycloak-theme-builder
+        build:
+            context: auth-server/keycloak-theme
+            dockerfile: Dockerfile.prod
+        tty: true
+
     corn-nginx:
         container_name: corn-nginx
         image: corn-nginx
