@@ -1,0 +1,21 @@
+FROM alpine:3.19.1 AS build
+
+WORKDIR /keycloak-theme
+
+RUN apk update --no-cache && apk add --no-cache nodejs npm zip
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build:corn:prod
+
+RUN mv themes theme
+
+RUN zip -r corn-theme.jar theme META-INF
+
+FROM quay.io/keycloak/keycloak:20.0.1
+
+COPY --from=build /keycloak-theme/corn-theme.jar /opt/keycloak/providers/
