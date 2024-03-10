@@ -18,7 +18,7 @@ export const routes: Routes = [
         path: RouterPaths.BOARDS_PATH,
         loadComponent: () => import("@pages/boards/boards.component")
             .then(c => c.BoardsComponent),
-        canActivate: [authGuard],
+        // canActivate: [authGuard],
         children: [
             {
                 path: BoardsPaths.BACKLOG,

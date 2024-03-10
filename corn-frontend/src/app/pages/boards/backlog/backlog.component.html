@@ -1,11 +1,13 @@
-<table mat-table [dataSource]="dataSource" matSort>
+<table mat-table [dataSource]="dataToDisplay" matSort>
     <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
         <td mat-cell *matCellDef="let backlogItem">
             <div class="status-background" [ngClass]="getStatusClass(backlogItem.status)">
                 <mat-select [panelWidth]="null" [(value)]="backlogItem.status">
                     @for (status of statuses; track status) {
-                        <mat-option (click)="updateStatus(backlogItem)" class="status-panel-{{getStatusClass(status)}}" [value]="status">{{status}}</mat-option>
+                        <mat-option (click)="updateStatus(backlogItem)"
+                                    class="status-panel-{{getStatusClass(status)}}" [value]="status">{{ status }}
+                        </mat-option>
                     }
                 </mat-select>
             </div>
@@ -14,12 +16,12 @@
 
     <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let backlogItem">{{backlogItem.title}}</td>
+        <td mat-cell *matCellDef="let backlogItem">{{ backlogItem.title }}</td>
     </ng-container>
 
     <ng-container matColumnDef="description">
         <th mat-header-cell *matHeaderCellDef>Description</th>
-        <td mat-cell *matCellDef="let backlogItem">{{backlogItem.description}}</td>
+        <td mat-cell *matCellDef="let backlogItem">{{ backlogItem.description }}</td>
     </ng-container>
 
     <ng-container matColumnDef="type">
@@ -31,19 +33,16 @@
                         <ng-icon name="bootstrapBugFill"></ng-icon>
                     </div>
                 }
-
                 @case (BacklogItemType.STORY) {
                     <div matTooltip="Story" class="type-icon" style="background-color: #005f9f;">
                         <ng-icon name="featherBook"></ng-icon>
                     </div>
                 }
-
                 @case (BacklogItemType.TASK) {
                     <div matTooltip="Task" class="type-icon" style="background-color: #00910a; ">
                         <ng-icon name="matTask"></ng-icon>
                     </div>
                 }
-
                 @case (BacklogItemType.EPIC) {
                     <div matTooltip="Epic" class="type-icon" style="background-color: #5200af;">
                         <ng-icon name="octContainer"></ng-icon>
@@ -67,4 +66,14 @@
     <tr class="table-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<button style="margin-left: 0.1em; margin-top: 0.5em; height: 2em; font-weight: 550;" mat-raised-button color="primary" (click)="showItemForm()">Add Backlog Item</button>
+<mat-paginator [length]="resultsLength" [pageSize]="30"></mat-paginator>
+
+<button style="margin-left: 0.1em; margin-top: 0.5em; height: 2em; font-weight: 550;" mat-raised-button
+        color="primary" (click)="showItemForm()">Add Backlog Item
+</button>
+
+@if (isLoading) {
+    <div class="h-full w-full flex items-center justify-center">
+        <mat-spinner></mat-spinner>
+    </div>
+}

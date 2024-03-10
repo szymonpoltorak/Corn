@@ -32,6 +32,14 @@ import { MatInput } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDialog } from "@angular/material/dialog";
 import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog-form.component";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import { MatPaginator } from "@angular/material/paginator";
+import { catchError, merge, of, startWith, switchMap, take } from "rxjs";
+import { BacklogItemService } from "@core/services/boards/backlog/backlog-item.service";
+import { map } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "@environments/environment";
+import { ApiUrl } from "@core/enum/api-url";
 
 @Component({
     selector: 'app-backlog',
@@ -63,7 +71,9 @@ import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog
         MatLabel,
         MatInput,
         MatFormField,
-        MatFormFieldModule
+        MatFormFieldModule,
+        MatProgressSpinner,
+        MatPaginator
     ],
     templateUrl: './backlog.component.html',
     styleUrl: './backlog.component.scss',
@@ -73,48 +83,80 @@ import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog
 export class BacklogComponent implements AfterViewInit {
 
     constructor(private snackBar: MatSnackBar,
-                public dialog: MatDialog) {
-    }
-
-    ngAfterViewInit(): void {
-        this.dataSource.sort = this.sort;
-        this.dataSource.sortData = (data: BacklogItem[], sort: MatSort) => {
-            if (!sort.active || sort.direction === '') {
-                return data;
-            }
-
-            return data.sort((a, b) => {
-                let comparatorResult = 0;
-                switch (sort.active) {
-                    case 'title':
-                        comparatorResult = a.title.localeCompare(b.title);
-                        break;
-                    case 'description':
-                        comparatorResult = a.description.localeCompare(b.description);
-                        break;
-                    case 'status':
-                        comparatorResult = a.status.localeCompare(b.status);
-                        break;
-                    case 'type':
-                        comparatorResult = a.type - b.type;
-                        break;
-                    case 'assignee':
-                        comparatorResult = a.assignee.name.localeCompare(b.assignee.name);
-                        if (comparatorResult === 0) {
-                            comparatorResult = a.assignee.surname.localeCompare(b.assignee.surname);
-                        }
-                        break;
-                    default:
-                        comparatorResult = a.id - b.id;
-                        break;
-                }
-
-                return comparatorResult * (sort.direction === 'asc' ? 1 : -1);
-            })
-        }
+                public dialog: MatDialog,
+                private backlogItemService: BacklogItemService,
+                private http: HttpClient) {
     }
 
     @ViewChild(MatSort) sort!: MatSort;
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+    resultsLength: number = 0;
+    ngAfterViewInit(): void {
+        // this.dataSource.sort = this.sort;
+        // this.dataSource.sortData = (data: BacklogItem[], sort: MatSort) => {
+        //     if (!sort.active || sort.direction === '') {
+        //         return data;
+        //     }
+        //
+        //     return data.sort((a, b) => {
+        //         let comparatorResult = 0;
+        //         switch (sort.active) {
+        //             case 'title':
+        //                 comparatorResult = a.title.localeCompare(b.title);
+        //                 break;
+        //             case 'description':
+        //                 comparatorResult = a.description.localeCompare(b.description);
+        //                 break;
+        //             case 'status':
+        //                 comparatorResult = a.status.localeCompare(b.status);
+        //                 break;
+        //             case 'type':
+        //                 comparatorResult = a.type - b.type;
+        //                 break;
+        //             case 'assignee':
+        //                 comparatorResult = a.assignee.name.localeCompare(b.assignee.name);
+        //                 if (comparatorResult === 0) {
+        //                     comparatorResult = a.assignee.surname.localeCompare(b.assignee.surname);
+        //                 }
+        //                 break;
+        //             default:
+        //                 comparatorResult = a.id - b.id;
+        //                 break;
+        //         }
+        //
+        //         return comparatorResult * (sort.direction === 'asc' ? 1 : -1);
+        //     })
+        // }
+
+        this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+
+        merge(this.sort.sortChange, this.paginator.page)
+            .pipe(
+                startWith({}),
+                switchMap(() => {
+                    this.isLoading = true;
+                    return this.backlogItemService.getAllByProjectId(1)
+                        .pipe(catchError(() => of(null)));
+                }),
+                map(data => {
+                    this.isLoading = false;
+
+                    console.log(data);
+
+                    if(!data) {
+                        return [];
+                    }
+
+                    this.resultsLength = data.length;
+                    return data;
+                })
+            )
+            .subscribe(data => {this.dataToDisplay = data});
+    }
+
+
+    isLoading: boolean = true;
 
 
     //only for example purposes
@@ -205,7 +247,7 @@ export class BacklogComponent implements AfterViewInit {
         }
     ];
 
-    dataSource = new MatTableDataSource(this.dataToDisplay);
+    // dataSource = new MatTableDataSource(this.dataToDisplay);
     displayedColumns = ['title', 'description', 'status', 'type', 'assignee'];
 
     getStatusClass(status: BacklogItemStatus): string {
@@ -229,7 +271,7 @@ export class BacklogComponent implements AfterViewInit {
                     type: result.type,
                     assignee: this.users.find(user => user.userId === result.assignee)!
                 });
-                this.dataSource.data = this.dataToDisplay;
+                // this.dataSource.data = this.dataToDisplay;
             }
         })
     }
