@@ -1,5 +1,0 @@
-FROM corn-keycloak-theme-builder AS build
-
-FROM quay.io/keycloak/keycloak:20.0.1
-
-COPY --from=build /corn-theme.jar /opt/keycloak/providers/

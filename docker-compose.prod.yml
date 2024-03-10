@@ -53,13 +53,11 @@ services:
         container_name: corn-keycloak
         image: corn-keycloak
         build:
-            context: auth-server/keycloak
-            dockerfile: Dockerfile.prod
+            context: auth-server/keycloak-theme
+            dockerfile: Dockerfile.keycloak.prod
         depends_on:
             corn-keycloak-postgres:
                 condition: service_healthy
-            corn-keycloak-theme:
-                condition: service_completed_successfully
         environment:
             - KC_DB=postgres
             - KC_DB_URL=jdbc:postgresql://corn-keycloak-postgres:5432/keycloak
@@ -90,14 +88,6 @@ services:
             retries: 50
             start_period: 5s
             timeout: 3s
-
-    corn-keycloak-theme:
-        container_name: corn-keycloak-theme
-        image: corn-keycloak-theme-builder
-        build:
-            context: auth-server/keycloak-theme
-            dockerfile: Dockerfile.prod
-        tty: true
 
     corn-nginx:
         container_name: corn-nginx
