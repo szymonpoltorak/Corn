@@ -16,7 +16,6 @@ import { NgIcon, provideIcons } from "@ng-icons/core";
 import { matTask } from "@ng-icons/material-icons/baseline";
 import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
-import { User } from "@core/interfaces/boards/user";
 import { MatFormField, MatLabel, MatOption, MatSelect } from "@angular/material/select";
 import { NgClass, NgForOf } from "@angular/common";
 import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";
@@ -37,7 +36,6 @@ import { MatPaginator } from "@angular/material/paginator";
 import { catchError, merge, of, startWith, switchMap, take } from "rxjs";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item.service";
 import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
 
 @Component({
     selector: 'app-backlog',
@@ -82,8 +80,7 @@ export class BacklogComponent implements AfterViewInit {
 
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
-                private backlogItemService: BacklogItemService,
-                private http: HttpClient) {
+                private backlogItemService: BacklogItemService) {
     }
 
     @ViewChild(MatSort) sort!: MatSort;
@@ -102,7 +99,7 @@ export class BacklogComponent implements AfterViewInit {
                     let active = this.sort.active === 'type' ? 'itemType' : this.sort.active;
 
                     return this.backlogItemService.getAllByProjectId(
-                        1,                  //TODO get projectId from somewhere
+                        1,                  //TODO get real projectId from somewhere
                         this.paginator.pageIndex,
                         active,
                         this.sort.direction.toUpperCase())
@@ -114,7 +111,7 @@ export class BacklogComponent implements AfterViewInit {
                     if(!data) {
                         return [];
                     }
-                    
+
                     this.resultsLength = data.totalNumber;
                     return data.backlogItems;
                 })
@@ -124,97 +121,13 @@ export class BacklogComponent implements AfterViewInit {
 
 
     isLoading: boolean = true;
-
-
-    //only for example purposes
     statuses: BacklogItemStatus[] = [
         BacklogItemStatus.TODO,
         BacklogItemStatus.IN_PROGRESS,
         BacklogItemStatus.DONE
     ];
 
-    users: User[] = [
-        { userId: 0, name: 'John', surname: 'Doe' },
-        { userId: 1, name: 'Szymon', surname: 'Kowalski' },
-        { userId: 2, name: 'Andrzej', surname: 'Switch' }
-    ];
-
-    dataToDisplay: BacklogItem[] = [
-        {
-            id: 0,
-            title: 'Create toolbar',
-            'description': 'Create a toolbar for user',
-            status: BacklogItemStatus.TODO,
-            type: BacklogItemType.BUG,
-            assignee: this.users[0]
-        },
-        {
-            id: 1,
-            title: 'Keycloak does not work',
-            'description': 'blabla',
-            status: BacklogItemStatus.TODO,
-            type: BacklogItemType.TASK,
-            assignee: this.users[1]
-        },
-        {
-            id: 2,
-            title: 'Add logout to app',
-            'description': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            status: BacklogItemStatus.TODO,
-            type: BacklogItemType.EPIC,
-            assignee: this.users[2]
-        },
-        {
-            id: 3,
-            title: 'Improve dockerfile',
-            'description': 'Papope',
-            status: BacklogItemStatus.IN_PROGRESS,
-            type: BacklogItemType.STORY,
-            assignee: this.users[0]
-        },
-        {
-            id: 4,
-            title: 'Fix content policy',
-            'description': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            status: BacklogItemStatus.IN_PROGRESS,
-            type: BacklogItemType.TASK,
-            assignee: this.users[2]
-        },
-        {
-            id: 5,
-            title: 'Create folder structure',
-            'description': 'idk',
-            status: BacklogItemStatus.IN_PROGRESS,
-            type: BacklogItemType.BUG,
-            assignee: this.users[0]
-        },
-        {
-            id: 6,
-            title: 'Fix equals',
-            'description': 'example description',
-            status: BacklogItemStatus.DONE,
-            type: BacklogItemType.EPIC,
-            assignee: this.users[1]
-        },
-        {
-            id: 7,
-            title: 'Idk do something',
-            'description': 'hello',
-            status: BacklogItemStatus.DONE,
-            type: BacklogItemType.STORY,
-            assignee: this.users[2]
-        },
-        {
-            id: 8,
-            title: 'Hello World',
-            'description': 'Hello World!\\n',
-            status: BacklogItemStatus.DONE,
-            type: BacklogItemType.BUG,
-            assignee: this.users[0]
-        }
-    ];
-
-    // dataSource = new MatTableDataSource(this.dataToDisplay);
+    dataToDisplay: BacklogItem[] = [];
     displayedColumns = ['title', 'description', 'status', 'type', 'assignee'];
 
     getStatusClass(status: BacklogItemStatus): string {
@@ -228,19 +141,19 @@ export class BacklogComponent implements AfterViewInit {
             exitAnimationDuration: '100ms',
         });
 
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.dataToDisplay.push({
-                    id: this.dataToDisplay.length,
-                    title: result.title,
-                    description: result.description,
-                    status: BacklogItemStatus.TODO,
-                    type: result.type,
-                    assignee: this.users.find(user => user.userId === result.assignee)!
-                });
-                // this.dataSource.data = this.dataToDisplay;
-            }
-        })
+        // dialogRef.afterClosed().subscribe(result => {
+        //     if (result) {
+        //         this.dataToDisplay.push({
+        //             id: this.dataToDisplay.length,
+        //             title: result.title,
+        //             description: result.description,
+        //             status: BacklogItemStatus.TODO,
+        //             type: result.type,
+        //             assignee: this.users.find(user => user.userId === result.assignee)!
+        //         });
+        //         // this.dataSource.data = this.dataToDisplay;
+        //     }
+        // })
     }
 
     updateStatus(item: BacklogItem): void {
