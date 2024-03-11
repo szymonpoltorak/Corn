@@ -1,6 +1,6 @@
 import {BacklogItemStatus} from "@core/enum/BacklogItemStatus";
 import {BacklogItemType} from "@core/enum/BacklogItemType";
-import {User} from "@core/interfaces/boards/user";
+import {User} from "@interfaces/boards/user";
 
 export interface BacklogItem {
     id: number,

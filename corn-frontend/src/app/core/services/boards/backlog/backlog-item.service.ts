@@ -2,12 +2,13 @@ import { map } from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { BacklogItem } from "@interfaces/boards/backlog.item";
+import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { environment } from "@environments/environment";
 import { ApiUrl } from "@core/enum/api-url";
 import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
 import { UserService } from "@core/services/users/user.service";
+import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
 
 @Injectable({
     providedIn: 'root'
@@ -18,10 +19,18 @@ export class BacklogItemService {
                 private userService: UserService) {
     }
 
-    getAllByProjectId(projectId: number): Observable<BacklogItem[]> {
-        return this.http.get<any[]>(`${environment.httpBackend}${ApiUrl.GET_BACKLOG_ITEMS_BY_PROJECT_ID}`, {params: {projectId: projectId}})
+    getAllByProjectId(projectId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
+        return this.http.get<any>(`${environment.httpBackend}${ApiUrl.GET_BACKLOG_ITEMS_BY_PROJECT_ID}`, {params: {
+            projectId: projectId,
+            pageNumber: pageNumber,
+            sortBy: sortBy,
+            order: order}})
             .pipe(
-                map((items: any[]) => items.map(item => this.transformToBacklogItem(item)))
+                map((response: any) => {
+                    const backlogItems: BacklogItem[] = response.backlogItemResponseList.map((item : BacklogItem) => this.transformToBacklogItem(item));
+                    const totalNumber: number = response.totalNumber;
+                    return { backlogItems: backlogItems, totalNumber: totalNumber};
+                })
             );
     }
 

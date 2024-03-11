@@ -21,7 +21,6 @@ import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundExc
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintNotFoundException;
-import dev.corn.cornbackend.utils.exceptions.utils.WrongSortByException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +35,9 @@ import java.util.List;
 
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.*;
 import static dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants.*;
+import static dev.corn.cornbackend.entities.project.member.constants.ProjectMemberConstants.PROJECT_MEMBER_USER_FIELD_NAME;
+import static dev.corn.cornbackend.entities.user.constants.UserConstants.USER_NAME_FIELD_NAME;
+import static dev.corn.cornbackend.entities.user.constants.UserConstants.USER_SURNAME_FIELD_NAME;
 
 
 @Service
@@ -136,26 +138,20 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
         Sort.Direction direction = getDirection(order);
 
-        log.info("Backlog item type: {}, given type: {}", BACKLOG_ITEM_TYPE_FIELD_NAME, sortBy);
+        String sort = getSortBy(sortBy);
 
-        if(BACKLOG_ITEM_STATUS_FIELD_NAME.equals(sortBy) || BACKLOG_ITEM_TYPE_FIELD_NAME.equals(sortBy)) {
-           Pageable pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, Sort.by(direction, sortBy));
+        Pageable pageRequest;
 
-           log.info(GETTING_BY_PROJECT, project, sortBy, order);
-           items = backlogItemRepository.getByProject(project, pageRequest);
+        if (BACKLOG_ITEM_STATUS_FIELD_NAME.equals(sort) || BACKLOG_ITEM_TYPE_FIELD_NAME.equals(sort)) {
+            pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, Sort.by(direction, sort));
 
-        } else if(BACKLOG_ITEM_ASSIGNEE_FIELD_NAME.equals(sortBy)) {
-            Pageable pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE);
-            log.info(GETTING_BY_PROJECT, project, sortBy, order);
-
-            if(direction.isAscending()) {
-                items = backlogItemRepository.getByProjectOrderByAssigneeAsc(project, pageRequest);
-            } else {
-                items = backlogItemRepository.getByProjectOrderByAssigneeDesc(project, pageRequest);
-            }
         } else {
-            throw new WrongSortByException(sortBy);
+            pageRequest = getPageableForAssignee(pageNumber, direction);
+
         }
+        
+        log.info(GETTING_BY_PROJECT, project, sort, order);
+        items = backlogItemRepository.getByProject(project, pageRequest);
 
         return BacklogItemResponseList.builder()
                 .backlogItemResponseList(items.stream()
@@ -231,10 +227,34 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     private Sort.Direction getDirection(String order) {
         if(SORT_ASCENDING.equals(order)) {
             return Sort.Direction.ASC;
-        } else if(SORT_DESCENDING.equals(order)) {
-            return Sort.Direction.DESC;
         } else {
-            throw new WrongSortByException(order);
+            return Sort.Direction.DESC;
         }
+    }
+
+    private String getSortBy(String sortBy) {
+        if(BACKLOG_ITEM_STATUS_FIELD_NAME.equals(sortBy) ||
+                BACKLOG_ITEM_TYPE_FIELD_NAME.equals(sortBy) ||
+                BACKLOG_ITEM_ASSIGNEE_FIELD_NAME.equals(sortBy)) {
+            return sortBy;
+        } else {
+            return BACKLOG_ITEM_STATUS_FIELD_NAME;
+        }
+    }
+
+    private Pageable getPageableForAssignee(int pageNumber, Sort.Direction direction) {
+        Sort sorting = Sort.by(
+                new Sort.Order(direction, String.format("%s.%s.%s",
+                        BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
+                        PROJECT_MEMBER_USER_FIELD_NAME,
+                        USER_SURNAME_FIELD_NAME)),
+                new Sort.Order(direction, String.format("%s.%s.%s",
+                        BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
+                        PROJECT_MEMBER_USER_FIELD_NAME,
+                        USER_NAME_FIELD_NAME))
+        );
+
+        return PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, sorting);
+
     }
 }

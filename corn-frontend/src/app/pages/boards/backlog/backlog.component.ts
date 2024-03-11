@@ -9,9 +9,9 @@ import {
     MatHeaderRowDef,
     MatRow,
     MatRowDef,
-    MatTable, MatTableDataSource
+    MatTable,
 } from "@angular/material/table";
-import { BacklogItem } from '@core/interfaces/boards/backlog.item';
+import { BacklogItem } from '@interfaces/boards/backlog/backlog.item';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { matTask } from "@ng-icons/material-icons/baseline";
 import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
@@ -38,8 +38,6 @@ import { catchError, merge, of, startWith, switchMap, take } from "rxjs";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item.service";
 import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "@environments/environment";
-import { ApiUrl } from "@core/enum/api-url";
 
 @Component({
     selector: 'app-backlog',
@@ -93,42 +91,6 @@ export class BacklogComponent implements AfterViewInit {
 
     resultsLength: number = 0;
     ngAfterViewInit(): void {
-        // this.dataSource.sort = this.sort;
-        // this.dataSource.sortData = (data: BacklogItem[], sort: MatSort) => {
-        //     if (!sort.active || sort.direction === '') {
-        //         return data;
-        //     }
-        //
-        //     return data.sort((a, b) => {
-        //         let comparatorResult = 0;
-        //         switch (sort.active) {
-        //             case 'title':
-        //                 comparatorResult = a.title.localeCompare(b.title);
-        //                 break;
-        //             case 'description':
-        //                 comparatorResult = a.description.localeCompare(b.description);
-        //                 break;
-        //             case 'status':
-        //                 comparatorResult = a.status.localeCompare(b.status);
-        //                 break;
-        //             case 'type':
-        //                 comparatorResult = a.type - b.type;
-        //                 break;
-        //             case 'assignee':
-        //                 comparatorResult = a.assignee.name.localeCompare(b.assignee.name);
-        //                 if (comparatorResult === 0) {
-        //                     comparatorResult = a.assignee.surname.localeCompare(b.assignee.surname);
-        //                 }
-        //                 break;
-        //             default:
-        //                 comparatorResult = a.id - b.id;
-        //                 break;
-        //         }
-        //
-        //         return comparatorResult * (sort.direction === 'asc' ? 1 : -1);
-        //     })
-        // }
-
         this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
         merge(this.sort.sortChange, this.paginator.page)
@@ -136,20 +98,25 @@ export class BacklogComponent implements AfterViewInit {
                 startWith({}),
                 switchMap(() => {
                     this.isLoading = true;
-                    return this.backlogItemService.getAllByProjectId(1)
+
+                    let active = this.sort.active === 'type' ? 'itemType' : this.sort.active;
+
+                    return this.backlogItemService.getAllByProjectId(
+                        1,                  //TODO get projectId from somewhere
+                        this.paginator.pageIndex,
+                        active,
+                        this.sort.direction.toUpperCase())
                         .pipe(catchError(() => of(null)));
                 }),
                 map(data => {
                     this.isLoading = false;
 
-                    console.log(data);
-
                     if(!data) {
                         return [];
                     }
-
-                    this.resultsLength = data.length;
-                    return data;
+                    
+                    this.resultsLength = data.totalNumber;
+                    return data.backlogItems;
                 })
             )
             .subscribe(data => {this.dataToDisplay = data});

@@ -409,7 +409,7 @@ class BacklogItemServiceImplTest {
         //given
         long id = 1L;
         int pageNumber = 0;
-        String sortBy = "type";
+        String sortBy = "status";
         String order = "ASC";
         Pageable pageable = PageRequest.of(pageNumber, 30, Sort.Direction.ASC, sortBy);
 

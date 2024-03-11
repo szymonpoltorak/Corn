@@ -32,15 +32,10 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
      * Finds all BacklogItems associated with a Project
      *
      * @param project Project to find BacklogItems for
+     * @param pageable Pageable that pages and sorts the data
      * @return List of BacklogItems associated with the Project
      */
     Page<BacklogItem> getByProject(Project project, Pageable pageable);
-
-    @Query("SELECT b FROM BacklogItem b JOIN b.assignee AS a JOIN a.user AS u ORDER BY u.surname, u.name ASC")
-    Page<BacklogItem> getByProjectOrderByAssigneeAsc(@Param("project") Project project, Pageable pageable);
-
-    @Query("SELECT b FROM BacklogItem b JOIN b.assignee AS a JOIN a.user AS u ORDER BY u.surname, u.name DESC")
-    Page<BacklogItem> getByProjectOrderByAssigneeDesc(@Param("project") Project project, Pageable pageable);
 
     /**
      * Finds a BacklogItem by id and checks if the user is an assignee or the owner of the project associated
