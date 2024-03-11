@@ -4,6 +4,9 @@ import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,10 +34,16 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
      * @param project Project to find BacklogItems for
      * @return List of BacklogItems associated with the Project
      */
-    List<BacklogItem> getByProject(Project project);
+    Page<BacklogItem> getByProject(Project project, Pageable pageable);
+
+    @Query("SELECT b FROM BacklogItem b JOIN b.assignee AS a JOIN a.user AS u ORDER BY u.surname, u.name ASC")
+    Page<BacklogItem> getByProjectOrderByAssigneeAsc(@Param("project") Project project, Pageable pageable);
+
+    @Query("SELECT b FROM BacklogItem b JOIN b.assignee AS a JOIN a.user AS u ORDER BY u.surname, u.name DESC")
+    Page<BacklogItem> getByProjectOrderByAssigneeDesc(@Param("project") Project project, Pageable pageable);
 
     /**
-     * Finds a BacklogItem by id and checks if the user is a assignee or the owner of the project associated
+     * Finds a BacklogItem by id and checks if the user is an assignee or the owner of the project associated
      * with the BacklogItem
      * @param id id of BacklogItem
      * @param user user requesting access

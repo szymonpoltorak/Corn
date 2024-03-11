@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,12 +98,12 @@ class BacklogItemRepositoryTest {
     final void test_getByProjectShouldReturnCorrectBacklogItems() {
         //given
         Project project = TEST_DATA.project();
+        PageRequest pageRequest = PageRequest.of(0, 1);
 
         //when
-        List<BacklogItem> backlogItems = backlogItemRepository.getByProject(project);
-
+        Page<BacklogItem> backlogItems = backlogItemRepository.getByProject(project, pageRequest);
         //then
-        assertEquals(1, backlogItems.size(), LIST_CORRECT_SIZE);
-        assertEquals(TEST_DATA.backlogItem(), backlogItems.get(0), BACKLOG_ITEM_EQUAL);
+        assertEquals(1L, backlogItems.getTotalElements(), LIST_CORRECT_SIZE);
+        assertEquals(TEST_DATA.backlogItem(), backlogItems.toList().get(0), BACKLOG_ITEM_EQUAL);
     }
 }

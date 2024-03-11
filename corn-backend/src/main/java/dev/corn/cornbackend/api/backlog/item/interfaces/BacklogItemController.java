@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.api.backlog.item.interfaces;
 
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.entities.user.User;
@@ -49,7 +50,7 @@ public interface BacklogItemController {
     BacklogItemResponse create(BacklogItemRequest backlogItemRequest, User user);
 
     /**
-     * Get backlog items by sprint id
+     * Get backlog items by sprint id on given page
      *
      * @param sprintId id of the sprint
      * @param user     user to get the backlog items for
@@ -61,10 +62,11 @@ public interface BacklogItemController {
      * Get backlog items by project id
      *
      * @param projectId id of the project
+     * @param pageNumber number of page
      * @param user      user to get the backlog items for
      * @return the backlog items
      */
-    List<BacklogItemResponse> getByProjectId(long projectId, User user);
+    BacklogItemResponseList getByProjectId(long projectId, int pageNumber, String sortBy, String order, User user);
 
     /**
      * Get backlog item details by id

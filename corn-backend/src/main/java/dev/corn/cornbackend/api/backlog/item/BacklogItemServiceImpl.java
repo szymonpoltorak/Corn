@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.api.backlog.item;
 
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
@@ -20,26 +21,22 @@ import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundExc
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintNotFoundException;
+import dev.corn.cornbackend.utils.exceptions.utils.WrongSortByException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM_NOT_FOUND_MESSAGE;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.GETTING_BY_ID;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_MEMBER;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_MEMBER_NOT_FOUND_MESSAGE;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_NOT_FOUND_MESSAGE;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.RETURNING_BACKLOG_ITEMS_OF_QUANTITY;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.RETURNING_RESPONSE_OF;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.SAVING_AND_RETURNING_RESPONSE_OF;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.SPRINT;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.SPRINT_NOT_FOUND_MESSAGE;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.*;
+import static dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -128,21 +125,44 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final List<BacklogItemResponse> getByProjectId(long projectId, User user) {
+    public final BacklogItemResponseList getByProjectId(long projectId, int pageNumber, String sortBy,
+                                                        String order, User user) {
         log.info(GETTING_BY_ID, PROJECT, projectId);
 
         Project project = projectRepository.findByIdWithProjectMember(projectId, user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        log.info("Getting backlog items for project: {}", project);
+        Page<BacklogItem> items;
 
-        List<BacklogItem> items = backlogItemRepository.getByProject(project);
+        Sort.Direction direction = getDirection(order);
 
-        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.size());
+        log.info("Backlog item type: {}, given type: {}", BACKLOG_ITEM_TYPE_FIELD_NAME, sortBy);
 
-        return items.stream()
-                .map(backlogItemMapper::backlogItemToBacklogItemResponse)
-                .toList();
+        if(BACKLOG_ITEM_STATUS_FIELD_NAME.equals(sortBy) || BACKLOG_ITEM_TYPE_FIELD_NAME.equals(sortBy)) {
+           Pageable pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, Sort.by(direction, sortBy));
+
+           log.info(GETTING_BY_PROJECT, project, sortBy, order);
+           items = backlogItemRepository.getByProject(project, pageRequest);
+
+        } else if(BACKLOG_ITEM_ASSIGNEE_FIELD_NAME.equals(sortBy)) {
+            Pageable pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE);
+            log.info(GETTING_BY_PROJECT, project, sortBy, order);
+
+            if(direction.isAscending()) {
+                items = backlogItemRepository.getByProjectOrderByAssigneeAsc(project, pageRequest);
+            } else {
+                items = backlogItemRepository.getByProjectOrderByAssigneeDesc(project, pageRequest);
+            }
+        } else {
+            throw new WrongSortByException(sortBy);
+        }
+
+        return BacklogItemResponseList.builder()
+                .backlogItemResponseList(items.stream()
+                        .map(backlogItemMapper::backlogItemToBacklogItemResponse)
+                        .toList())
+                .totalNumber(items.getTotalElements())
+                .build();
     }
 
     @Override
@@ -206,5 +226,15 @@ public class BacklogItemServiceImpl implements BacklogItemService {
                 .sprint(builder.sprint())
                 .project(builder.project())
                 .build();
+    }
+
+    private Sort.Direction getDirection(String order) {
+        if(SORT_ASCENDING.equals(order)) {
+            return Sort.Direction.ASC;
+        } else if(SORT_DESCENDING.equals(order)) {
+            return Sort.Direction.DESC;
+        } else {
+            throw new WrongSortByException(order);
+        }
     }
 }

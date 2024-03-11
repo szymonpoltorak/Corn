@@ -14,6 +14,7 @@ public final class BacklogItemConstants {
     public static final String BACKLOG_ITEM_STATUS_NULL_MSG = "Item status cannot be null";
 
     public static final String BACKLOG_ITEM_TYPE_NULL_MSG = "Item type cannot be null";
+    public static final String BACKLOG_ITEM_TYPE_FIELD_NAME = "type";
     public static final String BACKLOG_ITEM_STATUS_FIELD_NAME = "status";
 
     public static final String BACKLOG_ITEM_COMMENTS_NULL_ELEMENTS_MSG = "Comments cannot be null nor contain null elements";

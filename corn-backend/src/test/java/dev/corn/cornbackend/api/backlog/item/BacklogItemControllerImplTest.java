@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.api.backlog.item;
 
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
 import dev.corn.cornbackend.entities.user.User;
@@ -119,15 +120,18 @@ class BacklogItemControllerImplTest {
     final void test_getByProjectIdShouldReturnCorrectBacklogItemResponse() {
         //given
         long projectId = 1L;
+        int pageNumber = 0;
+        String sortBy = "";
+        String orderBy = "";
 
         //when
-        when(backlogItemService.getByProjectId(projectId, SAMPLE_USER))
-                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses());
+        when(backlogItemService.getByProjectId(projectId, pageNumber, sortBy, orderBy, SAMPLE_USER))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList());
 
-        List<BacklogItemResponse> expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses();
+        BacklogItemResponseList expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList();
 
         //then
-        assertEquals(expected, backlogItemController.getByProjectId(projectId, SAMPLE_USER),
+        assertEquals(expected, backlogItemController.getByProjectId(projectId, pageNumber, sortBy, orderBy, SAMPLE_USER),
                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 

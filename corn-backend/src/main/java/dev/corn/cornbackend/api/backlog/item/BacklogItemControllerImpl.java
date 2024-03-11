@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.api.backlog.item;
 
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemController;
@@ -8,7 +9,6 @@ import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
 import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
 import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,9 +74,12 @@ public class BacklogItemControllerImpl implements BacklogItemController {
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_BY_PROJECT_MAPPING)
-    public final List<BacklogItemResponse> getByProjectId(@RequestParam long projectId,
-                                                          @JwtAuthed User user) {
-        return backlogItemService.getByProjectId(projectId, user);
+    public final BacklogItemResponseList getByProjectId(@RequestParam long projectId,
+                                                        @RequestParam int pageNumber,
+                                                        @RequestParam String sortBy,
+                                                        @RequestParam String order,
+                                                        @JwtAuthed User user) {
+        return backlogItemService.getByProjectId(projectId, pageNumber, sortBy, order, user);
     }
 
     @Override
