@@ -4,6 +4,7 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
+import dev.corn.cornbackend.api.backlog.item.enums.BacklogItemSortBy;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
@@ -21,6 +22,7 @@ import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundExc
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintNotFoundException;
+import dev.corn.cornbackend.utils.exceptions.utils.WrongPageNumberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -129,29 +131,35 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     @Override
     public final BacklogItemResponseList getByProjectId(long projectId, int pageNumber, String sortBy,
                                                         String order, User user) {
+        if(pageNumber < 0) {
+            throw new WrongPageNumberException(pageNumber);
+        }
+
+        BacklogItemSortBy sort = BacklogItemSortBy.of(sortBy);
+        Sort.Direction direction = Sort.Direction.DESC.name().equalsIgnoreCase(order) ?
+                Sort.Direction.DESC : Sort.DEFAULT_DIRECTION;
+
+        return getByProjectId(projectId, pageNumber, sort, direction, user);
+    }
+
+    private BacklogItemResponseList getByProjectId(long projectId, int pageNumber, BacklogItemSortBy sortBy,
+                                                 Sort.Direction order, User user) {
         log.info(GETTING_BY_ID, PROJECT, projectId);
 
         Project project = projectRepository.findByIdWithProjectMember(projectId, user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        Page<BacklogItem> items;
-
-        Sort.Direction direction = getDirection(order);
-
-        String sort = getSortBy(sortBy);
-
         Pageable pageRequest;
 
-        if (BACKLOG_ITEM_STATUS_FIELD_NAME.equals(sort) || BACKLOG_ITEM_TYPE_FIELD_NAME.equals(sort)) {
-            pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, Sort.by(direction, sort));
-
+        if(sortBy == BacklogItemSortBy.ASSIGNEE) {
+            pageRequest = getPageableForAssignee(pageNumber, order);
         } else {
-            pageRequest = getPageableForAssignee(pageNumber, direction);
-
+            pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, Sort.by(order,
+                    sortBy.getValue()));
         }
-        
-        log.info(GETTING_BY_PROJECT, project, sort, order);
-        items = backlogItemRepository.getByProject(project, pageRequest);
+
+        log.info(GETTING_BY_PROJECT, project, sortBy.getValue(), order);
+        Page<BacklogItem> items = backlogItemRepository.getByProject(project, pageRequest);
 
         return BacklogItemResponseList.builder()
                 .backlogItemResponseList(items.stream()
