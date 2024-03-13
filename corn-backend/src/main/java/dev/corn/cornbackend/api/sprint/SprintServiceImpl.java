@@ -81,7 +81,7 @@ public class SprintServiceImpl implements SprintService {
 
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, user, pageable);
 
-        log.info("Sprints found on page : {}", sprints.getTotalElements());
+        log.info("Sprints found on page : {}", sprints.getNumberOfElements());
 
         return sprints.map(sprintMapper::toSprintResponse).toList();
     }

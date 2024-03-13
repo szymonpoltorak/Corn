@@ -19,10 +19,10 @@ export class ProjectListComponent {
     cols = 5;
 
     exampleUsers: User[] = [
-        {userId: 0, name: 'John', surname: 'Doe'},
-        {userId: 1, name: 'Szymon', surname: 'Kowalski'},
-        {userId: 2, name: 'Andrzej', surname: 'Switch'},
-        {userId: 3, name: 'Paweł', surname: 'Tagowski'}
+        {userId: 0, name: 'John', surname: 'Doe', username: 'johndoe'},
+        {userId: 1, name: 'Szymon', surname: 'Kowalski',  username: 'szymoneks'},
+        {userId: 2, name: 'Andrzej', surname: 'Switch',  username: 'manual'},
+        {userId: 3, name: 'Paweł', surname: 'Tagowski',  username: 'dziendobrypanstwu'}
     ];
 
     @HostListener('window:resize', ['$event'])

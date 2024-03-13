@@ -1,20 +1,33 @@
 import { Injectable } from '@angular/core';
 import { User } from "@interfaces/boards/user";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { ApiUrl } from "@core/enum/api-url";
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
 
-    constructor() {
+    constructor(private http: HttpClient) {
+    }
+
+    getProjectMembersOnPage(projectId: number, page: number): Observable<User[]> {
+        return this.http.get<User[]>(`${ApiUrl.GET_PROJECT_MEMBERS}`, {
+            params: {
+                projectId: projectId,
+                page: page
+            }
+        })
     }
 
     mapToUser(user: any): User {
-      return {
-        userId: user.userId,
-        name: user.name,
-        surname: user.surname
-      }
+        return {
+            userId: user.userId,
+            name: user.name,
+            surname: user.surname,
+            username: user.username
+        }
     }
 
 }

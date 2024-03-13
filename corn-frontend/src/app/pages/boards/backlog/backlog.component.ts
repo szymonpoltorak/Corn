@@ -31,10 +31,10 @@ import { MatInput } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDialog } from "@angular/material/dialog";
 import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog-form.component";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatPaginator } from "@angular/material/paginator";
 import { catchError, merge, of, startWith, switchMap, take } from "rxjs";
-import { BacklogItemService } from "@core/services/boards/backlog/backlog-item.service";
+import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
 import { map } from "rxjs/operators";
 
 @Component({
@@ -87,6 +87,7 @@ export class BacklogComponent implements AfterViewInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     resultsLength: number = 0;
+
     ngAfterViewInit(): void {
         this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
@@ -108,7 +109,7 @@ export class BacklogComponent implements AfterViewInit {
                 map(data => {
                     this.isLoading = false;
 
-                    if(!data) {
+                    if (!data) {
                         return [];
                     }
 
@@ -116,7 +117,9 @@ export class BacklogComponent implements AfterViewInit {
                     return data.backlogItems;
                 })
             )
-            .subscribe(data => {this.dataToDisplay = data});
+            .subscribe(data => {
+                this.dataToDisplay = data
+            });
     }
 
 
@@ -141,19 +144,44 @@ export class BacklogComponent implements AfterViewInit {
             exitAnimationDuration: '100ms',
         });
 
-        // dialogRef.afterClosed().subscribe(result => {
-        //     if (result) {
-        //         this.dataToDisplay.push({
-        //             id: this.dataToDisplay.length,
-        //             title: result.title,
-        //             description: result.description,
-        //             status: BacklogItemStatus.TODO,
-        //             type: result.type,
-        //             assignee: this.users.find(user => user.userId === result.assignee)!
-        //         });
-        //         // this.dataSource.data = this.dataToDisplay;
-        //     }
-        // })
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.backlogItemService.createNewBacklogItem(
+                    result.title,
+                    result.description,
+                    result.assignee.userId,
+                    result.sprintId,
+                    1,  //TODO get real projectId from somewhere
+                    result.type
+                ).pipe(
+                    startWith({}),
+                    switchMap(() => {
+                        this.isLoading = true;
+
+                        let active = this.sort.active === 'type' ? 'itemType' : this.sort.active;
+
+                        return this.backlogItemService.getAllByProjectId(
+                            1,                  //TODO get real projectId from somewhere
+                            this.paginator.pageIndex,
+                            active,
+                            this.sort.direction.toUpperCase())
+                            .pipe(catchError(() => of(null)));
+                    }),
+                    map(data => {
+                        this.isLoading = false;
+
+                        if (!data) {
+                            return [];
+                        }
+
+                        this.resultsLength = data.totalNumber;
+                        return data.backlogItems;
+                    })
+                ).subscribe(data => {
+                    this.dataToDisplay = data
+                });
+            }
+        })
     }
 
     updateStatus(item: BacklogItem): void {

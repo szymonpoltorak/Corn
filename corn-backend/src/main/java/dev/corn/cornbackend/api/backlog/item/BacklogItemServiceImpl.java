@@ -9,6 +9,7 @@ import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
+import dev.corn.cornbackend.entities.backlog.item.enums.ItemType;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemMapper;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.project.Project;
@@ -101,7 +102,8 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     public final BacklogItemResponse create(BacklogItemRequest backlogItemRequest, User user) {
         BacklogItemBuilderDto builder = prepareDataForBacklogItemCreation(backlogItemRequest, user);
 
-        BacklogItem item = buildNewBacklogItem(backlogItemRequest.title(), backlogItemRequest.description(), builder);
+        BacklogItem item = buildNewBacklogItem(backlogItemRequest.title(), backlogItemRequest.description(),
+                backlogItemRequest.itemType(), builder);
 
         log.info(SAVING_AND_RETURNING_RESPONSE_OF, item);
 
@@ -220,35 +222,19 @@ public class BacklogItemServiceImpl implements BacklogItemService {
                 .build();
     }
 
-    private BacklogItem buildNewBacklogItem(String title, String description, BacklogItemBuilderDto builder) {
+    private BacklogItem buildNewBacklogItem(String title, String description, ItemType itemType, BacklogItemBuilderDto builder) {
         return BacklogItem.builder()
                 .title(title)
                 .description(description)
                 .comments(Collections.emptyList())
                 .status(ItemStatus.TODO)
+                .itemType(itemType)
                 .assignee(builder.assignee())
                 .sprint(builder.sprint())
                 .project(builder.project())
                 .build();
     }
 
-    private Sort.Direction getDirection(String order) {
-        if(SORT_ASCENDING.equals(order)) {
-            return Sort.Direction.ASC;
-        } else {
-            return Sort.Direction.DESC;
-        }
-    }
-
-    private String getSortBy(String sortBy) {
-        if(BACKLOG_ITEM_STATUS_FIELD_NAME.equals(sortBy) ||
-                BACKLOG_ITEM_TYPE_FIELD_NAME.equals(sortBy) ||
-                BACKLOG_ITEM_ASSIGNEE_FIELD_NAME.equals(sortBy)) {
-            return sortBy;
-        } else {
-            return BACKLOG_ITEM_STATUS_FIELD_NAME;
-        }
-    }
 
     private Pageable getPageableForAssignee(int pageNumber, Sort.Direction direction) {
         Sort sorting = Sort.by(
