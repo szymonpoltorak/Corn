@@ -49,6 +49,23 @@ export class BacklogItemService {
         })
     }
 
+    updateBacklogItem(item: BacklogItem): Observable<BacklogItem> {
+        return this.http.put<BacklogItem>(`${ApiUrl.UPDATE_BACKLOG_ITEM}`, {
+            title: item.title,
+            description: item.description,
+            projectMemberId: item.assignee.userId,
+            sprintId: item.sprintId,
+            projectId: item.projectId,
+            itemType: this.getItemType(item.type),
+            itemStatus: this.getStatus(item.status)
+        }, {
+            params: {
+                id: item.id
+            }
+        })
+    }
+
+
     private transformToBacklogItem(item: any): BacklogItem {
         let status: BacklogItemStatus = (() => {
             switch (item.status) {
@@ -75,12 +92,14 @@ export class BacklogItemService {
         })();
 
         return {
-            id: item.id,
+            id: item.backlogItemId,
             title: item.title,
             description: item.description,
             status: status,
             type: type,
-            assignee: this.userService.mapToUser(item.assignee)
+            assignee: this.userService.mapToUser(item.assignee),
+            projectId: item.projectId,
+            sprintId: item.sprintId
         };
     }
 
@@ -94,6 +113,17 @@ export class BacklogItemService {
                 return "EPIC";
             default:
                 return "TASK";
+        }
+    }
+
+    private getStatus(itemStatus: BacklogItemStatus) : string {
+        switch (itemStatus) {
+            case BacklogItemStatus.TODO:
+                return "TODO";
+            case BacklogItemStatus.IN_PROGRESS:
+                return "IN_PROGRESS";
+            default:
+                return "DONE";
         }
     }
 }

@@ -6,7 +6,9 @@ export interface BacklogItem {
     id: number,
     title: string,
     description: string,
-    status: BacklogItemStatus
-    type: BacklogItemType
-    assignee: User
+    status: BacklogItemStatus,
+    type: BacklogItemType,
+    assignee: User,
+    sprintId: number,
+    projectId: number
 }

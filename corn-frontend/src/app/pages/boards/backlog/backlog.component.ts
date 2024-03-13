@@ -118,7 +118,7 @@ export class BacklogComponent implements AfterViewInit {
                 })
             )
             .subscribe(data => {
-                this.dataToDisplay = data
+                this.dataToDisplay = data;
             });
     }
 
@@ -178,17 +178,16 @@ export class BacklogComponent implements AfterViewInit {
                         return data.backlogItems;
                     })
                 ).subscribe(data => {
-                    this.dataToDisplay = data
+                    this.dataToDisplay = data;
                 });
             }
         })
     }
 
     updateStatus(item: BacklogItem): void {
-        //only for example purposes
-        this.snackBar.open('Setting status: ' + item.status + ' for item: ' + item.title, 'Close');
-
-        //TODO real interaction with backend
+        this.backlogItemService.updateBacklogItem(item).subscribe((newItem) => {
+            this.dataToDisplay[this.dataToDisplay.indexOf(item)] = newItem;
+        })
     }
 
 
