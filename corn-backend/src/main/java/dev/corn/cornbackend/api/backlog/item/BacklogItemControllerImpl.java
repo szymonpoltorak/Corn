@@ -1,17 +1,14 @@
 package dev.corn.cornbackend.api.backlog.item;
 
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
-import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
-import dev.corn.cornbackend.api.backlog.item.enums.BacklogItemSortBy;
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemController;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
 import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
 import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +32,6 @@ import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMapping
 @RestController
 @RequestMapping(BACKLOG_ITEM_API_MAPPING)
 @RequiredArgsConstructor
-@Slf4j
 public class BacklogItemControllerImpl implements BacklogItemController {
 
     private final BacklogItemService backlogItemService;

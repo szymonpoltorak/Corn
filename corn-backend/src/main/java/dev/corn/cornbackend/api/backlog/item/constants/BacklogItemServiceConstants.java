@@ -16,9 +16,6 @@ public final class BacklogItemServiceConstants {
     public static final String SAVING_AND_RETURNING_RESPONSE_OF = "Saving and returning response of: {}";
     public static final String GETTING_BY_PROJECT = "Getting backlog items for project: {}, sorting by: {}, order: {}";
 
-    public static final String SORT_ASCENDING = "ASC";
-    public static final String SORT_DESCENDING = "DESC";
-
     public static final int BACKLOG_ITEM_PAGE_SIZE = 30;
 
 

@@ -1,12 +1,10 @@
 package dev.corn.cornbackend.api.backlog.item.interfaces;
 
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
-import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
-import dev.corn.cornbackend.api.backlog.item.enums.BacklogItemSortBy;
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.entities.user.User;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 

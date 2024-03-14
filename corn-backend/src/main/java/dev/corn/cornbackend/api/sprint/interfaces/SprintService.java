@@ -2,7 +2,6 @@ package dev.corn.cornbackend.api.sprint.interfaces;
 
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
-import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.user.User;
 
 import java.time.LocalDate;

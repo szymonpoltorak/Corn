@@ -2,11 +2,9 @@ package dev.corn.cornbackend.config;
 
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentRequest;
 import dev.corn.cornbackend.api.backlog.comment.interfaces.BacklogItemCommentService;
-import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.project.interfaces.ProjectService;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
-import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
 import dev.corn.cornbackend.api.user.interfaces.UserService;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;

@@ -3,7 +3,6 @@ package dev.corn.cornbackend.entities.backlog.item.interfaces;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
-import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.ProjectMemberMapperImpl;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberMapper;
