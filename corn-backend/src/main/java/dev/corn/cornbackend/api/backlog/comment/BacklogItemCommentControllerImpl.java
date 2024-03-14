@@ -7,7 +7,6 @@ import dev.corn.cornbackend.api.backlog.comment.interfaces.BacklogItemCommentSer
 import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
 import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

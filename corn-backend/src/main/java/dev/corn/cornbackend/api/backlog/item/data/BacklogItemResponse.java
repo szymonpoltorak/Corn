@@ -4,6 +4,6 @@ import dev.corn.cornbackend.entities.user.data.UserResponse;
 import lombok.Builder;
 
 @Builder
-public record BacklogItemResponse(String title, String description, String status, UserResponse assignee,
-                                  String itemType, String taskFinishDate) {
+public record BacklogItemResponse(long backlogItemId, String title, String description, String status, UserResponse assignee,
+                                  String itemType, String taskFinishDate, long projectId, long sprintId) {
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import {
     MatCell,
     MatCellDef,
@@ -9,14 +9,13 @@ import {
     MatHeaderRowDef,
     MatRow,
     MatRowDef,
-    MatTable, MatTableDataSource
+    MatTable,
 } from "@angular/material/table";
-import { BacklogItem } from '@core/interfaces/boards/backlog.item';
+import { BacklogItem } from '@interfaces/boards/backlog/backlog.item';
 import { NgIcon, provideIcons } from "@ng-icons/core";
-import { matTask } from "@ng-icons/material-icons/baseline";
+import { matDelete, matTask } from "@ng-icons/material-icons/baseline";
 import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
-import { User } from "@core/interfaces/boards/user";
 import { MatFormField, MatLabel, MatOption, MatSelect } from "@angular/material/select";
 import { NgClass, NgForOf } from "@angular/common";
 import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";
@@ -25,13 +24,18 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { featherBook } from "@ng-icons/feather-icons";
 import { octContainer } from "@ng-icons/octicons";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
-import { MatButton, MatFabButton } from "@angular/material/button";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatButton, MatButtonModule, MatFabButton, MatIconButton } from "@angular/material/button";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatInput } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDialog } from "@angular/material/dialog";
 import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog-form.component";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatPaginator } from "@angular/material/paginator";
+import { catchError, merge, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
+import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
+import { map } from "rxjs/operators";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: 'app-backlog',
@@ -63,153 +67,93 @@ import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog
         MatLabel,
         MatInput,
         MatFormField,
-        MatFormFieldModule
+        MatFormFieldModule,
+        MatProgressSpinner,
+        MatPaginator,
+        MatIcon,
+        MatIconButton,
+        MatButtonModule
     ],
     templateUrl: './backlog.component.html',
     styleUrl: './backlog.component.scss',
-    providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer })],
+    providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer, matDelete })],
     encapsulation: ViewEncapsulation.None
 })
-export class BacklogComponent implements AfterViewInit {
+export class BacklogComponent implements AfterViewInit, OnDestroy {
 
-    constructor(private snackBar: MatSnackBar,
-                public dialog: MatDialog) {
-    }
-
-    ngAfterViewInit(): void {
-        this.dataSource.sort = this.sort;
-        this.dataSource.sortData = (data: BacklogItem[], sort: MatSort) => {
-            if (!sort.active || sort.direction === '') {
-                return data;
-            }
-
-            return data.sort((a, b) => {
-                let comparatorResult = 0;
-                switch (sort.active) {
-                    case 'title':
-                        comparatorResult = a.title.localeCompare(b.title);
-                        break;
-                    case 'description':
-                        comparatorResult = a.description.localeCompare(b.description);
-                        break;
-                    case 'status':
-                        comparatorResult = a.status.localeCompare(b.status);
-                        break;
-                    case 'type':
-                        comparatorResult = a.type - b.type;
-                        break;
-                    case 'assignee':
-                        comparatorResult = a.assignee.name.localeCompare(b.assignee.name);
-                        if (comparatorResult === 0) {
-                            comparatorResult = a.assignee.surname.localeCompare(b.assignee.surname);
-                        }
-                        break;
-                    default:
-                        comparatorResult = a.id - b.id;
-                        break;
-                }
-
-                return comparatorResult * (sort.direction === 'asc' ? 1 : -1);
-            })
-        }
+    constructor(public dialog: MatDialog,
+                private backlogItemService: BacklogItemService) {
     }
 
     @ViewChild(MatSort) sort!: MatSort;
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+    destroy$: Subject<void> = new Subject();
 
-    //only for example purposes
+    resultsLength: number = 0;
+    hoveredRow: BacklogItem | null = null;
+    isLoading: boolean = true;
+
     statuses: BacklogItemStatus[] = [
         BacklogItemStatus.TODO,
         BacklogItemStatus.IN_PROGRESS,
         BacklogItemStatus.DONE
     ];
 
-    users: User[] = [
-        { userId: 0, name: 'John', surname: 'Doe' },
-        { userId: 1, name: 'Szymon', surname: 'Kowalski' },
-        { userId: 2, name: 'Andrzej', surname: 'Switch' }
-    ];
-
-    dataToDisplay: BacklogItem[] = [
-        {
-            id: 0,
-            title: 'Create toolbar',
-            'description': 'Create a toolbar for user',
-            status: BacklogItemStatus.TODO,
-            type: BacklogItemType.BUG,
-            assignee: this.users[0]
-        },
-        {
-            id: 1,
-            title: 'Keycloak does not work',
-            'description': 'blabla',
-            status: BacklogItemStatus.TODO,
-            type: BacklogItemType.TASK,
-            assignee: this.users[1]
-        },
-        {
-            id: 2,
-            title: 'Add logout to app',
-            'description': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            status: BacklogItemStatus.TODO,
-            type: BacklogItemType.EPIC,
-            assignee: this.users[2]
-        },
-        {
-            id: 3,
-            title: 'Improve dockerfile',
-            'description': 'Papope',
-            status: BacklogItemStatus.IN_PROGRESS,
-            type: BacklogItemType.STORY,
-            assignee: this.users[0]
-        },
-        {
-            id: 4,
-            title: 'Fix content policy',
-            'description': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            status: BacklogItemStatus.IN_PROGRESS,
-            type: BacklogItemType.TASK,
-            assignee: this.users[2]
-        },
-        {
-            id: 5,
-            title: 'Create folder structure',
-            'description': 'idk',
-            status: BacklogItemStatus.IN_PROGRESS,
-            type: BacklogItemType.BUG,
-            assignee: this.users[0]
-        },
-        {
-            id: 6,
-            title: 'Fix equals',
-            'description': 'example description',
-            status: BacklogItemStatus.DONE,
-            type: BacklogItemType.EPIC,
-            assignee: this.users[1]
-        },
-        {
-            id: 7,
-            title: 'Idk do something',
-            'description': 'hello',
-            status: BacklogItemStatus.DONE,
-            type: BacklogItemType.STORY,
-            assignee: this.users[2]
-        },
-        {
-            id: 8,
-            title: 'Hello World',
-            'description': 'Hello World!\\n',
-            status: BacklogItemStatus.DONE,
-            type: BacklogItemType.BUG,
-            assignee: this.users[0]
-        }
-    ];
-
-    dataSource = new MatTableDataSource(this.dataToDisplay);
+    dataToDisplay: BacklogItem[] = [];
     displayedColumns = ['title', 'description', 'status', 'type', 'assignee'];
+
+    protected readonly BacklogItemType = BacklogItemType;
+
+    ngAfterViewInit(): void {
+        this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(
+            () => (this.paginator.pageIndex = 0));
+
+        merge(this.sort.sortChange, this.paginator.page)
+            .pipe(
+                startWith({}),
+                switchMap(() => {
+                    this.fetchBacklogItems();
+                    return of(null);
+                })
+            ).pipe(takeUntil(this.destroy$)).subscribe();
+    }
+
+    fetchBacklogItems(): void {
+        this.isLoading = true;
+        let active: string = this.sort.active === 'type' ? 'itemType' : this.sort.active;
+        this.backlogItemService.getAllByProjectId(
+            1,                  //TODO get real projectId from somewhere
+            this.paginator.pageIndex,
+            active,
+            this.sort.direction.toUpperCase())
+            .pipe(
+                catchError(() => of(null)),
+                map(data => {
+                    this.isLoading = false;
+
+                    if (!data) {
+                        return [];
+                    }
+
+                    this.resultsLength = data.totalNumber;
+                    return data.backlogItemResponseList;
+                }),
+                takeUntil(this.destroy$)
+            ).subscribe(data => {
+            this.dataToDisplay = data;
+        })
+    }
 
     getStatusClass(status: BacklogItemStatus): string {
         return status.replace(' ', '_');
+    }
+
+    deleteItem(item: BacklogItem): void {
+        this.backlogItemService.deleteBacklogItem(item).pipe(take(1)).subscribe((deletedItem: BacklogItem) => {
+            this.dataToDisplay = this.dataToDisplay.filter((i) => i !== item);
+            this.resultsLength -= 1;
+        });
     }
 
     showItemForm(): void {
@@ -219,28 +163,31 @@ export class BacklogComponent implements AfterViewInit {
             exitAnimationDuration: '100ms',
         });
 
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.dataToDisplay.push({
-                    id: this.dataToDisplay.length,
-                    title: result.title,
-                    description: result.description,
-                    status: BacklogItemStatus.TODO,
-                    type: result.type,
-                    assignee: this.users.find(user => user.userId === result.assignee)!
-                });
-                this.dataSource.data = this.dataToDisplay;
+        dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+            if (!result) {
+                return;
             }
+            this.backlogItemService.createNewBacklogItem(
+                result.title,
+                result.description,
+                result.assignee.userId,
+                result.sprintId,
+                1,  //TODO get real projectId from somewhere
+                result.type
+            ).pipe(take(1)).subscribe((newItem) => {
+                this.fetchBacklogItems();
+            })
         })
     }
 
     updateStatus(item: BacklogItem): void {
-        //only for example purposes
-        this.snackBar.open('Setting status: ' + item.status + ' for item: ' + item.title, 'Close');
-
-        //TODO real interaction with backend
+        this.backlogItemService.updateBacklogItem(item).pipe(take(1)).subscribe((newItem) => {
+            this.dataToDisplay[this.dataToDisplay.indexOf(item)] = newItem;
+        })
     }
 
-
-    protected readonly BacklogItemType = BacklogItemType;
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
 }
