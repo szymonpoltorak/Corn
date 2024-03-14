@@ -5,11 +5,11 @@
             <mat-label>Title</mat-label>
             <input matInput formControlName="title">
 
-            @if(itemForm.controls.title.hasError('required')) {
+            @if(itemForm.controls['title'].hasError('required')) {
                 <mat-error>Title is <strong>required</strong></mat-error>
-            } @else if (itemForm.controls.title.hasError('maxlength')) {
+            } @else if (itemForm.controls['title'].hasError('maxlength')) {
                 <mat-error>Title cannot be more than <strong>100</strong> characters</mat-error>
-            } @else if (itemForm.controls.title.hasError('notWhitespace')) {
+            } @else if (itemForm.controls['title'].hasError('notWhitespace')) {
                 <mat-error>Title cannot be only <strong>whitespace</strong></mat-error>
             }
         </mat-form-field>
@@ -19,11 +19,11 @@
             <textarea [cdkTextareaAutosize]="true" matInput #textArea maxlength="500" formControlName="description"></textarea>
             <mat-hint align="end">{{textArea.textLength}} / {{textArea.maxLength}}</mat-hint>
 
-            @if(itemForm.controls.description.hasError('required')) {
+            @if(itemForm.controls['description'].hasError('required')) {
                 <mat-error>Description is <strong>required</strong></mat-error>
-            } @else if (itemForm.controls.description.hasError('maxlength')) {
+            } @else if (itemForm.controls['description'].hasError('maxlength')) {
                 <mat-error>Description cannot be more than <strong>500</strong> characters</mat-error>
-            } @else if (itemForm.controls.description.hasError('notWhitespace')) {
+            } @else if (itemForm.controls['description'].hasError('notWhitespace')) {
                 <mat-error>Description cannot be only <strong>whitespace</strong></mat-error>
             }
         </mat-form-field>
@@ -105,7 +105,7 @@
                         }
                     </mat-select>
 
-                    @if(itemForm.controls.type.hasError('required')) {
+                    @if(itemForm.controls['type'].hasError('required')) {
                         <mat-error>Type is <strong>required</strong></mat-error>
                     }
                 </mat-form-field>
@@ -129,7 +129,7 @@
                         }
                     </mat-select>
 
-                    @if(itemForm.controls.assignee.hasError('required')) {
+                    @if(itemForm.controls['assignee'].hasError('required')) {
                         <mat-error>Assignee is <strong>required</strong></mat-error>
                     }
                 </mat-form-field>
@@ -145,7 +145,7 @@
                     }
                 </mat-select>
 
-                @if(itemForm.controls.sprint.hasError('required')) {
+                @if(itemForm.controls['sprint'].hasError('required')) {
                     <mat-error>Sprint is <strong>required</strong></mat-error>
                 }
             </mat-form-field>

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { BoardsPaths } from '@core/enum/BoardsPaths';
 import { RouterPaths } from "@core/enum/RouterPaths";
-import { authGuard } from "@core/guards/auth.guard";
 
 export const routes: Routes = [
     {

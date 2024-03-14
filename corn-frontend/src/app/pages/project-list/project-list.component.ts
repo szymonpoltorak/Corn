@@ -1,7 +1,7 @@
-import {Component, HostListener} from '@angular/core';
-import {ProjectComponent} from "@pages/project-list/project/project.component";
-import {MatGridList, MatGridTile} from "@angular/material/grid-list";
-import {User} from "@core/interfaces/boards/user";
+import { Component, HostListener } from '@angular/core';
+import { ProjectComponent } from "@pages/project-list/project/project.component";
+import { MatGridList, MatGridTile } from "@angular/material/grid-list";
+import { User } from "@core/interfaces/boards/user";
 
 @Component({
   selector: 'app-project-list',

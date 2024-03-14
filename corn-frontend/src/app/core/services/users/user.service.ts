@@ -20,14 +20,4 @@ export class UserService {
             }
         })
     }
-
-    mapToUser(user: any): User {
-        return {
-            userId: user.userId,
-            name: user.name,
-            surname: user.surname,
-            username: user.username
-        }
-    }
-
 }

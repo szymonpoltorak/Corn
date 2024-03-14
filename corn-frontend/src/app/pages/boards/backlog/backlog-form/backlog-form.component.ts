@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import {
     MatDialogActions,
     MatDialogClose,
@@ -32,7 +32,7 @@ import { MatIcon } from "@angular/material/icon";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { Sprint } from "@interfaces/boards/backlog/sprint";
 import { CdkScrollable, ScrollDispatcher, ScrollingModule } from "@angular/cdk/scrolling";
-import { Subscription } from "rxjs";
+import { Subject, take, takeUntil } from "rxjs";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
 import { UserService } from "@core/services/users/user.service";
 
@@ -67,14 +67,20 @@ import { UserService } from "@core/services/users/user.service";
 })
 export class BacklogFormComponent implements AfterViewInit, OnDestroy {
 
-    private readonly sprintPageSize = 20;
-    private sprintsPageNumber = 0;
+    constructor(public dialogRef: MatDialogRef<BacklogFormComponent>,
+                private scrollDispatcher: ScrollDispatcher,
+                private ngZone: NgZone,
+                private sprintService: SprintService,
+                private userService: UserService) {
+    }
 
-    private readonly membersPageSize = 20;
-    private membersPageNumber = 0;
+    private readonly sprintPageSize: number = 20;
+    private sprintsPageNumber: number = 0;
 
-    sprintScrollSubscription?: Subscription;
-    memberScrollSubscription?: Subscription;
+    private readonly membersPageSize: number = 20;
+    private membersPageNumber: number = 0;
+
+    destroy$: Subject<void> = new Subject<void>();
 
     sprints: Sprint[] = [];
 
@@ -84,7 +90,7 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
     @ViewChild('sprintSelect') sprintSelect !: MatSelect;
     @ViewChild('memberSelect') memberSelect !: MatSelect;
 
-    itemForm = new FormGroup({
+    itemForm: FormGroup = new FormGroup({
         title: new FormControl('', [
             Validators.required,
             Validators.maxLength(100),
@@ -106,12 +112,7 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
         ])
     });
 
-    constructor(public dialogRef: MatDialogRef<BacklogFormComponent>,
-                private scrollDispatcher: ScrollDispatcher,
-                private ngZone: NgZone,
-                private sprintService: SprintService,
-                private userService: UserService) {
-    }
+    protected readonly BacklogItemType = BacklogItemType;
 
     types: BacklogItemType[] = [
         BacklogItemType.STORY,
@@ -122,18 +123,20 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
     users: User[] = [];
 
     submitForm(): void {
-        if (this.itemForm.valid) {
-            let data = {
-                title: this.itemForm.get('title')?.value,
-                description: this.itemForm.get('description')?.value,
-                sprintId: this.itemForm.get('sprint')?.value,
-                type: this.itemForm.get('type')?.value,
-                assignee: this.itemForm.get('assignee')?.value
-            };
-
-            this.dialogRef.close(data);
+        if (this.itemForm.invalid) {
+            return;
         }
+        let data = {
+            title: this.itemForm.get('title')?.value,
+            description: this.itemForm.get('description')?.value,
+            sprintId: this.itemForm.get('sprint')?.value,
+            type: this.itemForm.get('type')?.value,
+            assignee: this.itemForm.get('assignee')?.value
+        };
+
+        this.dialogRef.close(data);
     }
+
     changeCurrentUser(event: MatSelectChange): void {
         this.currentUser = event.value;
     }
@@ -142,66 +145,77 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
         this.currentType = event.value;
     }
 
-
-    protected readonly BacklogItemType = BacklogItemType;
-
     ngAfterViewInit(): void {
-        this.userService.getProjectMembersOnPage(1, this.membersPageNumber).subscribe(users => {
+        this.userService.getProjectMembersOnPage(1, this.membersPageNumber).pipe(take(1)).subscribe(users => {
             this.users = users;
         });
-        this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).subscribe(sprints => {
+        this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(sprints => {
             this.sprints = sprints;
         });
 
-        this.sprintSelect.openedChange.subscribe(opened => {
-            if (opened) {
-                const scrollable = new CdkScrollable(this.sprintSelect.panel, this.scrollDispatcher, this.ngZone);
-                this.sprintScrollSubscription = scrollable.elementScrolled().subscribe(() => {
-                    this.ngZone.runOutsideAngular(() => {
-                        if (this.sprints.length % this.sprintPageSize !== 0) {
-                            return;
-                        }
-                        const element = scrollable.getElementRef().nativeElement;
-                        const atBottom = element.scrollTop + element.offsetHeight >= element.scrollHeight;
-                        if (atBottom) {
-                            this.sprintsPageNumber++;
-                            this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).subscribe(newSprints => {
-                                this.ngZone.run(() => {
-                                    this.sprints = [...this.sprints, ...newSprints];
-                                })
-                            })
-                        }
-                    })
-                });
-            }
-        })
+        this.subscribeToSprintScroll();
+        this.subscribeToMemberScroll();
 
-        this.memberSelect.openedChange.subscribe(opened => {
-            if (opened) {
-                const scrollable: CdkScrollable = new CdkScrollable(this.memberSelect.panel, this.scrollDispatcher, this.ngZone);
-                this.memberScrollSubscription = scrollable.elementScrolled().subscribe(() => {
-                    this.ngZone.runOutsideAngular(() => {
-                        if (this.users.length % this.membersPageSize !== 0) {
-                            return;
-                        }
-                        const element = scrollable.getElementRef().nativeElement;
-                        const atBottom = element.scrollTop + element.offsetHeight >= element.scrollHeight;
-                        if (atBottom) {
-                            this.membersPageNumber++;
-                            this.userService.getProjectMembersOnPage(1, this.membersPageNumber).subscribe(newUsers => {
-                                this.ngZone.run(() => {
-                                    this.users = [...this.users, ...newUsers];
-                                })
-                            })
-                        }
+    }
+
+    subscribeToSprintScroll(): void {
+        this.sprintSelect.openedChange.pipe(takeUntil(this.destroy$)).subscribe(opened => {
+            if (!opened) {
+                return;
+            }
+            const scrollable = new CdkScrollable(this.sprintSelect.panel, this.scrollDispatcher, this.ngZone);
+            scrollable.elementScrolled().pipe(takeUntil(this.destroy$)).subscribe(() => {
+                this.ngZone.runOutsideAngular(() => {
+                    if (this.sprints.length % this.sprintPageSize !== 0) {
+                        return;
+                    }
+                    const element = scrollable.getElementRef().nativeElement;
+                    const atBottom = element.scrollTop + element.offsetHeight >= element.scrollHeight;
+                    if (!atBottom) {
+                        return;
+                    }
+                    this.sprintsPageNumber++;
+                    this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(newSprints => {
+                        this.ngZone.run(() => {
+                            this.sprints = [...this.sprints, ...newSprints];
+                        })
                     })
                 })
-            }
+            });
         })
     }
 
+    subscribeToMemberScroll(): void {
+        this.memberSelect.openedChange.pipe(takeUntil(this.destroy$)).subscribe(opened => {
+            if (!opened) {
+                return;
+            }
+            const scrollable: CdkScrollable = new CdkScrollable(this.memberSelect.panel, this.scrollDispatcher, this.ngZone);
+            scrollable.elementScrolled().pipe(takeUntil(this.destroy$)).subscribe(() => {
+                this.ngZone.runOutsideAngular(() => {
+                    if (this.users.length % this.membersPageSize !== 0) {
+                        return;
+                    }
+                    const element = scrollable.getElementRef().nativeElement;
+                    const atBottom = element.scrollTop + element.offsetHeight >= element.scrollHeight;
+                    if (!atBottom) {
+                        return;
+                    }
+                    this.membersPageNumber++;
+                    this.userService.getProjectMembersOnPage(1, this.membersPageNumber).pipe(take(1)).subscribe(newUsers => {
+                        this.ngZone.run(() => {
+                            this.users = [...this.users, ...newUsers];
+                        })
+                    })
+                })
+            })
+        })
+    }
+
+
     ngOnDestroy(): void {
-        this.sprintScrollSubscription?.unsubscribe();
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
 

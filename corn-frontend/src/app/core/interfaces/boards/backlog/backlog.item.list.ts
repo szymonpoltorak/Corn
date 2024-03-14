@@ -1,6 +1,6 @@
-import {BacklogItem} from "@interfaces/boards/backlog/backlog.item";
+import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 
 export interface BacklogItemList {
-    backlogItems: BacklogItem[],
+    backlogItemResponseList: BacklogItem[],
     totalNumber: number
 }
