@@ -65,6 +65,14 @@ export class BacklogItemService {
         })
     }
 
+    deleteBacklogItem(item: BacklogItem): Observable<BacklogItem> {
+        return this.http.delete<BacklogItem>(`${ApiUrl.DELETE_BACKLOG_ITEM}`, {
+            params: {
+                id: item.id
+            }
+        })
+    }
+
 
     private transformToBacklogItem(item: any): BacklogItem {
         let status: BacklogItemStatus = (() => {

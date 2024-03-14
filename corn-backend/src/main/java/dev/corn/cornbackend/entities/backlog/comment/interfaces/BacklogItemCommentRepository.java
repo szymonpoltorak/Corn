@@ -1,11 +1,16 @@
 package dev.corn.cornbackend.entities.backlog.comment.interfaces;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
+import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.user.User;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -43,4 +48,6 @@ public interface BacklogItemCommentRepository extends JpaRepository<BacklogItemC
      */
     @Query("SELECT b FROM BacklogItemComment b WHERE b.backlogItemCommentId = :id AND (b.backlogItem.project.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm WHERE pm.project = b.backlogItem.project))")
     Optional<BacklogItemComment> findByIdWithProjectMember(@Param ("id") long id, @Param("user") User user);
+
+    void deleteByBacklogItem(BacklogItem backlogItem);
 }

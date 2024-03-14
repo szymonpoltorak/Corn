@@ -13,7 +13,7 @@ import {
 } from "@angular/material/table";
 import { BacklogItem } from '@interfaces/boards/backlog/backlog.item';
 import { NgIcon, provideIcons } from "@ng-icons/core";
-import { matTask } from "@ng-icons/material-icons/baseline";
+import { matDelete, matTask } from "@ng-icons/material-icons/baseline";
 import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
 import { MatFormField, MatLabel, MatOption, MatSelect } from "@angular/material/select";
@@ -24,7 +24,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { featherBook } from "@ng-icons/feather-icons";
 import { octContainer } from "@ng-icons/octicons";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
-import { MatButton, MatFabButton } from "@angular/material/button";
+import { MatButton, MatButtonModule, MatFabButton, MatIconButton } from "@angular/material/button";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatInput } from "@angular/material/input";
@@ -36,6 +36,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { catchError, merge, of, startWith, switchMap, take } from "rxjs";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
 import { map } from "rxjs/operators";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: 'app-backlog',
@@ -69,11 +70,14 @@ import { map } from "rxjs/operators";
         MatFormField,
         MatFormFieldModule,
         MatProgressSpinner,
-        MatPaginator
+        MatPaginator,
+        MatIcon,
+        MatIconButton,
+        MatButtonModule
     ],
     templateUrl: './backlog.component.html',
     styleUrl: './backlog.component.scss',
-    providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer })],
+    providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer, matDelete})],
     encapsulation: ViewEncapsulation.None
 })
 export class BacklogComponent implements AfterViewInit {
@@ -87,6 +91,7 @@ export class BacklogComponent implements AfterViewInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     resultsLength: number = 0;
+    hoveredRow: any;
 
     ngAfterViewInit(): void {
         this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
@@ -135,6 +140,13 @@ export class BacklogComponent implements AfterViewInit {
 
     getStatusClass(status: BacklogItemStatus): string {
         return status.replace(' ', '_');
+    }
+
+    deleteItem(item: BacklogItem): void {
+        this.backlogItemService.deleteBacklogItem(item).subscribe((deletedItem: BacklogItem) => {
+            this.dataToDisplay = this.dataToDisplay.filter((i) => i !== item);
+            this.resultsLength -= 1;
+        });
     }
 
     showItemForm(): void {

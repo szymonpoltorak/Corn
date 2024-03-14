@@ -5,6 +5,7 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.backlog.item.enums.BacklogItemSortBy;
+import dev.corn.cornbackend.entities.backlog.comment.interfaces.BacklogItemCommentRepository;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemMapper;
@@ -64,6 +65,8 @@ class BacklogItemServiceImplTest {
     private ProjectMemberRepository projectMemberRepository;
     @Mock
     private  BacklogItemMapper backlogItemMapper;
+    @Mock
+    private BacklogItemCommentRepository backlogItemCommentRepository;
 
     private final AddBacklogItemTestData BACKLOG_ITEM_TEST_DATA = BacklogItemTestDataBuilder.addBacklogItemTestData();
     private final EntityData ENTITY_DATA = BacklogItemTestDataBuilder.entityData();

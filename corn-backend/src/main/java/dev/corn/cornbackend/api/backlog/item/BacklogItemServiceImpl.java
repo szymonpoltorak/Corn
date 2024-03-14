@@ -7,6 +7,7 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.enums.BacklogItemSortBy;
 import dev.corn.cornbackend.api.backlog.item.interfaces.BacklogItemService;
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
+import dev.corn.cornbackend.entities.backlog.comment.interfaces.BacklogItemCommentRepository;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.backlog.item.enums.ItemStatus;
 import dev.corn.cornbackend.entities.backlog.item.enums.ItemType;
@@ -26,11 +27,16 @@ import dev.corn.cornbackend.utils.exceptions.sprint.SprintNotFoundException;
 import dev.corn.cornbackend.utils.exceptions.utils.WrongPageNumberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -44,18 +50,19 @@ import static dev.corn.cornbackend.entities.user.constants.UserConstants.USER_SU
 
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class BacklogItemServiceImpl implements BacklogItemService {
 
     private final BacklogItemRepository backlogItemRepository;
+    private final BacklogItemCommentRepository backlogItemCommentRepository;
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final BacklogItemMapper backlogItemMapper;
 
     @Override
-    public final BacklogItemResponse getById(long id, User user) {
+    public BacklogItemResponse getById(long id, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
@@ -67,7 +74,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest, User user) {
+    public BacklogItemResponse update(long id, BacklogItemRequest backlogItemRequest, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
@@ -85,11 +92,14 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemResponse deleteById(long id, User user) {
+    @Transactional
+    public BacklogItemResponse deleteById(long id, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+
+        backlogItemCommentRepository.deleteByBacklogItem(item);
 
         backlogItemRepository.deleteById(id);
 
@@ -99,7 +109,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemResponse create(BacklogItemRequest backlogItemRequest, User user) {
+    public BacklogItemResponse create(BacklogItemRequest backlogItemRequest, User user) {
         BacklogItemBuilderDto builder = prepareDataForBacklogItemCreation(backlogItemRequest, user);
 
         BacklogItem item = buildNewBacklogItem(backlogItemRequest.title(), backlogItemRequest.description(),
@@ -113,7 +123,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final List<BacklogItemResponse> getBySprintId(long sprintId, User user) {
+    public List<BacklogItemResponse> getBySprintId(long sprintId, User user) {
         log.info(GETTING_BY_ID, SPRINT, sprintId);
 
         Sprint sprint = sprintRepository.findByIdWithProjectMember(sprintId, user)
@@ -131,7 +141,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemResponseList getByProjectId(long projectId, int pageNumber, String sortBy,
+    public BacklogItemResponseList getByProjectId(long projectId, int pageNumber, String sortBy,
                                                         String order, User user) {
         if(pageNumber < 0) {
             throw new WrongPageNumberException(pageNumber);
@@ -172,7 +182,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public final BacklogItemDetails getDetailsById(long id, User user) {
+    public BacklogItemDetails getDetailsById(long id, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem backlogItem = backlogItemRepository.findByIdWithProjectMember(id, user)
