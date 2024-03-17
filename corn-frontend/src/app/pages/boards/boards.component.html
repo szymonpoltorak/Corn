@@ -1,12 +1,12 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="w-full">
     <div class="flex space-x-4 items-center">
         <button mat-icon-button (click)="toggleSidebar()">
-            <mat-icon>{{sidebarShown ? 'menu_open' : 'menu'}}</mat-icon>
+            <mat-icon>{{ sidebarShown ? 'menu_open' : 'menu' }}</mat-icon>
         </button>
 
         <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
             Your Projects
-            <mat-icon iconPositionEnd>{{t.menuOpen ? 'expand_less' : 'expand_more'}}</mat-icon>
+            <mat-icon iconPositionEnd>{{ t.menuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
         </button>
 
         <mat-menu #menu="matMenu">
@@ -18,13 +18,14 @@
     <span class="flex-auto"></span>
 
     @if (isLoggedIn && userProfile) {
-        <userinfo [username]="userProfile!.username || ''" [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"
-            (logout)="logout()">
+        <userinfo [username]="userProfile!.username || ''"
+                  [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"
+                  (logout)="logout()">
         </userinfo>
     }
 </mat-toolbar>
 
-<mat-drawer-container style="min-height: calc(100vh - 64px);">
+<mat-drawer-container>
     <mat-drawer [opened]="sidebarShown" mode="side">
         <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
 
@@ -39,7 +40,7 @@
                             [label]="'Backlog'" [selected]="selected == 'backlog'"></sidebar-button>
 
             <sidebar-button (click)="navigateToBoard()" [selected]="selected == 'board'"
-                [iconName]="'akarClipboard'" [label]="'Board'"></sidebar-button>
+                            [iconName]="'akarClipboard'" [label]="'Board'"></sidebar-button>
 
             <sidebar-button (click)="{}" [iconName]="'octGraph'" [label]="'Reports'"
                             [selected]="selected == 'reports'"></sidebar-button>
@@ -52,8 +53,9 @@
 
         </div>
     </mat-drawer>
+
     <mat-drawer-content>
-        <div class="pl-[24px] pt-[24px]">
+        <div class="overflow-hidden min-h-screen">
             <router-outlet></router-outlet>
         </div>
     </mat-drawer-content>
