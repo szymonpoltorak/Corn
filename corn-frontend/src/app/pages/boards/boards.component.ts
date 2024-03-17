@@ -65,9 +65,11 @@ export class BoardsComponent implements OnInit {
             }
         });
         this.isLoggedIn = this.keycloak.isLoggedIn();
+
         if (this.isLoggedIn) {
             this.userProfile = await this.keycloak.loadUserProfile();
-            console.log(this.userProfile);
+        } else {
+            this.router.navigate([RouterPaths.HOME_DIRECT_PATH]);
         }
     }
 
@@ -88,7 +90,8 @@ export class BoardsComponent implements OnInit {
     }
 
     logout(): void {
-        this.keycloak.logout();
+        this.keycloak
+            .logout();
     }
 
 }
