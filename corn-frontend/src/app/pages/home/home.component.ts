@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         if (this.keycloak.isLoggedIn()) {
             //TODO implement proper auth guard
-            this.router.navigate(['/boards/backlog']);
+            this.router.navigate(['/projects']);
         }
     }
 
