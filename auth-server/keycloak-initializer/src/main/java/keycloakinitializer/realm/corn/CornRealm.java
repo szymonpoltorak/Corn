@@ -7,7 +7,6 @@ import java.util.List;
 
 public final class CornRealm extends RealmRepresentation {
     private static final String REALM_NAME = "Corn";
-    private static final String DEFAULT_SIGNATURE_ALGORITHM = "ES512";
 
     public CornRealm() {
         setRealm(REALM_NAME);
@@ -18,7 +17,10 @@ public final class CornRealm extends RealmRepresentation {
         setRevokeRefreshToken(true);
         setRememberMe(true);
         setBruteForceProtected(true);
-        setDefaultSignatureAlgorithm(DEFAULT_SIGNATURE_ALGORITHM);
+
+        if(ExternalConfig.shouldCreatePlaceholderUsers()) {
+            setUsers(PlaceholderUsers.generate());
+        }
 
         if(ExternalConfig.KCCFG_LOGIN_THEME_NAME != null) {
             setLoginTheme(ExternalConfig.KCCFG_LOGIN_THEME_NAME);

@@ -1,0 +1,1 @@
+proxy_pass "http://corn-frontend:$FRONTEND_PORT_CONTAINER";

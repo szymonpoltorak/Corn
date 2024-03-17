@@ -22,6 +22,7 @@ services:
             - POSTGRES_DB=corn
             - SPRING_DATASOURCE_URL=jdbc:postgresql://corn-postgres:5432/corn
             - FRONTEND_URL=corn-frontend
+            - CREATE_PLACEHOLDER_DATA=true
         build:
             context: corn-backend
             dockerfile: Dockerfile.dev
@@ -57,6 +58,7 @@ services:
                 condition: service_healthy
         environment:
             - KCCFG_OVERRIDE_EXISTING=true
+            - KCCFG_CREATE_PLACEHOLDER_USERS=true
             - KCCFG_LOGIN_THEME_NAME=corn
             - KC_SERVER_URL=http://corn-keycloak:8080
         volumes:
@@ -97,7 +99,7 @@ services:
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
             interval: 1s
-            retries: 30
+            retries: 120
             start_period: 15s
             timeout: 5s
         volumes:
@@ -115,7 +117,7 @@ services:
         healthcheck:
             test: "pg_isready -U keycloak"
             interval: 1s
-            retries: 30
+            retries: 50
             start_period: 5s
             timeout: 3s
 

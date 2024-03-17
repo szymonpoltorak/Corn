@@ -46,11 +46,15 @@ services:
                 condition: service_healthy
         environment:
             - KCCFG_OVERRIDE_EXISTING=false
+            - KCCFG_LOGIN_THEME_NAME=corn
             - KC_SERVER_URL=http://corn-keycloak:8080
 
     corn-keycloak:
         container_name: corn-keycloak
-        image: quay.io/keycloak/keycloak:20.0.1
+        image: corn-keycloak
+        build:
+            context: auth-server/keycloak-theme
+            dockerfile: Dockerfile.keycloak.prod
         depends_on:
             corn-keycloak-postgres:
                 condition: service_healthy
@@ -65,7 +69,7 @@ services:
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
             interval: 1s
-            retries: 30
+            retries: 120
             start_period: 15s
             timeout: 5s
 
@@ -81,7 +85,7 @@ services:
         healthcheck:
             test: "pg_isready -U keycloak"
             interval: 1s
-            retries: 30
+            retries: 50
             start_period: 5s
             timeout: 3s
 

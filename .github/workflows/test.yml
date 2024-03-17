@@ -2,7 +2,7 @@ name: Test Application with Gradle
 
 on:
     push:
-        branches: [ "main" ]
+        branches: [ "main", "devel" ]
     pull_request:
         branches: [ "main",  "devel" ]
 

@@ -4,6 +4,8 @@ import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,12 +31,13 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
      * Finds all BacklogItems associated with a Project
      *
      * @param project Project to find BacklogItems for
+     * @param pageable Pageable that pages and sorts the data
      * @return List of BacklogItems associated with the Project
      */
-    List<BacklogItem> getByProject(Project project);
+    Page<BacklogItem> getByProject(Project project, Pageable pageable);
 
     /**
-     * Finds a BacklogItem by id and checks if the user is a assignee or the owner of the project associated
+     * Finds a BacklogItem by id and checks if the user is an assignee or the owner of the project associated
      * with the BacklogItem
      * @param id id of BacklogItem
      * @param user user requesting access

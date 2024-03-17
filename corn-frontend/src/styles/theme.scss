@@ -1,5 +1,6 @@
 @use '@angular/material/index' as mat;
 @use '@fireflysemantics/sass-logger' as logger;
+@use '../app/pages/project-list/project/_project.component-theme' as project-component;
 
 @import "palette";
 
@@ -53,3 +54,4 @@ $dark-background: map-merge($dark-background, (
 $dark-theme: replace-color($dark-theme, #424242, #292627);
 
 @include mat.all-component-themes($dark-theme);
+@include project-component.theme($dark-theme);

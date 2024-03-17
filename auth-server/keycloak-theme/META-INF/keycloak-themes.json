@@ -1,0 +1,6 @@
+{
+    "themes": [{
+        "name" : "corn",
+        "types": [ "login" ]
+    }]
+}

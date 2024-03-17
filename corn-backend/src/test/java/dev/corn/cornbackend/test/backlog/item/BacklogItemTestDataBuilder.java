@@ -3,6 +3,7 @@ package dev.corn.cornbackend.test.backlog.item;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemDetails;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemRequest;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
+import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
@@ -127,7 +128,11 @@ public final class BacklogItemTestDataBuilder {
 
         return new BacklogItemListTestData(
                 List.of(backlogItem1, backlogItem2),
-                List.of(backlogItemResponse1, backlogItemResponse2)
+                List.of(backlogItemResponse1, backlogItemResponse2),
+                BacklogItemResponseList.builder()
+                        .backlogItemResponseList(List.of(backlogItemResponse1, backlogItemResponse2))
+                        .totalNumber(2L)
+                        .build()
         );
     }
 

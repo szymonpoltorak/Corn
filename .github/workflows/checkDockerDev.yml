@@ -1,0 +1,70 @@
+name: Check dockercompose.dev
+
+on:
+    push:
+        branches: [ "main", "devel" ]
+    pull_request:
+        branches: [ "main",  "devel" ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   name: Install jq
+                run: sudo apt-get install -y jq
+
+            -   name: Setup useful functions
+                run: |
+                    rc=/tmp/rcfile
+                    echo "lscontainers() { docker ps -qa | xargs --no-run-if-empty docker inspect; }" >> $rc
+                    echo "asserttrue() { [ \"\$(cat)\" = \"true\" ]; }" >> $rc
+                    echo "checkstatus() { lscontainers | jq -r '.[] | select(.Name == \"/'\"\$1\"'\").State.Status == \"'\"\$2\"'\"'; }" >> $rc
+                    echo "ishealthy() { lscontainers | jq -r '.[] | select(.Name == \"/'\"\$1\"'\").State.Health.Status == \"healthy\"'; }" >> $rc
+                    echo "fatal() { echo \"Check failed: \$@\" 1>&2; exit 1; }" >> $rc
+
+            -   name: Boot up containers
+                run: docker compose -f docker-compose.dev.yml up --build -d
+
+            -   name: Wait for transient states to disappear
+                run: sleep 200
+                
+            -   name: Test backend
+                run: |
+                    source /tmp/rcfile
+                    checkstatus "corn-postgres" "running" | asserttrue || fatal "BackDb"
+                    checkstatus "corn-backend" "running" | asserttrue || fatal "BackSpring"
+                
+            -   name: Test frontend
+                run: |
+                    source /tmp/rcfile
+                    checkstatus "corn-frontend" "running" | asserttrue || fatal "FrontNg"
+                
+            -   name: Test nginx
+                run: |
+                    source /tmp/rcfile
+                    checkstatus "corn-nginx" "running" | asserttrue || fatal "NginxMain"
+                
+            -   name: Test keycloak
+                run: |
+                    source /tmp/rcfile
+                    checkstatus "corn-keycloak" "running" | asserttrue || fatal "KcMain"
+                    ishealthy "corn-keycloak" | asserttrue || fatal "KcMainHealth"
+                    checkstatus "corn-keycloak-postgres" "running" | asserttrue || fatal "KcDb"
+                    ishealthy "corn-keycloak-postgres" | asserttrue || fatal "KcDbHealth"
+                    checkstatus "corn-keycloak-theme" "running" | asserttrue || fatal "KcTheme"
+                    checkstatus "corn-keycloak-initializer" "exited" | asserttrue || fatal "KcInit"
+                
+            -   name: Test proxies connectivity
+                run: |
+                    source /tmp/rcfile
+                    curl -qo /dev/null -w "%{http_code}" 'http://localhost:4200/api/fallible' | grep -qP '^(502|503|504).*' || exit 0 && fatal "NginxBack"
+                    curl -qo /dev/null -w "%{http_code}" 'http://localhost:4200/' | grep -qP '^(502|503|504).*' || exit 0 && fatal "NginxFront"
+                    curl -qo /dev/null -w "%{http_code}" 'http://localhost:8081/realms/Corn' | grep -qP '^(502|503|504).*' || exit 0 && fatal "NginxKc"
+                
+            -   name: Test existence of Corn realm
+                run: |
+                    source /tmp/rcfile
+                    curl 'http://localhost:8081/realms/Corn/' | jq -r '.error == null' | asserttrue || fatal "CornRealm"

@@ -1,0 +1,27 @@
+name: Build Angular App
+
+on:
+    push:
+        branches: [ "main", "devel" ]
+    pull_request:
+        branches: [ "main",  "devel" ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   uses: actions/setup-node@v4
+                with:
+                    node-version: 20
+
+            -   name: Install dependencies
+                run: cd corn-frontend; npm install
+
+            -   name: Build Developer
+                run: cd corn-frontend; npm run ng build
+
+            -   name: Build production
+                run: cd corn-frontend; npm run ng build --configuration=production
