@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.ADD_SPRINT;
+import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.CURRENT_AND_FUTURE_SPRINTS;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.DELETE_SPRINT;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.GET_SPRINTS_ON_PAGE;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.GET_SPRINT_BY_ID;
@@ -89,5 +90,12 @@ public class SprintControllerImpl implements SprintController {
     @DeleteMapping(value = DELETE_SPRINT)
     public final SprintResponse deleteSprint(@RequestParam long sprintId, @JwtAuthed User user) {
         return sprintService.deleteSprint(sprintId, user);
+    }
+
+    @Override
+    @GetMapping(value = CURRENT_AND_FUTURE_SPRINTS)
+    public List<SprintResponse> getCurrentAndFutureSprints(@RequestParam long projectId,
+                                                           @JwtAuthed User user) {
+        return sprintService.getCurrentAndFutureSprints(projectId, user);
     }
 }

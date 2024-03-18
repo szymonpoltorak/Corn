@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Optional;
 public interface SprintRepository extends JpaRepository<Sprint, Long> {
 
     /**
-     * Finds all Sprints associated with Project of given projectId and checks if the user is a assignee
+     * Finds all Sprints associated with Project of given projectId and checks if the user is an assignee
      * or the owner of the project
      * @param projectId id of Project
      * @param user user requesting access
@@ -55,5 +56,14 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
      */
     @Query("SELECT s FROM Sprint s WHERE s.sprintId = :id AND s.project.owner = :user")
     Optional<Sprint> findByIdWithProjectOwner(@Param("id") long id, @Param("user") User user);
+
+    /**
+     * Finds all sprints with given project that have end date after specified date and pages them
+     * @param project project to find sprints associated with
+     * @param date date after which found sprints should end
+     * @param pageable pageable to page and sort sprints
+     * @return Page of found sprints
+     */
+    Page<Sprint> findAllByProjectAndSprintEndDateAfter(Project project, LocalDate date, Pageable pageable);
 
 }

@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static dev.corn.cornbackend.repositories.SampleEntitiesBuilder.createSampleProject;
@@ -53,7 +55,7 @@ class SprintRepositoryTest {
 
         //then
         assertEquals(1L, sprints.getTotalElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
-        assertTrue(sprints.getContent().contains(TEST_DATA.sprint()), SPRINT_EQUAL);
+        assertTrue(sprints.getContent().contains(TEST_DATA.currentSprint()), SPRINT_EQUAL);
     }
 
     @Test
@@ -68,7 +70,7 @@ class SprintRepositoryTest {
 
         //then
         assertEquals(1L, sprints.getTotalElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
-        assertTrue(sprints.getContent().contains(TEST_DATA.sprint()), SPRINT_EQUAL);
+        assertTrue(sprints.getContent().contains(TEST_DATA.currentSprint()), SPRINT_EQUAL);
     }
 
     @Test
@@ -89,35 +91,35 @@ class SprintRepositoryTest {
     final void test_findByIdWithProjectMemberShouldReturnCorrectSprintWhenUserIsOwnerOfProject() {
         //given
         User owner = TEST_DATA.projectOwner();
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectMember(sprintId, owner);
 
         //then
         assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
-        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
+        assertEquals(TEST_DATA.currentSprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
     final void test_findByIdWithProjectMemberShouldReturnCorrectSprintWhenUserIsMemberOfProject() {
         //given
         User member = TEST_DATA.projectMember();
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectMember(sprintId, member);
 
         //then
         assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
-        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
+        assertEquals(TEST_DATA.currentSprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
     final void test_findByIdWithProjectMemberShouldReturnEmptyOptionalWhenUserIsNotOwnerOrMemberOfProject() {
         //given
         User nonMember = TEST_DATA.nonProjectMember();
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectMember(sprintId, nonMember);
@@ -142,21 +144,21 @@ class SprintRepositoryTest {
     @Test
     final void test_findBySprintIdAndProjectShouldReturnCorrectSprint() {
         //given
-        Project project = TEST_DATA.sprint().getProject();
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        Project project = TEST_DATA.currentSprint().getProject();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findBySprintIdAndProject(sprintId, project);
 
         //then
         assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
-        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
+        assertEquals(TEST_DATA.currentSprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
     final void test_findBySprintIdAndProjectShouldReturnEmptyOptionalOnIncorrectId() {
         //given
-        Project project = TEST_DATA.sprint().getProject();
+        Project project = TEST_DATA.currentSprint().getProject();
         long sprintId = -1L;
 
         //when
@@ -170,7 +172,7 @@ class SprintRepositoryTest {
     final void test_findBySprintIdAndProjectShouldReturnEmptyOptionalOnIncorrectProject() {
         //given
         Project project = createSampleProject(2L, "Incorrect project");
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findBySprintIdAndProject(sprintId, project);
@@ -183,21 +185,21 @@ class SprintRepositoryTest {
     final void test_findByIdWithProjectOwnerShouldReturnSprintOnOwner() {
         //given
         User owner = TEST_DATA.projectOwner();
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectOwner(sprintId, owner);
 
         //then
         assertTrue(sprint.isPresent(), OPTIONAL_PRESENT);
-        assertEquals(TEST_DATA.sprint(), sprint.get(), SPRINT_EQUAL);
+        assertEquals(TEST_DATA.currentSprint(), sprint.get(), SPRINT_EQUAL);
     }
 
     @Test
     final void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnProjectMember() {
         //given
         User member = TEST_DATA.projectMember();
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectOwner(sprintId, member);
@@ -210,7 +212,7 @@ class SprintRepositoryTest {
     final void test_findByIdWithProjectOwnerShouldReturnEmptyOptionalOnNonProjectMember() {
         //given
         User nonMember = TEST_DATA.nonProjectMember();
-        long sprintId = TEST_DATA.sprint().getSprintId();
+        long sprintId = TEST_DATA.currentSprint().getSprintId();
 
         //when
         Optional<Sprint> sprint = sprintRepository.findByIdWithProjectOwner(sprintId, nonMember);
@@ -230,5 +232,34 @@ class SprintRepositoryTest {
 
         //then
         assertTrue(sprint.isEmpty(), OPTIONAL_EMPTY);
+    }
+
+    @Test
+    final void test_findAllByProjectAndSprintEndDateAfterShouldReturnCorrectSprints() {
+        //given
+        Project project = TEST_DATA.project();
+        LocalDate date = TEST_DATA.currentSprint().getSprintStartDate();
+        Pageable pageable = PageRequest.of(0, 3);
+
+        //when
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndSprintEndDateAfter(project, date, pageable);
+
+        //then
+        assertEquals(2, sprints.getNumberOfElements());
+        assertTrue(sprints.getContent().containsAll(List.of(TEST_DATA.currentSprint(), TEST_DATA.futureSprint())));
+    }
+
+    @Test
+    final void test_findAllByProjectAndSprintEndDateAfterShouldReturnEmptyPageWhenNoneOfSprintsEndsAfterDate() {
+        //given
+        Project project = TEST_DATA.project();
+        LocalDate date = TEST_DATA.futureSprint().getSprintEndDate().plusDays(1L);
+        Pageable pageable = PageRequest.of(0, 3);
+
+        //when
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndSprintEndDateAfter(project, date, pageable);
+
+        //then
+        assertEquals(0, sprints.getNumberOfElements());
     }
 }

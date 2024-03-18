@@ -17,18 +17,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static dev.corn.cornbackend.entities.sprint.constants.SprintConstants.SPRINT_START_DATE_FIELD_NAME;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SprintServiceImpl implements SprintService {
     public static final int SPRINTS_PER_PAGE = 20;
+    public static final int FUTURE_SPRINTS_PER_PAGE = 5;
     private static final String UPDATED_SPRINT = "Updated sprint: {}";
     private static final String FOUND_SPRINT_TO_UPDATE = "Found sprint to update: {}";
+    private static final String PROJECT_NOT_FOUND = "Project with projectId: %d does not exist";
+    private static final String SPRINTS_ON_PAGE = "Sprints found on page : {}";
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
     private final SprintMapper sprintMapper;
@@ -42,7 +48,7 @@ public class SprintServiceImpl implements SprintService {
 
         Project project = projectRepository.findByProjectIdAndOwner(sprintRequest.projectId(), user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(
-                        String.format("Project with projectId: %d does not exist", sprintRequest.projectId()))
+                        String.format(PROJECT_NOT_FOUND, sprintRequest.projectId()))
                 );
         Sprint sprint = Sprint
                 .builder()
@@ -81,7 +87,7 @@ public class SprintServiceImpl implements SprintService {
 
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, user, pageable);
 
-        log.info("Sprints found on page : {}", sprints.getNumberOfElements());
+        log.info(SPRINTS_ON_PAGE, sprints.getNumberOfElements());
 
         return sprints.map(sprintMapper::toSprintResponse).toList();
     }
@@ -178,6 +184,29 @@ public class SprintServiceImpl implements SprintService {
         log.info("Deleted sprint with id: {}", sprintToDelete);
 
         return sprintMapper.toSprintResponse(sprintToDelete);
+    }
+
+    @Override
+    public List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user) {
+        log.info("Getting current and future sprints for project with id: {}", projectId);
+
+        Project project = projectRepository.findByIdWithProjectMember(projectId, user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(
+                        String.format(PROJECT_NOT_FOUND, projectId)
+                ));
+
+        log.info("Found project with id: {}", project);
+
+        Pageable pageable = PageRequest.of(0, FUTURE_SPRINTS_PER_PAGE, Sort.by(
+                Sort.Direction.ASC, SPRINT_START_DATE_FIELD_NAME)
+        );
+
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndSprintEndDateAfter(project,
+                LocalDate.now(), pageable);
+
+        log.info(SPRINTS_ON_PAGE, sprints.getNumberOfElements());
+
+        return sprints.map(sprintMapper::toSprintResponse).toList();
     }
 
 }
