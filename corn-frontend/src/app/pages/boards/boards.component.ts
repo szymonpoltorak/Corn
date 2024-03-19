@@ -16,6 +16,7 @@ import { KeycloakProfile } from 'keycloak-js';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { RouterPaths } from '@core/enum/RouterPaths';
 import { BoardsPaths } from '@core/enum/BoardsPaths';
+import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
 
 @Component({
     selector: 'app-boards',
@@ -37,6 +38,7 @@ import { BoardsPaths } from '@core/enum/BoardsPaths';
         MatMenuTrigger,
         MatMenuModule,
         CommonModule,
+        ToolbarComponent,
     ],
     templateUrl: './boards.component.html',
 })
@@ -82,13 +84,4 @@ export class BoardsComponent implements OnInit {
     navigateToBoard(): void {
         this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.BOARD}`]);
     }
-
-    toggleSidebar(): void {
-        this.sidebarShown = !this.sidebarShown;
-    }
-
-    logout(): void {
-        this.keycloak.logout();
-    }
-
 }
