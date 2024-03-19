@@ -6,6 +6,8 @@ import { MatToolbar } from "@angular/material/toolbar";
 import { KeycloakProfile } from "keycloak-js";
 import { UserinfoComponent } from "@pages/boards/userinfo/userinfo.component";
 import { KeycloakService } from "keycloak-angular";
+import { Router } from "@angular/router";
+import { RouterPaths } from "@core/enum/RouterPaths";
 
 @Component({
     selector: 'app-toolbar',
@@ -30,7 +32,8 @@ export class ToolbarComponent implements OnInit {
     @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     sidebarShown: boolean = true;
 
-    constructor(private keycloak: KeycloakService) {
+    constructor(private keycloak: KeycloakService,
+                private router: Router) {
     }
 
     async ngOnInit(): Promise<void> {
@@ -39,6 +42,8 @@ export class ToolbarComponent implements OnInit {
         if (this.isLoggedIn) {
             this.userProfile = await this.keycloak.loadUserProfile();
             console.log(this.userProfile);
+        } else {
+            this.router.navigate([RouterPaths.HOME_DIRECT_PATH]);
         }
     }
 
