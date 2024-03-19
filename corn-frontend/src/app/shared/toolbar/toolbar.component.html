@@ -1,19 +1,21 @@
 <mat-toolbar color="primary">
-    <div class="flex space-x-4 items-center">
-        <button mat-icon-button (click)="toggleSidebar()">
-            <mat-icon>{{ sidebarShown ? 'menu_open' : 'menu' }}</mat-icon>
-        </button>
+    @if (!isOnProjectRoute) {
+        <div class="flex space-x-4 items-center">
+            <button mat-icon-button (click)="toggleSidebar()">
+                <mat-icon>{{ sidebarShown ? 'menu_open' : 'menu' }}</mat-icon>
+            </button>
 
-        <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
-            Your Projects
-            <mat-icon iconPositionEnd>{{ t.menuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
-        </button>
+            <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+                Your Projects
+                <mat-icon iconPositionEnd>{{ t.menuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </button>
 
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item>Some Project</button>
-            <button mat-menu-item>Another Project</button>
-        </mat-menu>
-    </div>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item>Some Project</button>
+                <button mat-menu-item>Another Project</button>
+            </mat-menu>
+        </div>
+    }
 
     <span class="flex-auto"></span>
 

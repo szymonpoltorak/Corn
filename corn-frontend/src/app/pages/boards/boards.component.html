@@ -1,6 +1,4 @@
-<app-toolbar [isLoggedIn]="isLoggedIn"
-             (sidebarEvent)="sidebarShown = $event"
-             [userProfile]="userProfile">
+<app-toolbar (sidebarEvent)="sidebarShown = $event">
 </app-toolbar>
 
 <mat-drawer-container style="min-height: calc(100vh - 64px);">

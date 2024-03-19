@@ -24,8 +24,9 @@ import { KeycloakService } from "keycloak-angular";
     styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent implements OnInit {
-    @Input() userProfile ?: KeycloakProfile;
-    @Input() isLoggedIn !: boolean;
+    @Input() isOnProjectRoute: boolean = false;
+    userProfile ?: KeycloakProfile;
+    isLoggedIn: boolean = false;
     @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     sidebarShown: boolean = true;
 

@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { ProjectComponent } from "@pages/project-list/project/project.component";
 import { MatGridList, MatGridTile } from "@angular/material/grid-list";
 import { User } from "@core/interfaces/boards/user";
+import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
 
 @Component({
   selector: 'app-project-list',
@@ -9,7 +10,8 @@ import { User } from "@core/interfaces/boards/user";
     imports: [
         ProjectComponent,
         MatGridList,
-        MatGridTile
+        MatGridTile,
+        ToolbarComponent
     ],
   templateUrl: './project-list.component.html',
   styleUrl: './project-list.component.scss'

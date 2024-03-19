@@ -49,28 +49,20 @@ export class BoardsComponent implements OnInit {
 
     selected: string = '';
 
-    isLoggedIn: boolean = false;
-    userProfile?: KeycloakProfile;
-
     constructor(
         protected readonly router: Router,
-        protected readonly location: Location,
-        protected readonly keycloak: KeycloakService,
+        protected readonly location: Location
     ) {
     }
 
     async ngOnInit() {
         this.selected = this.location.path().split('/').pop() || '';
+
         this.router.events.subscribe((val) => {
             if (val instanceof NavigationEnd) {
                 this.selected = val.url.split('/').pop() || '';
             }
         });
-        this.isLoggedIn = this.keycloak.isLoggedIn();
-        if (this.isLoggedIn) {
-            this.userProfile = await this.keycloak.loadUserProfile();
-            console.log(this.userProfile);
-        }
     }
 
     navigateToBacklog(): void {
