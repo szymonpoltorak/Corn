@@ -19,6 +19,16 @@
 
     <span class="flex-auto"></span>
 
+    @if (!isOnProjectRoute) {
+        <button mat-icon-button
+                [routerLink]="RouterPaths.PROJECT_LIST_DIRECT_PATH"
+                class="center"
+                matTooltip="Go to projects"
+                aria-label="Go to projects">
+            <mat-icon>apps</mat-icon>
+        </button>
+    }
+
     @if (isLoggedIn && userProfile) {
         <userinfo [username]="userProfile!.username || ''"
                   [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"

@@ -6,8 +6,9 @@ import { MatToolbar } from "@angular/material/toolbar";
 import { KeycloakProfile } from "keycloak-js";
 import { UserinfoComponent } from "@pages/boards/userinfo/userinfo.component";
 import { KeycloakService } from "keycloak-angular";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { RouterPaths } from "@core/enum/RouterPaths";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
     selector: 'app-toolbar',
@@ -20,7 +21,9 @@ import { RouterPaths } from "@core/enum/RouterPaths";
         MatMenuItem,
         MatToolbar,
         UserinfoComponent,
-        MatMenuTrigger
+        MatMenuTrigger,
+        MatTooltip,
+        RouterLink
     ],
     templateUrl: './toolbar.component.html',
     styleUrl: './toolbar.component.scss'
@@ -56,4 +59,6 @@ export class ToolbarComponent implements OnInit {
     logout(): void {
         this.keycloak.logout();
     }
+
+    protected readonly RouterPaths = RouterPaths;
 }
