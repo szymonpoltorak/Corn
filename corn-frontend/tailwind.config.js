@@ -26,6 +26,7 @@ export const theme = {
                 'main-background': '#1f1f1e',
                 'container-background': '#292627',
                 'font': '#ffffff',
+                'grey-bg': '#303030',
             },
         },
         width: {

@@ -1,1 +1,23 @@
-<h1>Timeline</h1>
+<div class="text-4xl font-thin p-5">Timeline</div>
+
+<div class="bg-dark-color-settings-main-background p-4 mr-[24px] rounded shadow font-light">
+    <div class="flex justify-between items-center mb-4">
+        <button class="flex items-center p-2 bg-corn-primary-500 text-black rounded hover:bg-corn-primary-600" (click)="prevMonth()">
+            <ng-icon name="matArrowBack"></ng-icon>
+        </button>
+        <h2 class="text-2xl">{{ currentMonth | date: 'MMMM yyyy' }}</h2>
+        <button class="flex items-center p-2 bg-corn-primary-500 text-black rounded hover:bg-corn-primary-600" (click)="nextMonth()">
+            <ng-icon name="matArrowForward"></ng-icon>
+        </button>
+    </div>
+    <div class="grid grid-cols-7 gap-2">
+        <div *ngFor="let day of days" class="text-center font-bold tracking-wider text-corn-primary-500">{{ day }}</div>
+    </div>
+    <div class="grid grid-cols-7 gap-1">
+        <ng-container *ngFor="let week of weeks">
+            <div *ngFor="let date of week.days">
+                <div class="text-center bg-dark-color-settings-grey-bg">{{ date.day }}</div>
+            </div>
+        </ng-container>
+    </div>
+</div>

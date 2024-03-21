@@ -1,5 +1,5 @@
 <button (click)="click()" [class.bg-corn-primary-900]="selected" class="flex items-center justify-right py-2 space-x-2 w-full p-2 rounded-[4px]"
         mat-basic-button>
-    <ng-icon [name]="iconName"></ng-icon>
+    <ng-icon [class.text-black]="selected" [name]="iconName"></ng-icon>
     <span [class.text-black]="selected">{{ label }}</span>
 </button>
