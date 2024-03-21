@@ -8,7 +8,7 @@ import { Feature } from "@core/interfaces/home/feature.interface";
 import { KeycloakService } from 'keycloak-angular';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router } from '@angular/router';
-import { RouterPaths } from "@core/enum/RouterPaths";
+import { RouterPaths } from "@core/enum/router-paths";
 
 @Component({
     selector: 'app-home',

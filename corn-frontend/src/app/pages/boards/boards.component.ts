@@ -14,8 +14,8 @@ import { UserinfoComponent } from '@pages/boards/userinfo/userinfo.component';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { RouterPaths } from '@core/enum/RouterPaths';
-import { BoardsPaths } from '@core/enum/BoardsPaths';
+import { RouterPaths } from '@core/enum/router-paths';
+import { BoardsPaths } from '@core/enum/boards-paths';
 
 @Component({
     selector: 'app-boards',

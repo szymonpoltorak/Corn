@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ColumnLayout } from './column_set.component';
+import { ColumnLayout } from './column-set.component';
 
 @Component({
     selector: 'columnset',

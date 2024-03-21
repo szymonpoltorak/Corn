@@ -1,4 +1,4 @@
-import { SliceDescriptorDataHolder } from "@core/interfaces/boards/board/slice/slice_descriptor_data_holder.interface";
+import { SliceDescriptorDataHolder } from "@interfaces/boards/board/slice/slice-descriptor-data-holder.interface";
 import { Task } from "@core/interfaces/boards/board/task.interface";
 
 export class SliceDescriptor<T> implements SliceDescriptorDataHolder {

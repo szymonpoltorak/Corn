@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { BoardsPaths } from '@core/enum/BoardsPaths';
-import { RouterPaths } from "@core/enum/RouterPaths";
+import { BoardsPaths } from '@core/enum/boards-paths';
+import { RouterPaths } from "@core/enum/router-paths";
 
 export const routes: Routes = [
     {

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
+import { BacklogItem } from "@interfaces/boards/backlog/backlog-item";
 import { environment } from "@environments/environment";
 import { ApiUrl } from "@core/enum/api-url";
-import { BacklogItemType } from "@core/enum/BacklogItemType";
-import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
+import { BacklogItemType } from "@core/enum/backlog-item-type";
+import { BacklogItemList } from "@interfaces/boards/backlog/backlog-item-list";
 
 @Injectable({
     providedIn: 'root'

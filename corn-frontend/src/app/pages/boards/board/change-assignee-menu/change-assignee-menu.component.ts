@@ -18,7 +18,7 @@ import { Task } from '@core/interfaces/boards/board/task.interface';
         MatButtonModule,
         MatDividerModule,
     ],
-    templateUrl: './change_assignee_menu.component.html',
+    templateUrl: './change-assignee-menu.component.html',
 })
 export class ChangeAssigneeMenuComponent {
 

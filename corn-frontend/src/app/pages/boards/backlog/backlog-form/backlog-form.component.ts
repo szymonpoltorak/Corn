@@ -19,7 +19,7 @@ import {
     MatSelectChange,
     MatSelectTrigger
 } from "@angular/material/select";
-import { BacklogItemType } from "@core/enum/BacklogItemType";
+import { BacklogItemType } from "@core/enum/backlog-item-type";
 import { MatTooltip } from "@angular/material/tooltip";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { bootstrapBugFill } from "@ng-icons/bootstrap-icons";

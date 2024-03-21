@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { ChangeAssigneeMenuComponent } from '../change_assignee_menu/change_assignee_menu.component';
+import { ChangeAssigneeMenuComponent } from '@pages/boards/board/change-assignee-menu/change-assignee-menu.component';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 
 @Component({
@@ -10,7 +10,7 @@ import { Task } from '@core/interfaces/boards/board/task.interface';
         MatCardModule,
         ChangeAssigneeMenuComponent,
     ],
-    templateUrl: './task_card.component.html',
+    templateUrl: './task-card.component.html',
 })
 export class TaskCardComponent {
 

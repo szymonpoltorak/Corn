@@ -11,11 +11,11 @@ import {
     MatRowDef,
     MatTable,
 } from "@angular/material/table";
-import { BacklogItem } from '@interfaces/boards/backlog/backlog.item';
+import { BacklogItem } from '@interfaces/boards/backlog/backlog-item';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { matDelete, matTask } from "@ng-icons/material-icons/baseline";
-import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
-import { BacklogItemType } from "@core/enum/BacklogItemType";
+import { BacklogItemStatus } from "@core/enum/backlog-item-status";
+import { BacklogItemType } from "@core/enum/backlog-item-type";
 import { MatFormField, MatLabel, MatOption, MatSelect } from "@angular/material/select";
 import { NgClass, NgForOf } from "@angular/common";
 import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";

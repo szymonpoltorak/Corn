@@ -1,12 +1,12 @@
 import { Injectable, Input } from '@angular/core';
-import { SliceDescriptor } from './slice_descriptor';
+import { SliceDescriptor } from './slice-descriptor';
 import { BoardModelService } from '../model.service';
 import { Task } from '@core/interfaces/boards/board/task.interface';
-import { TaskGrouper } from '@core/types/board/boards/TaskGrouper';
-import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
-import { TaskChangedColumnEvent } from '@core/interfaces/boards/board/task_changed_column_event.interface';
-import { SliceInfo } from '@core/interfaces/boards/board/slice/slice_info.interface';
-import { TaskMovedByDnDEvent } from '@core/interfaces/boards/board/task_moved_by_dnd_event.interface';
+import { TaskGrouper } from '@core/types/board/boards/task-grouper';
+import { TaskChangedGroupEvent } from '@interfaces/boards/board/task-changed-group-event.interface';
+import { TaskChangedColumnEvent } from '@interfaces/boards/board/task-changed-column-event.interface';
+import { SliceInfo } from '@interfaces/boards/board/slice/slice-info.interface';
+import { TaskMovedByDnDEvent } from '@interfaces/boards/board/task-moved-by-dnd-event.interface';
 
 @Injectable()
 export class SlicesModelService<T> {

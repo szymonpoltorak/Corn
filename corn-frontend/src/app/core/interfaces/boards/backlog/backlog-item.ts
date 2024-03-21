@@ -1,5 +1,5 @@
-import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
-import { BacklogItemType } from "@core/enum/BacklogItemType";
+import { BacklogItemStatus } from "@core/enum/backlog-item-status";
+import { BacklogItemType } from "@core/enum/backlog-item-type";
 import { User } from "@interfaces/boards/user";
 
 export interface BacklogItem {
