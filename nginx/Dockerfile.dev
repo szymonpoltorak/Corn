@@ -1,7 +1,7 @@
 FROM nginx:1.25.3-alpine3.18
 
 COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./proxy_pass_corn_frontend.conf.template /etc/nginx/templates/proxy_pass_corn_frontend.conf.template
+COPY ./proxy-pass-corn-frontend.conf.template /etc/nginx/templates/proxy-pass-corn-frontend.conf.template
 
 EXPOSE 4200
 EXPOSE 8080
