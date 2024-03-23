@@ -6,8 +6,6 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.entities.user.User;
 
-import java.util.List;
-
 /**
  * Service for backlog items
  */
@@ -56,7 +54,7 @@ public interface BacklogItemService {
      * @param sprintId id of the sprint
      * @return response with the list of backlog items
      */
-    List<BacklogItemResponse> getBySprintId(long sprintId, User user);
+    BacklogItemResponseList getBySprintId(long sprintId, int pageNumber, String sortBy, String order, User user);
 
     /**
      * Get all backlog items by project id

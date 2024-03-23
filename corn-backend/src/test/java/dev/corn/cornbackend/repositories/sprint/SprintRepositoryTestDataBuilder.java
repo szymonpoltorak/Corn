@@ -22,12 +22,12 @@ public class SprintRepositoryTestDataBuilder {
         User nonProjectMember = createSampleUser(3L, "nonProjectMember");
         ProjectMember projectMemberMember = createSampleProjectMember(1L);
         Project project = createSampleProject(1L, "Project");
-        Sprint actualSprint = createSampleSprint(1L);
+        Sprint currentSprint = createSampleSprint(1L);
         Sprint finishedSprint = createSampleSprint(2L);
         Sprint futureSprint = createSampleSprint(3L);
 
-        actualSprint.setSprintStartDate(LocalDate.now().plusDays(3L));
-        actualSprint.setSprintEndDate(LocalDate.now().plusDays(4L));
+        currentSprint.setSprintStartDate(LocalDate.now().plusDays(3L));
+        currentSprint.setSprintEndDate(LocalDate.now().plusDays(4L));
 
         finishedSprint.setSprintStartDate(LocalDate.now().plusDays(1L));
         finishedSprint.setSprintEndDate(LocalDate.now().plusDays(2L));
@@ -43,11 +43,11 @@ public class SprintRepositoryTestDataBuilder {
 
         testEntityManager.merge(project);
 
-        actualSprint.setProject(project);
+        currentSprint.setProject(project);
         finishedSprint.setProject(project);
         futureSprint.setProject(project);
 
-        testEntityManager.merge(actualSprint);
+        testEntityManager.merge(currentSprint);
         testEntityManager.merge(finishedSprint);
         testEntityManager.merge(futureSprint);
 
@@ -61,7 +61,7 @@ public class SprintRepositoryTestDataBuilder {
                 .projectMember(projectMember)
                 .projectOwner(projectOwner)
                 .nonProjectMember(nonProjectMember)
-                .currentSprint(actualSprint)
+                .currentSprint(currentSprint)
                 .futureSprint(futureSprint)
                 .finishedSprint(finishedSprint)
                 .project(project)

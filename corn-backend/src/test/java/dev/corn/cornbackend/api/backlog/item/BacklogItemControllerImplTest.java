@@ -16,8 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -104,15 +102,18 @@ class BacklogItemControllerImplTest {
     final void test_getBySprintIdShouldReturnCorrectBacklogItemResponse() {
         //given
         long sprintId = 1L;
+        int pageNumber = 0;
+        String sortBy = "";
+        String orderBy = "";
 
         //when
-        when(backlogItemService.getBySprintId(sprintId, SAMPLE_USER))
-                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses());
+        when(backlogItemService.getBySprintId(sprintId, pageNumber, sortBy, orderBy, SAMPLE_USER))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList());
 
-        List<BacklogItemResponse> expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses();
+        BacklogItemResponseList expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList();
 
         //then
-        assertEquals(expected, backlogItemController.getBySprintId(sprintId, SAMPLE_USER),
+        assertEquals(expected, backlogItemController.getBySprintId(sprintId, pageNumber, sortBy, orderBy, SAMPLE_USER),
                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 

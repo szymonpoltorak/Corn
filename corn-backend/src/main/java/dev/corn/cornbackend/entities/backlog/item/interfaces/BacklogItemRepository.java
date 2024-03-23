@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,9 +22,10 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
      * Finds all BacklogItems associated with a Sprint
      *
      * @param sprint Sprint to find BacklogItems for
+     * @param pageable Pageable that pages and sorts the data
      * @return List of BacklogItems associated with the Sprint
      */
-    List<BacklogItem> getBySprint(Sprint sprint);
+    Page<BacklogItem> getBySprint(Sprint sprint, Pageable pageable);
 
     /**
      * Finds all BacklogItems associated with a Project

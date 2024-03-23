@@ -47,30 +47,34 @@ class SprintRepositoryTest {
     final void test_findAllByProjectIdShouldReturnSprintsWhenGivenUserIsOwnerOfProject() {
         //given
         User owner = TEST_DATA.projectOwner();
-        Pageable pageable = PageRequest.of(0, 1);
+        Pageable pageable = PageRequest.of(0, 3);
         long projectId = TEST_DATA.projectId();
 
         //when
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, owner, pageable);
 
         //then
-        assertEquals(1L, sprints.getTotalElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
+        assertEquals(3, sprints.getNumberOfElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
         assertTrue(sprints.getContent().contains(TEST_DATA.currentSprint()), SPRINT_EQUAL);
+        assertTrue(sprints.getContent().contains(TEST_DATA.futureSprint()), SPRINT_EQUAL);
+        assertTrue(sprints.getContent().contains(TEST_DATA.finishedSprint()), SPRINT_EQUAL);
     }
 
     @Test
-    final void test_findAllByProjectIdShouldReturnSpritnsWhenGivenUserIsMemberOfProject() {
+    final void test_findAllByProjectIdShouldReturnSprintsWhenGivenUserIsMemberOfProject() {
         //given
         User member = TEST_DATA.projectMember();
-        Pageable pageable = PageRequest.of(0, 1);
+        Pageable pageable = PageRequest.of(0, 3);
         long projectId = TEST_DATA.projectId();
 
         //when
         Page<Sprint> sprints = sprintRepository.findAllByProjectId(projectId, member, pageable);
 
         //then
-        assertEquals(1L, sprints.getTotalElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
+        assertEquals(3, sprints.getNumberOfElements(), PAGE_CORRECT_TOTAL_ELEMENTS);
         assertTrue(sprints.getContent().contains(TEST_DATA.currentSprint()), SPRINT_EQUAL);
+        assertTrue(sprints.getContent().contains(TEST_DATA.futureSprint()), SPRINT_EQUAL);
+        assertTrue(sprints.getContent().contains(TEST_DATA.finishedSprint()), SPRINT_EQUAL);
     }
 
     @Test

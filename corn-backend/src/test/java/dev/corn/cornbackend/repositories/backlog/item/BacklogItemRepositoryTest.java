@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,13 +84,14 @@ class BacklogItemRepositoryTest {
     final void test_getBySprintShouldReturnCorrectBacklogItems() {
         //given
         Sprint sprint = TEST_DATA.sprint();
+        PageRequest pageRequest = PageRequest.of(0, 1);
 
         //when
-        List<BacklogItem> backlogItems = backlogItemRepository.getBySprint(sprint);
+        Page<BacklogItem> backlogItems = backlogItemRepository.getBySprint(sprint, pageRequest);
 
         //then
-        assertEquals(1, backlogItems.size(), LIST_CORRECT_SIZE);
-        assertEquals(TEST_DATA.backlogItem(), backlogItems.get(0), BACKLOG_ITEM_EQUAL);
+        assertEquals(1, backlogItems.getTotalElements(), LIST_CORRECT_SIZE);
+        assertEquals(TEST_DATA.backlogItem(), backlogItems.toList().get(0), BACKLOG_ITEM_EQUAL);
     }
 
     @Test
