@@ -158,7 +158,6 @@ export class BacklogComponent implements AfterViewInit, OnDestroy {
 
     showItemForm(): void {
         const dialogRef = this.dialog.open(BacklogFormComponent, {
-            width: '500px',
             enterAnimationDuration: '300ms',
             exitAnimationDuration: '100ms',
         });
