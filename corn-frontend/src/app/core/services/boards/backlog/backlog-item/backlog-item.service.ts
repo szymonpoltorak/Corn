@@ -16,7 +16,7 @@ export class BacklogItemService {
     }
 
     getAllByProjectId(projectId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
-        return this.http.get<BacklogItemList>(`${ environment.httpBackend }${ ApiUrl.GET_BACKLOG_ITEMS_BY_PROJECT_ID }`, {
+        return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_BY_PROJECT_ID, {
             params: {
                 projectId: projectId,
                 pageNumber: pageNumber,
@@ -26,9 +26,20 @@ export class BacklogItemService {
         });
     }
 
+    getAllBySprintId(sprintId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
+        return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_BY_SPRINT_ID, {
+            params: {
+                sprintId: sprintId,
+                pageNumber: pageNumber,
+                sortBy: sortBy,
+                order: order
+            }
+        });
+    }
+
     createNewBacklogItem(title: string, description: string, projectMemberId: number, sprintId: number,
                          projectId: number, itemType: BacklogItemType): Observable<BacklogItem> {
-        return this.http.post<BacklogItem>(`${ ApiUrl.CREATE_BACKLOG_ITEM }`, {
+        return this.http.post<BacklogItem>(ApiUrl.CREATE_BACKLOG_ITEM, {
             title: title,
             description: description,
             projectMemberId: projectMemberId,
@@ -39,7 +50,7 @@ export class BacklogItemService {
     }
 
     updateBacklogItem(item: BacklogItem): Observable<BacklogItem> {
-        return this.http.put<BacklogItem>(`${ApiUrl.UPDATE_BACKLOG_ITEM}`, {
+        return this.http.put<BacklogItem>(ApiUrl.UPDATE_BACKLOG_ITEM, {
             title: item.title,
             description: item.description,
             projectMemberId: item.assignee.userId,
@@ -55,7 +66,7 @@ export class BacklogItemService {
     }
 
     deleteBacklogItem(item: BacklogItem): Observable<BacklogItem> {
-        return this.http.delete<BacklogItem>(`${ApiUrl.DELETE_BACKLOG_ITEM}`, {
+        return this.http.delete<BacklogItem>(ApiUrl.DELETE_BACKLOG_ITEM, {
             params: {
                 id: item.backlogItemId
             }
