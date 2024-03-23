@@ -62,23 +62,39 @@
                             <mat-select-trigger>
                                 @switch (currentType) {
                                     @case (BacklogItemType.BUG) {
-                                        <div class="bg-red-600 h-8 w-8 rounded-full flex justify-center items-center">
-                                            <ng-icon name="bootstrapBugFill"></ng-icon>
+                                        <div class="flex flex-row items-center space-x-2">
+                                            <div class="bg-red-600 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="bootstrapBugFill"></ng-icon>
+                                            </div>
+
+                                            <h3>Bug</h3>
                                         </div>
                                     }
                                     @case (BacklogItemType.STORY) {
-                                        <div class="bg-blue-800 h-8 w-8 rounded-full flex justify-center items-center">
-                                            <ng-icon name="featherBook"></ng-icon>
+                                        <div class="flex flex-row items-center space-x-2">
+                                            <div class="bg-blue-800 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="featherBook"></ng-icon>
+                                            </div>
+
+                                            <h3>Story</h3>
                                         </div>
                                     }
                                     @case (BacklogItemType.TASK) {
-                                        <div class="bg-green-600 h-8 w-8 rounded-full flex justify-center items-center">
-                                            <ng-icon name="matTask"></ng-icon>
+                                        <div class="flex flex-row items-center space-x-2">
+                                            <div class="bg-green-600 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="matTask"></ng-icon>
+                                            </div>
+
+                                            <h3>Task</h3>
                                         </div>
                                     }
                                     @case (BacklogItemType.EPIC) {
-                                        <div class="bg-purple-900 h-8 w-8 rounded-full flex justify-center items-center">
-                                            <ng-icon name="octContainer"></ng-icon>
+                                        <div class="flex flex-row items-center space-x-2">
+                                            <div class="bg-purple-900 h-8 w-8 rounded-full flex justify-center items-center">
+                                                <ng-icon name="octContainer"></ng-icon>
+                                            </div>
+
+                                            <h3>Epic</h3>
                                         </div>
                                     }
                                 }
@@ -92,6 +108,7 @@
                                                 <div class="bg-red-600 h-8 w-8 rounded-full flex justify-center items-center">
                                                     <ng-icon name="bootstrapBugFill"></ng-icon>
                                                 </div>
+
                                                 <h3>Bug</h3>
                                             </div>
                                         }
@@ -100,6 +117,7 @@
                                                 <div class="bg-blue-800 h-8 w-8 rounded-full flex justify-center items-center">
                                                     <ng-icon name="featherBook"></ng-icon>
                                                 </div>
+
                                                 <h3>Story</h3>
                                             </div>
                                         }
@@ -108,6 +126,7 @@
                                                 <div class="bg-green-600 h-8 w-8 rounded-full flex justify-center items-center">
                                                     <ng-icon name="matTask"></ng-icon>
                                                 </div>
+
                                                 <h3>Task</h3>
                                             </div>
                                         }
@@ -116,6 +135,7 @@
                                                 <div class="bg-purple-900 h-8 w-8 rounded-full flex justify-center items-center">
                                                     <ng-icon name="octContainer"></ng-icon>
                                                 </div>
+
                                                 <h3>Epic</h3>
                                             </div>
                                         }
