@@ -37,6 +37,17 @@ export class BacklogItemService {
         });
     }
 
+    getAllWithoutSprint(projectId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
+        return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_WITHOUT_SPRINT, {
+            params: {
+                projectId: projectId,
+                pageNumber: pageNumber,
+                sortBy: sortBy,
+                order: order
+            }
+        });
+    }
+
     createNewBacklogItem(title: string, description: string, projectMemberId: number, sprintId: number,
                          projectId: number, itemType: BacklogItemType): Observable<BacklogItem> {
         return this.http.post<BacklogItem>(ApiUrl.CREATE_BACKLOG_ITEM, {
@@ -53,7 +64,7 @@ export class BacklogItemService {
         return this.http.put<BacklogItem>(ApiUrl.UPDATE_BACKLOG_ITEM, {
             title: item.title,
             description: item.description,
-            projectMemberId: item.assignee.userId,
+            projectMemberId: item.assignee ? item.assignee.userId : -1,
             sprintId: item.sprintId,
             projectId: item.projectId,
             itemType: item.itemType.toString(),

@@ -281,6 +281,4 @@ public class PlaceholderData implements CommandLineRunner {
             {"Upgrade CAPTCHA Security", "Enhance CAPTCHA security to prevent spam and abuse."},
             {"Implement Continuous Integration", "Introduce continuous integration for automated code testing and deployment."},
     };
-
-
 }

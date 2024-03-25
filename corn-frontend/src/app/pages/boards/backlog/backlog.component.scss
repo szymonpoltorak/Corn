@@ -105,3 +105,7 @@ mat-select {
   width: 2.5em;
   height: 2.5em;
 }
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

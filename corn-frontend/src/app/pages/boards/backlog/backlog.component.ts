@@ -40,11 +40,14 @@ export class BacklogComponent implements OnInit {
     }
 
     sprints: Sprint[] = [];
+    sprintIds: string[] = [];
 
     ngOnInit(): void {
         //TODO get real projectId from somewhere
         this.sprintService.getCurrentAndFutureSprints(1).pipe(take(1)).subscribe((sprints) => {
             this.sprints = sprints;
+            this.sprintIds = sprints.map(sprint => sprint.sprintId.toString());
+            this.sprintIds.push('-1')
         })
     }
 
@@ -69,15 +72,15 @@ export class BacklogComponent implements OnInit {
                 1,  //TODO get real projectId from somewhere
                 result.type
             ).pipe(take(1)).subscribe((newItem) => {
-                for(let backlogItemTableComponent of this.backlogItemTableComponents.toArray()) {
-                    if(!backlogItemTableComponent) {
-                        continue;
-                    }
-                    if(backlogItemTableComponent.sprintId === newItem.sprintId) {
-                        backlogItemTableComponent.fetchBacklogItems();
-                    }
+                const table: BacklogItemTableComponent | undefined = this.findBacklogItemTableById(newItem.sprintId.toString());
+                if(table) {
+                    table.fetchBacklogItems();
                 }
             })
         })
+    }
+
+    findBacklogItemTableById(id: string): BacklogItemTableComponent | undefined {
+        return this.backlogItemTableComponents.find(table => table.sprintId.toString() === id);
     }
 }

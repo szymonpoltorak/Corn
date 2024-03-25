@@ -223,10 +223,14 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         Project project = projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
+        ProjectMember assignee = null;
 
-        ProjectMember assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
-                .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
+        if(backlogItemRequest.projectMemberId() != -1L) {
+            log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
+
+            assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
+                    .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
+        }
 
         Sprint sprint = null;
 

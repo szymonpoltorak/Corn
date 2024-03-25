@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import {
@@ -13,7 +13,7 @@ import {
 import { MatOption, MatSelect } from "@angular/material/select";
 import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
 import { MatPaginator } from "@angular/material/paginator";
-import { catchError, merge, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
+import { catchError, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
 import { NgClass } from "@angular/common";
 import { map } from "rxjs/operators";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
@@ -26,6 +26,17 @@ import { octContainer } from "@ng-icons/octicons";
 import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";
 import { MatFabButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
+import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
+import {
+    CdkDrag,
+    CdkDragDrop,
+    CdkDragPreview,
+    CdkDropList,
+    moveItemInArray,
+    transferArrayItem
+} from "@angular/cdk/drag-drop";
+import { MatTab } from "@angular/material/tabs";
+import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -50,18 +61,23 @@ import { MatTooltip } from "@angular/material/tooltip";
         MatRow,
         MatHeaderRowDef,
         MatRowDef,
-        MatSortHeader
+        MatSortHeader,
+        CdkDropList,
+        CdkDrag,
+        CdkDragPreview
     ],
     templateUrl: './backlog-item-table.component.html',
     styleUrl: './backlog-item-table.component.scss',
     providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer, matDelete })],
 })
-export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
+export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
 
-    constructor(private backlogItemService: BacklogItemService) {
+    constructor(private backlogItemService: BacklogItemService,
+                private backlogComponent: BacklogComponent) {
     }
 
     @Input() sprintId: number = 0;
+    @Input() sprintIds: string[] = [];
 
     dataToDisplay: BacklogItem[] = [];
 
@@ -70,6 +86,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
 
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatTable) table!: MatTable<BacklogItem>;
 
     destroy$: Subject<void> = new Subject();
 
@@ -113,12 +130,18 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     fetchBacklogItems(): void {
         this.isLoading = true;
         let active: string = this.sort.active === 'type' ? 'itemType' : this.sort.active;
-        this.backlogItemService.getAllBySprintId(
-            this.sprintId,
-            this.paginator.pageIndex,
-            active,
-            this.sort.direction.toUpperCase())
-            .pipe(
+
+        let source: Observable<BacklogItemList>;
+
+        if(this.sprintId === -1) {
+            //TODO get real projectId from somewhere
+            source = this.backlogItemService.getAllWithoutSprint(1, this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
+        } else {
+            source = this.backlogItemService.getAllBySprintId(this.sprintId, this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
+        }
+
+
+        source.pipe(
                 catchError(() => of(null)),
                 map(data => {
                     this.isLoading = false;
@@ -133,13 +156,31 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
                 takeUntil(this.destroy$)
             ).subscribe(data => {
             this.dataToDisplay = data;
+
         })
     }
 
-    updateStatus(item: BacklogItem): void {
+    updateBacklogItem(item: BacklogItem): void {
         this.backlogItemService.updateBacklogItem(item).pipe(take(1)).subscribe((newItem) => {
             this.dataToDisplay[this.dataToDisplay.indexOf(item)] = newItem;
         })
+    }
+
+    drop(event: CdkDragDrop<BacklogItem[]>) {
+
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+
+            const previousTable = this.backlogComponent.findBacklogItemTableById(event.previousContainer.id);
+            if(previousTable) {
+                previousTable.table.renderRows();
+            }
+        }
+        event.container.data[event.currentIndex].sprintId = this.sprintId;
+        this.updateBacklogItem(event.container.data[event.currentIndex]);
+        this.table.renderRows();
     }
 
     ngOnDestroy(): void {
