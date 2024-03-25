@@ -230,11 +230,6 @@ class BacklogItemTest {
                 "Should return null status violation");
         assertTrue(validateField(
                         backlogItem,
-                        BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
-                        BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_NULL_MSG),
-                "Should return null assignee violation");
-        assertTrue(validateField(
-                        backlogItem,
                         BacklogItemConstants.BACKLOG_ITEM_PROJECT_FIELD_NAME,
                         BacklogItemConstants.BACKLOG_ITEM_PROJECT_NULL_MSG),
                 "Should return null project violation");

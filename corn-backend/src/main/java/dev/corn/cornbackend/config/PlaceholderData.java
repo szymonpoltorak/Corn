@@ -120,6 +120,18 @@ public class PlaceholderData implements CommandLineRunner {
                 ), commenter);
             }
         }
+
+        Arrays.stream(SAMPLE_BACKLOG_ITEMS_WITHOUT_SPRINT)
+                .map(item -> new BacklogItem(0,
+                        item[0], item[1],
+                        ItemStatus.TODO,
+                        null,
+                        Collections.emptyList(),
+                        null,
+                        null,
+                        project,
+                        drawRandom(typesPool)))
+                .forEach(backlogItemRepository::save);
     }
 
     private <T> T drawRandom(List<T> list) {
@@ -213,5 +225,62 @@ public class PlaceholderData implements CommandLineRunner {
             "Login module bug fix success metrics reviewed. Positive impact noted.",
             "Database access refactor success metrics written."
     );
+
+    private final String[][] SAMPLE_BACKLOG_ITEMS_WITHOUT_SPRINT = {
+            {"Implement Feature Z", "Develop and integrate Feature Z to improve application functionality."},
+            {"Resolve Performance Bottlenecks", "Identify and address performance bottlenecks to enhance application speed."},
+            {"Refactor Legacy Codebase", "Restructure legacy codebase to improve maintainability and readability."},
+            {"Design New Landing Page", "Create a captivating landing page to attract more visitors to the application."},
+            {"Implement Offline Mode", "Develop offline mode functionality to allow users to access key features without internet connectivity."},
+            {"Enhance Data Visualization Tools", "Upgrade data visualization tools to provide more insights to users."},
+            {"Upgrade Hosting Infrastructure", "Migrate to a more robust hosting infrastructure for better reliability."},
+            {"Create Interactive User Guides", "Develop interactive user guides to assist users in navigating the application."},
+            {"Implement Real-Time Collaboration", "Introduce real-time collaboration features for enhanced teamwork."},
+            {"Optimize Frontend Performance", "Optimize frontend performance to reduce load times and improve user experience."},
+            {"Integrate Voice Search", "Incorporate voice search functionality for hands-free navigation."},
+            {"Enhance Data Security Measures", "Implement additional security measures to protect user data from threats."},
+            {"Upgrade User Feedback Mechanism", "Enhance the system for collecting and analyzing user feedback."},
+            {"Implement AI-driven Recommendations", "Integrate AI algorithms to provide personalized recommendations to users."},
+            {"Optimize Database Schema", "Optimize database schema for improved data organization and retrieval."},
+            {"Enhance Mobile App Navigation", "Improve mobile app navigation for easier access to features."},
+            {"Implement Cross-Platform Syncing", "Enable syncing of data across different platforms used by the same user."},
+            {"Upgrade Email Notification Templates", "Revise and update email notification templates for better communication."},
+            {"Create Interactive User Polls", "Set up interactive user polls to gather opinions and preferences."},
+            {"Implement Progressive Image Loading", "Load images progressively to improve page loading times."},
+            {"Enhance Content Filtering Options", "Expand content filtering options to provide more tailored results to users."},
+            {"Integrate Machine Learning Algorithms", "Incorporate machine learning algorithms for predictive analytics."},
+            {"Optimize Database Replication", "Optimize database replication for improved data redundancy and availability."},
+            {"Implement Smart Search Suggestions", "Provide smart search suggestions to assist users in finding relevant content."},
+            {"Upgrade API Rate Limiting", "Enhance API rate limiting mechanisms to prevent abuse and ensure fair usage."},
+            {"Create User Engagement Analytics", "Track user engagement metrics to understand user behavior."},
+            {"Implement Customizable Themes", "Allow users to customize application themes according to their preferences."},
+            {"Enhance Data Import/Export Tools", "Improve tools for importing and exporting data to and from the application."},
+            {"Integrate Automated Data Cleansing", "Automate data cleansing processes to ensure data accuracy."},
+            {"Upgrade Content Recommendation Engine", "Enhance the content recommendation engine for better accuracy and relevance."},
+            {"Optimize SQL Queries", "Optimize SQL queries for faster database retrieval."},
+            {"Enhance User Feedback Mechanism", "Improve the system for collecting and processing user feedback."},
+            {"Implement Browser Push Notifications", "Enable browser-based push notifications for desktop users."},
+            {"Upgrade Firewall Security", "Enhance firewall security to protect against cyber threats."},
+            {"Create Community Forums", "Establish community forums for users to interact and share experiences."},
+            {"Integrate Voice Recognition", "Incorporate voice recognition for hands-free interaction."},
+            {"Improve Mobile App Accessibility", "Enhance accessibility features for the mobile app version."},
+            {"Implement Social Login", "Allow users to log in using their social media accounts."},
+            {"Upgrade Data Storage Solution", "Upgrade data storage solution for increased reliability and scalability."},
+            {"Create Interactive Onboarding Process", "Develop an interactive onboarding process for new users."},
+            {"Implement Augmented Reality Features", "Introduce augmented reality features for immersive experiences."},
+            {"Upgrade CDN for Content Delivery", "Upgrade content delivery network for faster content distribution."},
+            {"Enhance Error Reporting", "Improve error reporting mechanisms for faster issue resolution."},
+            {"Implement User Rewards System", "Create a rewards system to incentivize user engagement."},
+            {"Upgrade Cross-Platform Compatibility", "Ensure compatibility across various operating systems and devices."},
+            {"Optimize Mobile App UI", "Optimize the user interface for better usability on mobile devices."},
+            {"Implement Data Anonymization", "Anonymize user data to enhance privacy protection."},
+            {"Upgrade API Documentation", "Improve documentation for developers integrating with the application's API."},
+            {"Create Knowledge Base", "Establish a knowledge base for users to find answers to common questions."},
+            {"Implement Load Balancing", "Introduce load balancing for better distribution of server resources."},
+            {"Enhance Email Marketing Tools", "Improve tools for managing and analyzing email marketing campaigns."},
+            {"Upgrade CAPTCHA Security", "Enhance CAPTCHA security to prevent spam and abuse."},
+            {"Implement Continuous Integration", "Introduce continuous integration for automated code testing and deployment."},
+    };
+
 
 }
