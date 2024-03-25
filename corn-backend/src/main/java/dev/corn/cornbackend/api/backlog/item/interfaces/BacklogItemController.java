@@ -48,19 +48,24 @@ public interface BacklogItemController {
     BacklogItemResponse create(BacklogItemRequest backlogItemRequest, User user);
 
     /**
-     * Get backlog items by sprint id on given page
+     * Get backlog items by sprint id on given page and sort by given field in given order
      *
      * @param sprintId id of the sprint
+     * @param pageNumber number of page
+     * @param sortBy name of field to sort backlog items by
+     * @param order order of sort ("ASC" or "DESC")
      * @param user     user to get the backlog items for
      * @return the backlog items
      */
     BacklogItemResponseList getBySprintId(long sprintId, int pageNumber, String sortBy, String order, User user);
 
     /**
-     * Get backlog items by project id
+     * Get backlog items by project id on given page and sort by given field in given order
      *
      * @param projectId id of the project
      * @param pageNumber number of page
+     * @param sortBy name of field to sort backlog items by
+     * @param order order of sort ("ASC" or "DESC")
      * @param user      user to get the backlog items for
      * @return the backlog items
      */
@@ -74,4 +79,16 @@ public interface BacklogItemController {
      * @return the backlog item details
      */
     BacklogItemDetails getDetailsById(long id, User user);
+
+    /**
+     * Get all backlog items that aren't assigned to any sprint
+     * @param projectId id of the project
+     * @param pageNumber number of page
+     * @param sortBy name of field to sort backlog items by
+     * @param order order of sort ("ASC" or "DESC")
+     * @param user      user to get the backlog items for
+     * @return the backlog items
+     */
+
+    BacklogItemResponseList getAllWithoutSprint(long projectId, int pageNumber, String sortBy, String order, User user);
 }

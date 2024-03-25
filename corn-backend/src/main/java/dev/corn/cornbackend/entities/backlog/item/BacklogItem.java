@@ -70,7 +70,6 @@ public class BacklogItem implements Jsonable {
     private ProjectMember assignee;
 
     @ManyToOne
-    @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_SPRINT_NULL_MSG)
     private Sprint sprint;
 
     @ManyToOne

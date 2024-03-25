@@ -45,4 +45,12 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
      */
     @Query("SELECT b FROM BacklogItem b JOIN b.project p WHERE b.backlogItemId = :id AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm WHERE pm.project = p))")
     Optional<BacklogItem> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
+
+    /**
+     * Finds all BacklogItems for given project that aren't assigned to any sprint
+     * @param project Project to find BacklogItems for
+     * @param pageable Pageable that pages and sorts the data
+     * @return List of BacklogItems associated with the Project
+     */
+    Page<BacklogItem> findByProjectAndSprintIsNull(Project project, Pageable pageable);
 }

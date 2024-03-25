@@ -102,8 +102,24 @@ class BacklogItemRepositoryTest {
 
         //when
         Page<BacklogItem> backlogItems = backlogItemRepository.getByProject(project, pageRequest);
+
         //then
-        assertEquals(1L, backlogItems.getTotalElements(), LIST_CORRECT_SIZE);
+        assertEquals(1, backlogItems.getNumberOfElements(), LIST_CORRECT_SIZE);
         assertEquals(TEST_DATA.backlogItem(), backlogItems.toList().get(0), BACKLOG_ITEM_EQUAL);
+    }
+
+    @Test
+    final void test_findByProjectAndSprintIsNullShouldReturnCorrectBacklogItems() {
+        //given
+        Project project = TEST_DATA.project();
+        PageRequest pageRequest = PageRequest.of(0, 1);
+
+        //when
+        Page<BacklogItem> backlogItems = backlogItemRepository.findByProjectAndSprintIsNull(project, pageRequest);
+
+        //then
+        assertEquals(1, backlogItems.getNumberOfElements(), LIST_CORRECT_SIZE);
+        assertEquals(TEST_DATA.backlogItemWithoutSprint(), backlogItems.toList().get(0), BACKLOG_ITEM_EQUAL);
+
     }
 }

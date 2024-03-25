@@ -63,11 +63,11 @@ public class BacklogItemCommentRepositoryTestDataBuilder {
         testEntityManager.merge(comment);
 
         return BacklogItemCommentRepositoryTestData.builder()
-                .owner(testEntityManager.find(User.class, owner.getUserId()))
-                .commentOwner(testEntityManager.find(User.class, commentOwner.getUserId()))
-                .nonCommentOwner(testEntityManager.find(User.class, nonCommentOwner.getUserId()))
-                .nonProjectMember(testEntityManager.find(User.class, nonProjectMember.getUserId()))
-                .comment(testEntityManager.find(BacklogItemComment.class, comment.getBacklogItemCommentId()))
+                .owner(owner)
+                .commentOwner(commentOwner)
+                .nonCommentOwner(nonCommentOwner)
+                .nonProjectMember(nonProjectMember)
+                .comment(comment)
                 .build();
     }
 }

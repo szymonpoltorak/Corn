@@ -73,4 +73,6 @@ public interface BacklogItemService {
      * @return response with the backlog item details
      */
     BacklogItemDetails getDetailsById(long id, User user);
+
+    BacklogItemResponseList getAllWithoutSprint(long projectId, int pageNumber, String sortBy, String order, User user);
 }

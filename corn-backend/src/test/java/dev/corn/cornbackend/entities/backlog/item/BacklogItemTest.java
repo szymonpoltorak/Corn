@@ -218,7 +218,6 @@ class BacklogItemTest {
         BacklogItem backlogItem = new BacklogItem();
         backlogItem.setStatus(null);
         backlogItem.setAssignee(null);
-        backlogItem.setSprint(null);
         backlogItem.setProject(null);
 
         // when
@@ -234,11 +233,6 @@ class BacklogItemTest {
                         BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
                         BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_NULL_MSG),
                 "Should return null assignee violation");
-        assertTrue(validateField(
-                        backlogItem,
-                        BacklogItemConstants.BACKLOG_ITEM_SPRINT_FIELD_NAME,
-                        BacklogItemConstants.BACKLOG_ITEM_SPRINT_NULL_MSG),
-                "Should return null sprint violation");
         assertTrue(validateField(
                         backlogItem,
                         BacklogItemConstants.BACKLOG_ITEM_PROJECT_FIELD_NAME,

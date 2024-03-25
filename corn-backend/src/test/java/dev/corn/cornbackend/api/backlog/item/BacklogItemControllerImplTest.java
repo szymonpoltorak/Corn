@@ -152,6 +152,23 @@ class BacklogItemControllerImplTest {
                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 
+    @Test
+    final void test_getAllWithoutSprintShouldReturnCorrectBacklogItemResponse() {
+        //given
+        long projectId = 1L;
+        int pageNumber = 0;
+        String sortBy = "";
+        String orderBy = "";
 
+        //when
+        when(backlogItemService.getAllWithoutSprint(projectId, pageNumber, sortBy, orderBy, SAMPLE_USER))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList());
+
+        BacklogItemResponseList expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList();
+
+        //then
+        assertEquals(expected, backlogItemController.getAllWithoutSprint(projectId, pageNumber, sortBy, orderBy, SAMPLE_USER),
+                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+    }
 
 }
