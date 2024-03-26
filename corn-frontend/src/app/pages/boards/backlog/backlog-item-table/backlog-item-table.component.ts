@@ -29,7 +29,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
 import {
     CdkDrag,
-    CdkDragDrop,
+    CdkDragDrop, CdkDragPlaceholder,
     CdkDragPreview,
     CdkDropList,
     moveItemInArray,
@@ -37,6 +37,9 @@ import {
 } from "@angular/cdk/drag-drop";
 import { MatTab } from "@angular/material/tabs";
 import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
+import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
+import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
+import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -64,7 +67,11 @@ import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
         MatSortHeader,
         CdkDropList,
         CdkDrag,
-        CdkDragPreview
+        CdkDragPreview,
+        StatusSelectComponent,
+        BacklogTypeComponent,
+        BacklogDragComponent,
+        CdkDragPlaceholder
     ],
     templateUrl: './backlog-item-table.component.html',
     styleUrl: './backlog-item-table.component.scss',
@@ -93,16 +100,6 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
     resultsLength: number = 0;
     hoveredRow: BacklogItem | null = null;
     isLoading: boolean = true;
-
-    statuses: BacklogItemStatus[] = [
-        BacklogItemStatus.TODO,
-        BacklogItemStatus.IN_PROGRESS,
-        BacklogItemStatus.DONE
-    ];
-
-    getStatusClass(status: BacklogItemStatus): string {
-        return status.replace(' ', '_');
-    }
 
     deleteItem(item: BacklogItem): void {
         this.backlogItemService.deleteBacklogItem(item).pipe(take(1)).subscribe((deletedItem: BacklogItem) => {
@@ -177,9 +174,10 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
             if(previousTable) {
                 previousTable.table.renderRows();
             }
+            event.container.data[event.currentIndex].sprintId = this.sprintId;
+            this.updateBacklogItem(event.container.data[event.currentIndex]);
         }
-        event.container.data[event.currentIndex].sprintId = this.sprintId;
-        this.updateBacklogItem(event.container.data[event.currentIndex]);
+
         this.table.renderRows();
     }
 

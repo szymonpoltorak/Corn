@@ -1,22 +1,23 @@
 <mat-accordion multi>
-    <mat-expansion-panel *ngFor="let sprint of sprints; let i = index">
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                {{sprint.sprintName}}
-            </mat-panel-title>
-            <mat-panel-description>
-                {{sprint.sprintStartDate}} - {{sprint.sprintEndDate}}
-            </mat-panel-description>
-        </mat-expansion-panel-header>
-        <app-backlog-item-table [sprintId]="sprint.sprintId" [sprintIds]="sprintIds"></app-backlog-item-table>
-    </mat-expansion-panel>
+    @for (sprint of sprints; track sprint.sprintId) {
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{sprint.sprintName}}
+                </mat-panel-title>
+                <mat-panel-description>
+                    {{sprint.sprintStartDate}} - {{sprint.sprintEndDate}}
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <app-backlog-item-table [sprintId]="sprint.sprintId" [sprintIds]="sprintIds"></app-backlog-item-table>
+        </mat-expansion-panel>
+    }
+
 </mat-accordion>
 
 <div style="margin-top: 3em;">
     <app-backlog-item-table [sprintId]="-1" [sprintIds]="sprintIds"></app-backlog-item-table>
 </div>
-
-
 
 <button style="margin-left: 0.1em; margin-top: 0.5em; height: 2em; font-weight: 550;" mat-raised-button
         color="primary" (click)="showItemForm()">Add Backlog Item
