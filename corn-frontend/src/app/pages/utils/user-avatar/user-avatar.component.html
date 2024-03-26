@@ -1,14 +1,19 @@
-@if (user !== undefined) {
-    <div class="avatar">
-        <h2 matTooltip="{{user.name}} {{user.surname}}">
+@if (user) {
+    <div matTooltip="{{user?.name}} {{user?.surname}}" class="avatar">
+        <h2>
             {{getInitials()}}
         </h2>
     </div>
+}  @else if (isEmpty) {
+    <div matTooltip="Empty" class="avatar" style="background-color: #10485DFF;">
+        <ng-icon name="heroUser"></ng-icon>
+    </div>
 } @else {
-    <div class="avatar" style="background-color: #10485DFF;">
-        <h2 matTooltip="Users left: {{usersLeft}}">
+    <div matTooltip="Users left: {{usersLeft}}" class="avatar" style="background-color: #10485DFF;">
+        <h2>
             {{getInitials()}}
         </h2>
     </div>
 }
+
 

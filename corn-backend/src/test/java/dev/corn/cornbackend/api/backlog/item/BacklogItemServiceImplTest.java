@@ -38,10 +38,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
 import java.util.Optional;
 
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM_PAGE_SIZE;
+import static dev.corn.cornbackend.entities.backlog.item.constants.BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_FIELD_NAME;
+import static dev.corn.cornbackend.entities.project.member.constants.ProjectMemberConstants.PROJECT_MEMBER_USER_FIELD_NAME;
+import static dev.corn.cornbackend.entities.user.constants.UserConstants.USER_NAME_FIELD_NAME;
+import static dev.corn.cornbackend.entities.user.constants.UserConstants.USER_SURNAME_FIELD_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -380,13 +383,17 @@ class BacklogItemServiceImplTest {
     final void getBySprintId_shouldReturnCorrectBacklogItemListResponseOnCorrectId() {
         //given
         long id = 1L;
+        int pageNumber = 0;
+        String sortBy = "status";
+        String order = "ASC";
+        Pageable pageable = PageRequest.of(pageNumber, 30, Sort.Direction.ASC, sortBy);
 
         //when
         when(sprintRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(ENTITY_DATA.sprint()));
 
-        when(backlogItemRepository.getBySprint(ENTITY_DATA.sprint()))
-                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems());
+        when(backlogItemRepository.getBySprint(ENTITY_DATA.sprint(), pageable))
+                .thenReturn(new PageImpl<>(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems()));
 
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(0)))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(0));
@@ -394,10 +401,40 @@ class BacklogItemServiceImplTest {
         when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(1)))
                 .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(1));
 
-        List<BacklogItemResponse> expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses();
+        BacklogItemResponseList expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList();
 
         //then
-        assertEquals(expected, backlogItemServiceImpl.getBySprintId(id, SAMPLE_USER),
+        assertEquals(expected, backlogItemServiceImpl.getBySprintId(id, pageNumber, sortBy, order, SAMPLE_USER),
+                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"abab"})
+    final void getBySprintId_shouldCallDatabaseWithDefaultValuesAndReturnCorrectBacklogItemsWhenGivenSortByOrOrderIsNullOrIncorrect(String value) {
+        //given
+        long id = 1L;
+        int pageNumber = 0;
+        Pageable pageable = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE,
+                Sort.by(Sort.DEFAULT_DIRECTION, BacklogItemSortBy.of(value).getValue()));
+
+        //when
+        when(sprintRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
+
+        when(backlogItemRepository.getBySprint(ENTITY_DATA.sprint(), pageable))
+                .thenReturn(new PageImpl<>(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems()));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(0)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(0));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(1)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(1));
+
+        BacklogItemResponseList expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList();
+
+        //then
+        assertEquals(expected, backlogItemServiceImpl.getBySprintId(id, pageNumber, value, value, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
     }
 
@@ -405,14 +442,32 @@ class BacklogItemServiceImplTest {
     final void getBySprintId_shouldThrowSprintNotFoundExceptionOnIncorrectId() {
         //given
         long id = -1L;
+        int pageNumber = 0;
+        String sortBy = "status";
+        String order = "ASC";
 
         //when
         when(sprintRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.empty());
 
         //then
-        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.getBySprintId(id, SAMPLE_USER),
+        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.getBySprintId(id,
+                        pageNumber, sortBy, order, SAMPLE_USER),
                 String.format(SHOULD_THROW, SprintNotFoundException.class.getSimpleName()));
+    }
+
+    @Test
+    final void getBySprintId_shouldThrowExceptionWhenGivenPageNumberIsNegative() {
+        //given
+        long id = 1L;
+        int pageNumber = -1;
+        String sortBy = "status";
+        String order = "ASC";
+
+        //then
+        assertThrows(WrongPageNumberException.class, () -> backlogItemServiceImpl.getBySprintId(
+                        id, pageNumber, sortBy, order, SAMPLE_USER),
+                String.format(SHOULD_THROW, WrongPageNumberException.class.getSimpleName()));
     }
 
     @Test
@@ -449,8 +504,8 @@ class BacklogItemServiceImplTest {
         //given
         long id = -1L;
         int pageNumber = 0;
-        String sortBy = "";
-        String order = "";
+        String sortBy = "status";
+        String order = "ASC";
 
         //when
         when(projectRepository.findByIdWithProjectMember(id, SAMPLE_USER))
@@ -467,8 +522,8 @@ class BacklogItemServiceImplTest {
         //given
         long id = 1L;
         int pageNumber = -1;
-        String sortBy = "";
-        String order = "";
+        String sortBy = "status";
+        String order = "ASC";
 
         //then
         assertThrows(WrongPageNumberException.class, () -> backlogItemServiceImpl.getByProjectId(
@@ -538,5 +593,107 @@ class BacklogItemServiceImplTest {
         assertThrows(BacklogItemNotFoundException.class, () -> backlogItemServiceImpl.getDetailsById(id, SAMPLE_USER),
                 String.format(SHOULD_THROW, BacklogItemNotFoundException.class.getSimpleName()));
     }
+
+    @Test
+    final void getAllWithoutSprint_shouldReturnCorrectBacklogItemListResponseOnCorrectId() {
+        //given
+        long id = 1L;
+        int pageNumber = 0;
+        String sortBy = "assignee";
+        String order = "DESC";
+        Pageable pageable = PageRequest.of(pageNumber, 30, Sort.by(
+                new Sort.Order(Sort.Direction.DESC, String.format("%s.%s.%s",
+                        BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
+                        PROJECT_MEMBER_USER_FIELD_NAME,
+                        USER_SURNAME_FIELD_NAME)),
+                new Sort.Order(Sort.Direction.DESC, String.format("%s.%s.%s",
+                        BACKLOG_ITEM_ASSIGNEE_FIELD_NAME,
+                        PROJECT_MEMBER_USER_FIELD_NAME,
+                        USER_NAME_FIELD_NAME))
+                ));
+
+        //when
+        when(projectRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(backlogItemRepository.findByProjectAndSprintIsNull(ENTITY_DATA.project(), pageable))
+                .thenReturn(new PageImpl<>(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems()));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(0)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(0));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(1)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(1));
+
+        BacklogItemResponseList expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList();
+
+        //then
+        assertEquals(expected, backlogItemServiceImpl.getAllWithoutSprint(id, pageNumber, sortBy, order, SAMPLE_USER),
+                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
+    }
+
+    @Test
+    final void getAllWithoutSprint_shouldThrowProjectNotFoundExceptionOnIncorrectId() {
+        //given
+        long id = -1L;
+        int pageNumber = 0;
+        String sortBy = "status";
+        String order = "ASC";
+
+        //when
+        when(projectRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.empty());
+
+        //then
+        assertThrows(ProjectDoesNotExistException.class, () -> backlogItemServiceImpl.getAllWithoutSprint(id, pageNumber,
+                        sortBy, order, SAMPLE_USER),
+                String.format(SHOULD_THROW, ProjectDoesNotExistException.class.getSimpleName()));
+    }
+
+    @Test
+    final void getAllWithoutSprint_shouldThrowExceptionWhenGivenPageNumberIsNegative() {
+        //given
+        long id = 1L;
+        int pageNumber = -1;
+        String sortBy = "status";
+        String order = "ASC";
+
+        //then
+        assertThrows(WrongPageNumberException.class, () -> backlogItemServiceImpl.getAllWithoutSprint(
+                        id, pageNumber, sortBy, order, SAMPLE_USER),
+                String.format(SHOULD_THROW, WrongPageNumberException.class.getSimpleName()));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"abab"})
+    final void getAllWithoutSprint_shouldCallDatabaseWithDefaultValuesAndReturnCorrectBacklogItemsWhenGivenSortByOrOrderIsNullOrIncorrect(String value) {
+        //given
+        long id = 1L;
+        int pageNumber = 0;
+        Pageable pageable = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE,
+                Sort.by(Sort.DEFAULT_DIRECTION, BacklogItemSortBy.of(value).getValue()));
+
+        //when
+        when(projectRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(backlogItemRepository.findByProjectAndSprintIsNull(ENTITY_DATA.project(), pageable))
+                .thenReturn(new PageImpl<>(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems()));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(0)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(0));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(1)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(1));
+
+        BacklogItemResponseList expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList();
+
+        //then
+        assertEquals(expected, backlogItemServiceImpl.getAllWithoutSprint(id, pageNumber, value, value, SAMPLE_USER),
+                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
+    }
+
+
 
 }

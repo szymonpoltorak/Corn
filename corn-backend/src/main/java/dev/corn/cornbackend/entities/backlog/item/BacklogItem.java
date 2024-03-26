@@ -66,11 +66,9 @@ public class BacklogItem implements Jsonable {
     private List<BacklogItemComment> comments;
 
     @ManyToOne
-    @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_ASSIGNEE_NULL_MSG)
     private ProjectMember assignee;
 
     @ManyToOne
-    @NotNull(message = BacklogItemConstants.BACKLOG_ITEM_SPRINT_NULL_MSG)
     private Sprint sprint;
 
     @ManyToOne

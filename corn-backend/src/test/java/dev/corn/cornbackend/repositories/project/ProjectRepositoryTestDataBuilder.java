@@ -36,11 +36,11 @@ public class ProjectRepositoryTestDataBuilder {
         testEntityManager.merge(project1MemberMember);
 
         return ProjectRepositoryTestData.builder()
-                .project1(testEntityManager.find(Project.class, project1.getProjectId()))
-                .project2(testEntityManager.find(Project.class, project2.getProjectId()))
-                .project1And2Owner(testEntityManager.find(User.class, project1And2Owner.getUserId()))
-                .project1Member(testEntityManager.find(User.class, project1Member.getUserId()))
-                .nonProjectMember(testEntityManager.find(User.class, nonProjectMember.getUserId()))
+                .project1(project1)
+                .project2(project2)
+                .project1And2Owner(project1And2Owner)
+                .project1Member(project1Member)
+                .nonProjectMember(nonProjectMember)
                 .build();
     }
 }

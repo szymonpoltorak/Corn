@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.test.sprint.data;
 
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
+import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 
@@ -19,6 +20,16 @@ public record AddNewSprintData(Project project, String name, String description,
                 .description(description)
                 .startDate(startDate)
                 .endDate(endDate)
+                .build();
+    }
+
+    public SprintResponse asSprintResponse() {
+        return SprintResponse.builder()
+                .sprintName(name)
+                .projectId(project.getProjectId())
+                .sprintDescription(description)
+                .sprintStartDate(startDate)
+                .sprintEndDate(endDate)
                 .build();
     }
 

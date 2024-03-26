@@ -89,4 +89,13 @@ public interface SprintService {
      * @return The details of the deleted sprint.
      */
     SprintResponse deleteSprint(long sprintId, User user);
+
+    /**
+     * Gets current and future sprints for given project
+     *
+     * @param projectId id of project to retrieve sprints from
+     * @param user User requesting access
+     * @return List of sprints
+     */
+    List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user);
 }

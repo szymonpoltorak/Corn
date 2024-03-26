@@ -41,8 +41,9 @@ import java.util.List;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM_NOT_FOUND_MESSAGE;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM_PAGE_SIZE;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.CREATING_PAGEABLE_FOR;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.GETTING_BACKLOG_ITEMS_WITH_PAGEABLE;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.GETTING_BY_ID;
-import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.GETTING_BY_PROJECT;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_MEMBER;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.PROJECT_MEMBER_NOT_FOUND_MESSAGE;
@@ -132,55 +133,42 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public List<BacklogItemResponse> getBySprintId(long sprintId, User user) {
+    public BacklogItemResponseList getBySprintId(long sprintId, int pageNumber, String sortBy, String order, User user) {
+        Pageable pageable = createPageableForBacklogItems(pageNumber, sortBy, order);
+
         log.info(GETTING_BY_ID, SPRINT, sprintId);
 
         Sprint sprint = sprintRepository.findByIdWithProjectMember(sprintId, user)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
 
-        log.info("Getting backlog items for sprint: {}", sprint);
+        log.info(GETTING_BACKLOG_ITEMS_WITH_PAGEABLE, SPRINT, sprint, pageable);
+        Page<BacklogItem> items = backlogItemRepository.getBySprint(sprint, pageable);
 
-        List<BacklogItem> items = backlogItemRepository.getBySprint(sprint);
+        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.getNumberOfElements());
 
-        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.size());
-
-        return items.stream()
-                .map(backlogItemMapper::backlogItemToBacklogItemResponse)
-                .toList();
+        return BacklogItemResponseList.builder()
+                .backlogItemResponseList(items.stream()
+                        .map(backlogItemMapper::backlogItemToBacklogItemResponse)
+                        .toList())
+                .totalNumber(items.getTotalElements())
+                .build();
     }
 
     @Override
     public BacklogItemResponseList getByProjectId(long projectId, int pageNumber, String sortBy,
-                                                        String order, User user) {
-        if(pageNumber < 0) {
-            throw new WrongPageNumberException(pageNumber);
-        }
+                                                  String order, User user) {
+        Pageable pageable = createPageableForBacklogItems(pageNumber, sortBy, order);
 
-        BacklogItemSortBy sort = BacklogItemSortBy.of(sortBy);
-        Sort.Direction direction = Sort.Direction.DESC.name().equalsIgnoreCase(order) ?
-                Sort.Direction.DESC : Sort.DEFAULT_DIRECTION;
-
-        return getByProjectId(projectId, pageNumber, sort, direction, user);
-    }
-
-    private BacklogItemResponseList getByProjectId(long projectId, int pageNumber, BacklogItemSortBy sortBy,
-                                                 Sort.Direction order, User user) {
         log.info(GETTING_BY_ID, PROJECT, projectId);
 
         Project project = projectRepository.findByIdWithProjectMember(projectId, user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        Pageable pageRequest;
 
-        if(sortBy == BacklogItemSortBy.ASSIGNEE) {
-            pageRequest = getPageableForAssignee(pageNumber, order);
-        } else {
-            pageRequest = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, Sort.by(order,
-                    sortBy.getValue()));
-        }
+        log.info(GETTING_BACKLOG_ITEMS_WITH_PAGEABLE, PROJECT, project, pageable);
+        Page<BacklogItem> items = backlogItemRepository.getByProject(project, pageable);
 
-        log.info(GETTING_BY_PROJECT, project, sortBy.getValue(), order);
-        Page<BacklogItem> items = backlogItemRepository.getByProject(project, pageRequest);
+        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.getNumberOfElements());
 
         return BacklogItemResponseList.builder()
                 .backlogItemResponseList(items.stream()
@@ -202,6 +190,30 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         return backlogItemMapper.backlogItemToBacklogItemDetails(backlogItem);
     }
 
+    @Override
+    public BacklogItemResponseList getAllWithoutSprint(long projectId, int pageNumber, String sortBy,
+                                                       String order, User user) {
+        Pageable pageable = createPageableForBacklogItems(pageNumber, sortBy, order);
+
+        log.info(GETTING_BY_ID, PROJECT, projectId);
+
+        Project project = projectRepository.findByIdWithProjectMember(projectId, user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
+
+        log.info("Getting backlog items that aren't assigned to any sprint for project: {}, pageable: {}",
+                project, pageable);
+        Page<BacklogItem> items = backlogItemRepository.findByProjectAndSprintIsNull(project, pageable);
+
+        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.getNumberOfElements());
+
+        return BacklogItemResponseList.builder()
+                .backlogItemResponseList(items.stream()
+                        .map(backlogItemMapper::backlogItemToBacklogItemResponse)
+                        .toList())
+                .totalNumber(items.getTotalElements())
+                .build();
+    }
+
     private record BacklogItemBuilderDto(Sprint sprint, Project project, ProjectMember assignee) {
     }
 
@@ -211,15 +223,23 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         Project project = projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
 
-        log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
+        ProjectMember assignee = null;
 
-        ProjectMember assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
-                .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
+        if(backlogItemRequest.projectMemberId() != -1L) {
+            log.info(GETTING_BY_ID, PROJECT_MEMBER, backlogItemRequest.projectMemberId());
 
-        log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
+            assignee = projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), project)
+                    .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
+        }
 
-        Sprint sprint = sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), project)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
+        Sprint sprint = null;
+
+        if(backlogItemRequest.sprintId() != -1L) {
+            log.info(GETTING_BY_ID, SPRINT, backlogItemRequest.sprintId());
+
+            sprint = sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), project)
+                    .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
+        }
 
         return new BacklogItemBuilderDto(sprint, project, assignee);
     }
@@ -269,5 +289,26 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
         return PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, sorting);
 
+    }
+
+    private Pageable createPageableForBacklogItems(int pageNumber, String sortBy, String order) {
+        log.info(CREATING_PAGEABLE_FOR, pageNumber, sortBy, order);
+        if(pageNumber < 0) {
+            throw new WrongPageNumberException(pageNumber);
+        }
+
+        BacklogItemSortBy sort = BacklogItemSortBy.of(sortBy);
+        Sort.Direction direction = Sort.Direction.DESC.name().equalsIgnoreCase(order) ?
+                Sort.Direction.DESC : Sort.DEFAULT_DIRECTION;
+        Pageable pageable;
+
+        if(sort == BacklogItemSortBy.ASSIGNEE) {
+            pageable = getPageableForAssignee(pageNumber, direction);
+        } else {
+            pageable = PageRequest.of(pageNumber, BACKLOG_ITEM_PAGE_SIZE, Sort.by(direction, sort.getValue()));
+        }
+
+        log.info("Returning pageable: {}", pageable);
+        return pageable;
     }
 }

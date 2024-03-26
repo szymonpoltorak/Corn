@@ -23,6 +23,7 @@ public class BacklogItemRepositoryTestDataBuilder {
         Project project = createSampleProject(1L, "project");
         ProjectMember projectMemberMember = createSampleProjectMember(1L);
         BacklogItem backlogItem = createSampleBacklogItem(1L);
+        BacklogItem backlogItemWithoutSprint = createSampleBacklogItem(2L);
         Sprint sprint = createSampleSprint(1L);
 
         testEntityManager.merge(owner);
@@ -46,15 +47,20 @@ public class BacklogItemRepositoryTestDataBuilder {
         backlogItem.setProject(project);
         backlogItem.setSprint(sprint);
 
+        backlogItemWithoutSprint.setAssignee(projectMemberMember);
+        backlogItemWithoutSprint.setProject(project);
+
         testEntityManager.merge(backlogItem);
+        testEntityManager.merge(backlogItemWithoutSprint);
 
         return BacklogItemRepositoryTestData.builder()
-                .backlogItem(testEntityManager.find(BacklogItem.class, backlogItem.getBacklogItemId()))
-                .owner(testEntityManager.find(User.class, owner.getUserId()))
-                .projectMember(testEntityManager.find(User.class, projectMember.getUserId()))
-                .nonProjectMember(testEntityManager.find(User.class, nonProjectMember.getUserId()))
-                .project(testEntityManager.find(Project.class, project.getProjectId()))
-                .sprint(testEntityManager.find(Sprint.class, sprint.getSprintId()))
+                .backlogItem(backlogItem)
+                .backlogItemWithoutSprint(backlogItemWithoutSprint)
+                .owner(owner)
+                .projectMember(projectMember)
+                .nonProjectMember(nonProjectMember)
+                .project(project)
+                .sprint(sprint)
                 .build();
     }
 }
