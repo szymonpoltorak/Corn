@@ -55,7 +55,7 @@ export class BoardsComponent implements OnInit {
     ) {
     }
 
-    async ngOnInit() {
+    async ngOnInit(): Promise<void> {
         this.selected = this.location.path().split('/').pop() || '';
 
         this.router.events.subscribe((val) => {
