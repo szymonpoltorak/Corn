@@ -3,6 +3,8 @@ package dev.corn.cornbackend.entities.backlog.comment.interfaces;
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,5 +47,17 @@ public interface BacklogItemCommentRepository extends JpaRepository<BacklogItemC
     @Query("SELECT b FROM BacklogItemComment b WHERE b.backlogItemCommentId = :id AND (b.backlogItem.project.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm WHERE pm.project = b.backlogItem.project))")
     Optional<BacklogItemComment> findByIdWithProjectMember(@Param ("id") long id, @Param("user") User user);
 
+    /** Deletes all comments for given backlogItem
+     *
+     * @param backlogItem item to delete all comments for
+     */
     void deleteByBacklogItem(BacklogItem backlogItem);
+
+    /** Gets comments for given backlogItem, orders them by CommentDate ASC and pages them
+     *
+     * @param backlogItem item to find all comments for
+     * @param pageable pageable to page comments by
+     * @return list of found BacklogItemComments
+     */
+    Page<BacklogItemComment> getAllByBacklogItemOrderByCommentDateDesc(BacklogItem backlogItem, Pageable pageable);
 }

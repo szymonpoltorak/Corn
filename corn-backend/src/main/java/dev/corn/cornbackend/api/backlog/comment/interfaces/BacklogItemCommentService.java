@@ -2,6 +2,7 @@ package dev.corn.cornbackend.api.backlog.comment.interfaces;
 
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentRequest;
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponse;
+import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponseList;
 import dev.corn.cornbackend.entities.user.User;
 
 /**
@@ -44,4 +45,6 @@ public interface BacklogItemCommentService {
      * @return the response containing the comment
      */
     BacklogItemCommentResponse getComment(long commentId, User user);
+
+    BacklogItemCommentResponseList getCommentsForBacklogItem(long backlogItemId, int pageNumber, User user);
 }

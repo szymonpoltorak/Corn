@@ -2,6 +2,7 @@ package dev.corn.cornbackend.api.backlog.comment;
 
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentRequest;
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponse;
+import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponseList;
 import dev.corn.cornbackend.api.backlog.comment.interfaces.BacklogItemCommentController;
 import dev.corn.cornbackend.api.backlog.comment.interfaces.BacklogItemCommentService;
 import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static dev.corn.cornbackend.api.backlog.comment.constants.BacklogItemCommentMappings.BACKLOG_ITEM_COMMENT_ADD_MAPPING;
 import static dev.corn.cornbackend.api.backlog.comment.constants.BacklogItemCommentMappings.BACKLOG_ITEM_COMMENT_API_MAPPING;
 import static dev.corn.cornbackend.api.backlog.comment.constants.BacklogItemCommentMappings.BACKLOG_ITEM_COMMENT_DELETE_MAPPING;
+import static dev.corn.cornbackend.api.backlog.comment.constants.BacklogItemCommentMappings.BACKLOG_ITEM_COMMENT_GET_FOR_ITEM_MAPPING;
 import static dev.corn.cornbackend.api.backlog.comment.constants.BacklogItemCommentMappings.BACKLOG_ITEM_COMMENT_GET_MAPPING;
 import static dev.corn.cornbackend.api.backlog.comment.constants.BacklogItemCommentMappings.BACKLOG_ITEM_COMMENT_UPDATE_MAPPING;
 
@@ -60,6 +62,14 @@ public class BacklogItemCommentControllerImpl implements BacklogItemCommentContr
             @RequestParam long commentId,
             @JwtAuthed User user) {
         return backlogItemCommentService.getComment(commentId, user);
+    }
+
+    @Override
+    @GetMapping(BACKLOG_ITEM_COMMENT_GET_FOR_ITEM_MAPPING)
+    public BacklogItemCommentResponseList getCommentsForBacklogItem(@RequestParam long backlogItemId,
+                                                                    @RequestParam int pageNumber,
+                                                                    @JwtAuthed User user) {
+        return backlogItemCommentService.getCommentsForBacklogItem(backlogItemId, pageNumber, user);
     }
 
 

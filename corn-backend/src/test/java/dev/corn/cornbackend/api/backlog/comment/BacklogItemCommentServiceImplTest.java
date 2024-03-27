@@ -1,6 +1,8 @@
 package dev.corn.cornbackend.api.backlog.comment;
 
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponse;
+import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponseList;
+import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.comment.interfaces.BacklogItemCommentMapper;
 import dev.corn.cornbackend.entities.backlog.comment.interfaces.BacklogItemCommentRepository;
 import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
@@ -9,14 +11,21 @@ import dev.corn.cornbackend.test.backlog.item.comment.data.BacklogItemCommentTes
 import dev.corn.cornbackend.test.backlog.item.comment.data.UpdateBacklogItemCommentTestData;
 import dev.corn.cornbackend.utils.exceptions.backlog.item.BacklogItemNotFoundException;
 import dev.corn.cornbackend.utils.exceptions.backlog.item.comment.BacklogItemCommentNotFoundException;
+import dev.corn.cornbackend.utils.exceptions.utils.WrongPageNumberException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
+import static dev.corn.cornbackend.api.backlog.comment.BacklogItemCommentServiceImpl.COMMENTS_PAGE_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -187,5 +196,59 @@ class BacklogItemCommentServiceImplTest {
                         backlogItemCommentServiceImpl.getComment(commentId,
                                 UPDATE_BACKLOG_ITEM_TEST_DATA.user()),
                 SHOULD_THROW);
+    }
+
+    @Test
+    final void getCommentsForBacklogItemShouldReturnCorrectResponse() {
+        //given
+        long backlogItemId = 1L;
+        int pageNumber = 0;
+        Pageable pageable = PageRequest.of(pageNumber, COMMENTS_PAGE_SIZE);
+
+        //when
+        when(backlogItemRepository.findByIdWithProjectMember(backlogItemId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
+                .thenReturn(Optional.of(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment().getBacklogItem()));
+
+        Page<BacklogItemComment> page = new PageImpl<>(List.of(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()));
+        when(backlogItemCommentRepository.getAllByBacklogItemOrderByCommentDateDesc(
+                BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment().getBacklogItem(), pageable))
+                .thenReturn(page);
+
+        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
+                .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
+
+        //then
+        BacklogItemCommentResponseList expected = BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponseList();
+
+        assertEquals(expected, backlogItemCommentServiceImpl.getCommentsForBacklogItem(backlogItemId,
+                pageNumber, UPDATE_BACKLOG_ITEM_TEST_DATA.user()), "Should return correct BacklogItemCommentResponseList");
+    }
+
+    @Test
+    final void getCommentsForBacklogItemShouldThrowBacklogItemNotFoundExceptionOnIncorrectBacklogItem() {
+        //given
+        long backlogItemId = 1L;
+        int pageNumber = 0;
+
+        //when
+        when(backlogItemRepository.findByIdWithProjectMember(backlogItemId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
+                .thenReturn(Optional.empty());
+
+        //then
+        assertThrows(BacklogItemNotFoundException.class,
+                () -> backlogItemCommentServiceImpl.getCommentsForBacklogItem(backlogItemId, pageNumber,
+                        UPDATE_BACKLOG_ITEM_TEST_DATA.user()), "Should throw BacklogItemNotFoundException");
+    }
+
+    @Test
+    final void getCommentsForBacklogItemShouldThrowWrongPageNumberExceptionOnNegativePageNumber() {
+        //given
+        long backlogItemId = 1L;
+        int pageNumber = -1;
+
+        //then
+        assertThrows(WrongPageNumberException.class,
+                () -> backlogItemCommentServiceImpl.getCommentsForBacklogItem(backlogItemId, pageNumber,
+                        UPDATE_BACKLOG_ITEM_TEST_DATA.user()), "Should throw WrongPageNumberException");
     }
 }
