@@ -55,7 +55,6 @@ export class BacklogComponent implements OnInit {
 
     showItemForm(): void {
         const dialogRef = this.dialog.open(BacklogFormComponent, {
-            width: '500px',
             enterAnimationDuration: '300ms',
             exitAnimationDuration: '100ms',
         });
