@@ -16,6 +16,7 @@ import { KeycloakProfile } from 'keycloak-js';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { RouterPaths } from '@core/enum/RouterPaths';
 import { BoardsPaths } from '@core/enum/BoardsPaths';
+import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
 
 @Component({
     selector: 'app-boards',
@@ -37,6 +38,7 @@ import { BoardsPaths } from '@core/enum/BoardsPaths';
         MatMenuTrigger,
         MatMenuModule,
         CommonModule,
+        ToolbarComponent,
     ],
     templateUrl: './boards.component.html',
 })
@@ -47,30 +49,20 @@ export class BoardsComponent implements OnInit {
 
     selected: string = '';
 
-    isLoggedIn: boolean = false;
-    userProfile?: KeycloakProfile;
-
     constructor(
         protected readonly router: Router,
-        protected readonly location: Location,
-        protected readonly keycloak: KeycloakService,
+        protected readonly location: Location
     ) {
     }
 
-    async ngOnInit() {
+    async ngOnInit(): Promise<void> {
         this.selected = this.location.path().split('/').pop() || '';
+
         this.router.events.subscribe((val) => {
             if (val instanceof NavigationEnd) {
                 this.selected = val.url.split('/').pop() || '';
             }
         });
-        this.isLoggedIn = this.keycloak.isLoggedIn();
-
-        if (this.isLoggedIn) {
-            this.userProfile = await this.keycloak.loadUserProfile();
-        } else {
-            this.router.navigate([RouterPaths.HOME_DIRECT_PATH]);
-        }
     }
 
     navigateToBacklog(): void {
@@ -84,14 +76,4 @@ export class BoardsComponent implements OnInit {
     navigateToBoard(): void {
         this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.BOARD}`]);
     }
-
-    toggleSidebar(): void {
-        this.sidebarShown = !this.sidebarShown;
-    }
-
-    logout(): void {
-        this.keycloak
-            .logout();
-    }
-
 }
