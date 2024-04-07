@@ -8,6 +8,7 @@ import { Feature } from "@core/interfaces/home/feature.interface";
 import { KeycloakService } from 'keycloak-angular';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router } from '@angular/router';
+import { RouterPaths } from "@core/enum/RouterPaths";
 
 @Component({
     selector: 'app-home',
@@ -35,8 +36,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         if (this.keycloak.isLoggedIn()) {
-            //TODO implement proper auth guard
-            this.router.navigate(['/boards/backlog']);
+            this.router.navigate([`${RouterPaths.PROJECT_LIST_DIRECT_PATH}`]);
         }
     }
 

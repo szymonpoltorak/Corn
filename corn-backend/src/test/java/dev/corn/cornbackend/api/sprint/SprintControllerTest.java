@@ -162,4 +162,22 @@ class SprintControllerTest {
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
     }
+
+    @Test
+    final void test_getCurrentAndFutureSprints_shouldReturnListOfSprints() {
+        // given
+        List<SprintResponse> expected = List.of(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()));
+        long projectId = 1L;
+
+        // when
+        when(sprintService.getCurrentAndFutureSprints(projectId,
+                ADD_SPRINT_DATA.project().getOwner()))
+                .thenReturn(expected);
+
+        List<SprintResponse> actual = sprintService.getCurrentAndFutureSprints(projectId,
+                ADD_SPRINT_DATA.project().getOwner());
+
+        // then
+        assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
 }

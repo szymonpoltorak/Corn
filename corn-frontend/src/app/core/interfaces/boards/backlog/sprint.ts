@@ -3,6 +3,6 @@ export interface Sprint {
     projectId: number,
     sprintName: string,
     sprintDescription: string,
-    startDate: Date,
-    endDate: Date
+    sprintStartDate: Date,
+    sprintEndDate: Date
 }

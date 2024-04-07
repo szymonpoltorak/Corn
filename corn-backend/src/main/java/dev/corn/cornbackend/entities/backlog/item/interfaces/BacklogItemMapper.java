@@ -23,7 +23,7 @@ public interface BacklogItemMapper {
      * @return The mapped BacklogItemResponse.
      */
     @Mapping(target="projectId", expression="java(backlogItem.getProject().getProjectId())")
-    @Mapping(target="sprintId", expression="java(backlogItem.getSprint().getSprintId())")
+    @Mapping(target="sprintId", expression="java(backlogItem.getSprint() != null ? backlogItem.getSprint().getSprintId() : -1)")
     BacklogItemResponse backlogItemToBacklogItemResponse(BacklogItem backlogItem);
 
     /**

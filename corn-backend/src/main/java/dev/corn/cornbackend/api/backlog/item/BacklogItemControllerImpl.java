@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_ADD_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_API_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_DELETE_MAPPING;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_ALL_WITHOUT_SPRINT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_BY_PROJECT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_BY_SPRINT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_DETAILS_MAPPING;
@@ -67,9 +66,12 @@ public class BacklogItemControllerImpl implements BacklogItemController {
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_BY_SPRINT_MAPPING)
-    public final List<BacklogItemResponse> getBySprintId(@RequestParam long sprintId,
+    public final BacklogItemResponseList getBySprintId(@RequestParam long sprintId,
+                                                         @RequestParam int pageNumber,
+                                                         @RequestParam String sortBy,
+                                                         @RequestParam String order,
                                                          @JwtAuthed User user) {
-        return backlogItemService.getBySprintId(sprintId, user);
+        return backlogItemService.getBySprintId(sprintId, pageNumber, sortBy, order, user);
     }
 
     @Override
@@ -87,5 +89,14 @@ public class BacklogItemControllerImpl implements BacklogItemController {
     public final BacklogItemDetails getDetailsById(@RequestParam long id,
                                                    @JwtAuthed User user) {
         return backlogItemService.getDetailsById(id, user);
+    }
+    @Override
+    @GetMapping(BACKLOG_ITEM_GET_ALL_WITHOUT_SPRINT_MAPPING)
+    public final BacklogItemResponseList getAllWithoutSprint(@RequestParam long projectId,
+                                                             @RequestParam int pageNumber,
+                                                             @RequestParam String sortBy,
+                                                             @RequestParam String order,
+                                                             @JwtAuthed User user) {
+        return backlogItemService.getAllWithoutSprint(projectId, pageNumber, sortBy, order, user);
     }
 }

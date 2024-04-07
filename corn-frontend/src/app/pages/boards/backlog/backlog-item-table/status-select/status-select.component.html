@@ -1,0 +1,9 @@
+<div class="status-background" [ngClass]="getStatusClass(backlogItem.status)">
+    <mat-select [panelWidth]="null" [(value)]="backlogItem.status">
+        @for (status of statuses; track status) {
+        <mat-option (click)="updateBacklogItem()"
+                    class="status-panel-{{getStatusClass(status)}}" [value]="status">{{ status.replace('_', ' ')}}
+        </mat-option>
+        }
+    </mat-select>
+</div>

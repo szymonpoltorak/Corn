@@ -19,6 +19,8 @@ public final class SprintMappings {
 
     public static final String DELETE_SPRINT = "/deleteSprint";
 
+    public static final String CURRENT_AND_FUTURE_SPRINTS = "/currentAndFuture";
+
     private SprintMappings() {
     }
 }

@@ -9,6 +9,7 @@ import lombok.Builder;
 @Builder
 public record BacklogItemRepositoryTestData(
         BacklogItem backlogItem,
+        BacklogItem backlogItemWithoutSprint,
         User owner,
         User projectMember,
         User nonProjectMember,

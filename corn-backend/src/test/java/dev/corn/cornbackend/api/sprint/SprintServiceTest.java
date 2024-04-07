@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -382,5 +383,40 @@ class SprintServiceTest {
 
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
+
+    @Test
+    final void test_getCurrentAndFutureSprints_shouldReturnSprintResponseList() {
+        // given
+        long projectId = 1L;
+        User user = ADD_SPRINT_DATA.project().getOwner();
+
+        // when
+        when(projectRepository.findByIdWithProjectMember(projectId, user))
+                .thenReturn(Optional.of(ADD_SPRINT_DATA.project()));
+        when(sprintRepository.findAllByProjectAndSprintEndDateAfter(
+                any(),any(), any()))
+                .thenReturn(new PageImpl<>(List.of(ADD_SPRINT_DATA.asSprint())));
+        when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
+                .thenReturn(ADD_SPRINT_DATA.asSprintResponse());
+
+        List<SprintResponse> expected = List.of(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()));
+        // then
+        assertEquals(expected, sprintService.getCurrentAndFutureSprints(projectId, user));
+    }
+
+    @Test
+    final void test_getCurrentAndFutureSprints_shouldThrowProjectDoesNotExistExceptionOnIncorrectProjectId() {
+        // given
+        long projectId = -1L;
+        User user = ADD_SPRINT_DATA.project().getOwner();
+
+        // when
+        when(projectRepository.findByIdWithProjectMember(projectId, user))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThrows(ProjectDoesNotExistException.class, () ->
+                sprintService.getCurrentAndFutureSprints(projectId, user));
     }
 }

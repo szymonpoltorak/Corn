@@ -14,9 +14,17 @@ export class SprintService {
     }
 
     getSprintsOnPageForProject(projectId: number, pageNumber: number): Observable<Sprint[]> {
-        return this.http.get<Sprint[]>(`${ ApiUrl.GET_SPRINTS_ON_PAGE }`, {
+        return this.http.get<Sprint[]>(ApiUrl.GET_SPRINTS_ON_PAGE, {
             params: {
                 page: pageNumber,
+                projectId: projectId
+            }
+        });
+    }
+
+    getCurrentAndFutureSprints(projectId: number): Observable<Sprint[]> {
+        return this.http.get<Sprint[]>(ApiUrl.GET_CURRENT_AND_FUTURE_SPRINTS, {
+            params: {
                 projectId: projectId
             }
         });

@@ -14,6 +14,8 @@ public class BacklogItemMappings {
 
     public static final String BACKLOG_ITEM_GET_DETAILS_MAPPING = "/getDetails";
 
+    public static final String BACKLOG_ITEM_GET_ALL_WITHOUT_SPRINT_MAPPING = "/getAllWithoutSprint";
+
     private BacklogItemMappings() {
     }
 }
