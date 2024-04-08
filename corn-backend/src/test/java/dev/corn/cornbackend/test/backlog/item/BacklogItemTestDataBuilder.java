@@ -157,8 +157,8 @@ public final class BacklogItemTestDataBuilder {
                 .projectId(sprint.getProject().getProjectId())
                 .sprintName(sprint.getSprintName())
                 .sprintDescription(sprint.getSprintDescription())
-                .sprintStartDate(sprint.getStartDate())
-                .sprintEndDate(sprint.getEndDate())
+                .startDate(sprint.getStartDate())
+                .endDate(sprint.getEndDate())
                 .build();
 
         ProjectResponse projectResponse = ProjectResponse.builder()
