@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
     corn-postgres:
         container_name: corn-postgres
@@ -10,12 +8,19 @@ services:
             - POSTGRES_DB=corn
         ports:
             - "5000:5432"
+        healthcheck:
+            test: "pg_isready -U postgres"
+            interval: 1s
+            retries: 50
+            start_period: 5s
+            timeout: 3s
 
     corn-backend:
         container_name: corn-backend
         image: corn-backend
         depends_on:
-            - corn-postgres
+            corn-postgres:
+                condition: service_healthy
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=none
@@ -25,6 +30,12 @@ services:
         build:
             context: corn-backend
             dockerfile: Dockerfile.prod
+        healthcheck:
+            test: "curl -f http://localhost:8081/actuator/health || exit 1"
+            interval: 1s
+            retries: 120
+            start_period: 15s
+            timeout: 5s
 
     corn-frontend:
         container_name: corn-frontend
@@ -34,6 +45,12 @@ services:
         build:
             context: corn-frontend
             dockerfile: Dockerfile.prod
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:80"]
+            interval: 1s
+            retries: 120
+            start_period: 15s
+            timeout: 5s
 
     corn-keycloak-initializer:
         container_name: corn-keycloak-initializer
@@ -43,7 +60,7 @@ services:
             dockerfile: Dockerfile.prod
         depends_on:
             corn-keycloak:
-                condition: service_healthy
+                condition: service_started
         environment:
             - KCCFG_OVERRIDE_EXISTING=false
             - KCCFG_LOGIN_THEME_NAME=corn
@@ -66,6 +83,8 @@ services:
             - KC_DB_USERNAME=keycloak
             - KC_DB_PASSWORD=none
         command: start-dev
+        ports:
+            - '8083:8080'
         healthcheck:
             test: "curl -f http://localhost:8080/admin || exit 1"
             interval: 1s
@@ -98,9 +117,18 @@ services:
             context: nginx
             dockerfile: Dockerfile.dev
         depends_on:
-            - corn-backend
-            - corn-frontend
-            - corn-keycloak
+            corn-backend:
+                condition: service_healthy
+            corn-frontend:
+                condition: service_healthy
+            corn-keycloak:
+                condition: service_healthy
+        healthcheck:
+            test: "curl -f http://localhost:4200 || exit 1"
+            interval: 1s
+            retries: 120
+            start_period: 15s
+            timeout: 5s
         ports:
             - "4200:4200"
             - "8081:8080"
