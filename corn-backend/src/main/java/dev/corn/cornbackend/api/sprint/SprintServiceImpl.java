@@ -10,6 +10,7 @@ import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
+import dev.corn.cornbackend.utils.exceptions.sprint.InvalidSprintDateException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintEndDateMustBeAfterStartDate;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import static dev.corn.cornbackend.entities.sprint.constants.SprintConstants.SPR
 @RequiredArgsConstructor
 public class SprintServiceImpl implements SprintService {
     public static final int SPRINTS_PER_PAGE = 20;
-    public static final int FUTURE_SPRINTS_PER_PAGE = 5;
+    private static final int FUTURE_SPRINTS_PER_PAGE = 5;
     private static final String UPDATED_SPRINT = "Updated sprint: {}";
     private static final String FOUND_SPRINT_TO_UPDATE = "Found sprint to update: {}";
     private static final String PROJECT_NOT_FOUND = "Project with projectId: %d does not exist";
@@ -45,6 +46,10 @@ public class SprintServiceImpl implements SprintService {
         if (sprintRequest.endDate().isBefore(sprintRequest.startDate())) {
             throw new SprintEndDateMustBeAfterStartDate(sprintRequest.startDate(), sprintRequest.endDate());
         }
+        if (sprintRepository.existsBetweenStartDateAndEndDate(sprintRequest.startDate(),
+                sprintRequest.endDate(), sprintRequest.projectId())) {
+            throw new InvalidSprintDateException("Sprint with given dates already exists");
+        }
 
         Project project = projectRepository.findByProjectIdAndOwner(sprintRequest.projectId(), user)
                 .orElseThrow(() -> new ProjectDoesNotExistException(
@@ -54,8 +59,8 @@ public class SprintServiceImpl implements SprintService {
                 .builder()
                 .project(project)
                 .sprintName(sprintRequest.name())
-                .sprintStartDate(sprintRequest.startDate())
-                .sprintEndDate(sprintRequest.endDate())
+                .startDate(sprintRequest.startDate())
+                .endDate(sprintRequest.endDate())
                 .sprintDescription(sprintRequest.description())
                 .build();
         log.info("Instantiated sprint: {}", sprint);
@@ -132,15 +137,18 @@ public class SprintServiceImpl implements SprintService {
     public final SprintResponse updateSprintsStartDate(LocalDate startDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} startDate to: {}", sprintId, startDate);
 
+        if (sprintRepository.existsEndDateBeforeDate(startDate)) {
+            throw new InvalidSprintDateException("Start date cannot be after any existing sprint's end date");
+        }
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
 
         log.info(FOUND_SPRINT_TO_UPDATE, sprintToUpdate);
 
         if (sprintToUpdate.isEndBefore(startDate)) {
-            throw new SprintEndDateMustBeAfterStartDate(startDate, sprintToUpdate.getSprintEndDate());
+            throw new SprintEndDateMustBeAfterStartDate(startDate, sprintToUpdate.getEndDate());
         }
-        sprintToUpdate.setSprintStartDate(startDate);
+        sprintToUpdate.setStartDate(startDate);
 
         Sprint updatedSprint = sprintRepository.save(sprintToUpdate);
 
@@ -153,15 +161,18 @@ public class SprintServiceImpl implements SprintService {
     public final SprintResponse updateSprintsEndDate(LocalDate endDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} endDate to: {}", sprintId, endDate);
 
+        if (sprintRepository.existsEndDateBeforeDate(endDate)) {
+            throw new InvalidSprintDateException("End date cannot be before any existing sprint's end date");
+        }
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
 
         log.info(FOUND_SPRINT_TO_UPDATE, sprintToUpdate);
 
         if (sprintToUpdate.isStartAfter(endDate)) {
-            throw new SprintEndDateMustBeAfterStartDate(sprintToUpdate.getSprintStartDate(), endDate);
+            throw new SprintEndDateMustBeAfterStartDate(sprintToUpdate.getStartDate(), endDate);
         }
-        sprintToUpdate.setSprintEndDate(endDate);
+        sprintToUpdate.setEndDate(endDate);
 
         Sprint updatedSprint = sprintRepository.save(sprintToUpdate);
 
@@ -201,7 +212,7 @@ public class SprintServiceImpl implements SprintService {
                 Sort.Direction.ASC, SPRINT_START_DATE_FIELD_NAME)
         );
 
-        Page<Sprint> sprints = sprintRepository.findAllByProjectAndSprintEndDateAfter(project,
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndEndDateAfter(project,
                 LocalDate.now(), pageable);
 
         log.info(SPRINTS_ON_PAGE, sprints.getNumberOfElements());

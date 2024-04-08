@@ -260,7 +260,7 @@ class SprintServiceTest {
     final void test_updateSprintsStartDate_shouldThrowWhenEndIsBeforeStart() {
         // given
         Sprint sprint = ADD_SPRINT_DATA.asSprint();
-        LocalDate newStartDate = sprint.getSprintEndDate().plusDays(10);
+        LocalDate newStartDate = sprint.getEndDate().plusDays(10);
         User owner = ADD_SPRINT_DATA.project().getOwner();
 
         // when
@@ -315,7 +315,7 @@ class SprintServiceTest {
     final void test_updateSprintsEndDate_shouldThrowWhenEndIsBeforeStart() {
         // given
         Sprint sprint = ADD_SPRINT_DATA.asSprint();
-        LocalDate newEndDate = sprint.getSprintStartDate().minusDays(10);
+        LocalDate newEndDate = sprint.getStartDate().minusDays(10);
         User owner = ADD_SPRINT_DATA.project().getOwner();
 
         // when
@@ -394,7 +394,7 @@ class SprintServiceTest {
         // when
         when(projectRepository.findByIdWithProjectMember(projectId, user))
                 .thenReturn(Optional.of(ADD_SPRINT_DATA.project()));
-        when(sprintRepository.findAllByProjectAndSprintEndDateAfter(
+        when(sprintRepository.findAllByProjectAndEndDateAfter(
                 any(),any(), any()))
                 .thenReturn(new PageImpl<>(List.of(ADD_SPRINT_DATA.asSprint())));
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))

@@ -157,8 +157,8 @@ public final class BacklogItemTestDataBuilder {
                 .projectId(sprint.getProject().getProjectId())
                 .sprintName(sprint.getSprintName())
                 .sprintDescription(sprint.getSprintDescription())
-                .sprintStartDate(sprint.getSprintStartDate())
-                .sprintEndDate(sprint.getSprintEndDate())
+                .sprintStartDate(sprint.getStartDate())
+                .sprintEndDate(sprint.getEndDate())
                 .build();
 
         ProjectResponse projectResponse = ProjectResponse.builder()
@@ -202,8 +202,8 @@ public final class BacklogItemTestDataBuilder {
                 .project(project())
                 .sprintName("Sprint")
                 .sprintDescription("Description")
-                .sprintStartDate(LocalDate.now())
-                .sprintEndDate(LocalDate.now().plusDays(2L))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(2L))
                 .build();
     }
 

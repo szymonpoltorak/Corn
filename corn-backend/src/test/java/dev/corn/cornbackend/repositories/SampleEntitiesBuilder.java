@@ -63,8 +63,8 @@ public class SampleEntitiesBuilder {
                 .project(null)
                 .sprintDescription("Description")
                 .sprintName("Name")
-                .sprintStartDate(LocalDate.now())
-                .sprintEndDate(LocalDate.now().plusDays(7))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(7))
                 .build();
     }
 

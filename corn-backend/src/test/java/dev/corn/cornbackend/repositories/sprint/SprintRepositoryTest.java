@@ -239,14 +239,14 @@ class SprintRepositoryTest {
     }
 
     @Test
-    final void test_findAllByProjectAndSprintEndDateAfterShouldReturnCorrectSprints() {
+    final void test_findAllByProjectAndEndDateAfterShouldReturnCorrectSprints() {
         //given
         Project project = TEST_DATA.project();
-        LocalDate date = TEST_DATA.currentSprint().getSprintStartDate();
+        LocalDate date = TEST_DATA.currentSprint().getStartDate();
         Pageable pageable = PageRequest.of(0, 3);
 
         //when
-        Page<Sprint> sprints = sprintRepository.findAllByProjectAndSprintEndDateAfter(project, date, pageable);
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndEndDateAfter(project, date, pageable);
 
         //then
         assertEquals(2, sprints.getNumberOfElements());
@@ -254,14 +254,14 @@ class SprintRepositoryTest {
     }
 
     @Test
-    final void test_findAllByProjectAndSprintEndDateAfterShouldReturnEmptyPageWhenNoneOfSprintsEndsAfterDate() {
+    final void test_findAllByProjectAndEndDateAfterShouldReturnEmptyPageWhenNoneOfSprintsEndsAfterDate() {
         //given
         Project project = TEST_DATA.project();
-        LocalDate date = TEST_DATA.futureSprint().getSprintEndDate().plusDays(1L);
+        LocalDate date = TEST_DATA.futureSprint().getEndDate().plusDays(1L);
         Pageable pageable = PageRequest.of(0, 3);
 
         //when
-        Page<Sprint> sprints = sprintRepository.findAllByProjectAndSprintEndDateAfter(project, date, pageable);
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndEndDateAfter(project, date, pageable);
 
         //then
         assertEquals(0, sprints.getNumberOfElements());
