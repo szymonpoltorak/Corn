@@ -31,7 +31,7 @@ services:
             context: corn-backend
             dockerfile: Dockerfile.prod
         healthcheck:
-            test: "curl -f http://localhost:8081/actuator/health || exit 1"
+            test: "curl -f http://localhost:8081/actuator/health"
             interval: 1s
             retries: 120
             start_period: 15s
@@ -60,7 +60,7 @@ services:
             dockerfile: Dockerfile.prod
         depends_on:
             corn-keycloak:
-                condition: service_started
+                condition: service_healthy
         environment:
             - KCCFG_OVERRIDE_EXISTING=false
             - KCCFG_LOGIN_THEME_NAME=corn
