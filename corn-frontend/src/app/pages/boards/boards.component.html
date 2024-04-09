@@ -2,7 +2,7 @@
 </app-toolbar>
 
 <mat-drawer-container>
-    <mat-drawer [opened]="sidebarShown" mode="side">
+    <mat-drawer [opened]="sidebarShown" mode="push">
         <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
 
             <span class="text-center text-[20px] m-[4px]">{{ projectName }}</span>
@@ -31,7 +31,7 @@
     </mat-drawer>
 
     <mat-drawer-content>
-        <div class="overflow-hidden min-h-screen">
+        <div class="overflow-hidden min-h-screen m-4">
             <router-outlet></router-outlet>
         </div>
     </mat-drawer-content>
