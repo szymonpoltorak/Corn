@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
-    private static final int PROJECTS_PER_PAGE = 10;
+    public static final int PROJECTS_PER_PAGE = 10;
     private static final long NEW_PROJECT_MEMBER_NUMBER = 0L;
     private static final String PROJECT_DOES_NOT_EXIST = "Project does not exist!";
     private final ProjectRepository projectRepository;
