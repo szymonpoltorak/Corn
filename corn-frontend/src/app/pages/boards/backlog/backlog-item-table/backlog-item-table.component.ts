@@ -40,6 +40,7 @@ import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
 import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
 import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
 import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
+import { StorageService } from "@core/services/storage.service";
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -80,7 +81,8 @@ import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/b
 export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
 
     constructor(private backlogItemService: BacklogItemService,
-                private backlogComponent: BacklogComponent) {
+                private backlogComponent: BacklogComponent,
+                private storage: StorageService) {
     }
 
     @Input() sprintId: number = 0;
@@ -131,8 +133,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
         let source: Observable<BacklogItemList>;
 
         if(this.sprintId === -1) {
-            //TODO get real projectId from somewhere
-            source = this.backlogItemService.getAllWithoutSprint(1, this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
+            source = this.backlogItemService.getAllWithoutSprint(this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
         } else {
             source = this.backlogItemService.getAllBySprintId(this.sprintId, this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
         }

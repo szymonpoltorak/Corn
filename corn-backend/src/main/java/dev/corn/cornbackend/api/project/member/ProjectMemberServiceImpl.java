@@ -9,6 +9,7 @@ import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberMapp
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
+import dev.corn.cornbackend.entities.user.interfaces.UserMapper;
 import dev.corn.cornbackend.entities.user.interfaces.UserRepository;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.project.member.InvalidUsernameException;
@@ -34,6 +35,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final ProjectMemberMapper projectMemberMapper;
+    private final UserMapper userMapper;
 
     private static final String PROJECT_NOT_FOUND = "Project with project id: %d does not exist";
 
@@ -106,7 +108,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final List<ProjectMemberInfoResponse> getProjectMembersInfo(long projectId) {
+    public final List<UserResponse> getProjectMembersInfo(long projectId) {
         Pageable pageable = PageRequest.of(0, 5);
 
         log.info("Getting project members info for projectId: {}", projectId);
@@ -118,12 +120,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         return members
                 .stream()
                 .map(ProjectMember::getUser)
-                .map(user -> ProjectMemberInfoResponse
-                        .builder()
-                        .fullName(user.getFullName())
-                        .userId(user.getUserId())
-                        .build()
-                )
+                .map(userMapper::toUserResponse)
                 .toList();
     }
 

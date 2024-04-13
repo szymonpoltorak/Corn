@@ -1,8 +1,11 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ProjectComponent } from "@pages/project-list/project/project.component";
 import { MatGridList, MatGridTile } from "@angular/material/grid-list";
 import { User } from "@core/interfaces/boards/user";
 import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
+import { Subject, take} from "rxjs";
+import { ProjectService } from "@core/services/boards/project.service";
+import { Project } from "@interfaces/boards/project";
 
 @Component({
   selector: 'app-project-list',
@@ -16,27 +19,58 @@ import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
   templateUrl: './project-list.component.html',
   styleUrl: './project-list.component.scss'
 })
-export class ProjectListComponent {
+export class ProjectListComponent implements OnInit {
 
-    cols = 5;
-
-    exampleUsers: User[] = [
-        {userId: 0, name: 'John', surname: 'Doe', username: 'johndoe'},
-        {userId: 1, name: 'Szymon', surname: 'Kowalski',  username: 'szymoneks'},
-        {userId: 2, name: 'Andrzej', surname: 'Switch',  username: 'manual'},
-        {userId: 3, name: 'Paweł', surname: 'Tagowski',  username: 'dziendobrypanstwu'}
-    ];
-
-    @HostListener('window:resize', ['$event'])
-    onResize(event: any) {
-        this.adjustCols();
+    constructor(private projectService: ProjectService) {
     }
 
-    adjustCols() {
-        if(window.innerWidth <= 840) {
-            this.cols = 3;
-        } else {
-            this.cols = 5;
+    cols: number = 5;
+
+    pageNumber: number = 0;
+
+    projects: Project[] = [];
+
+    gotAllProjects: boolean = false;
+
+    // @HostListener('window:resize', ['$event'])
+    // onResize(event: any) {
+    //     this.adjustCols();
+    // }
+    //
+    // adjustCols(): void {
+    //     if(window.innerWidth <= 840) {
+    //         this.cols = 3;
+    //     } else {
+    //         this.cols = 5;
+    //     }
+    // }
+
+    getProjects(): void {
+        this.projectService.getProjectsOnPage(this.pageNumber).pipe(take(1)).subscribe(
+            (items: any) => {
+                if(items.length == 0) {
+                    this.gotAllProjects = true;
+                    return;
+                }
+                this.projects = [...this.projects, ...items];
+            }
+        )
+    }
+
+    ngOnInit(): void {
+        this.getProjects();
+    }
+
+    @HostListener('window:scroll', ['$event'])
+    onScroll(event: any): void {
+        if(this.gotAllProjects) {
+            return;
+        }
+        const position: number = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight;
+        const max: number = document.documentElement.scrollHeight;
+        if(position >= max) {
+            this.pageNumber++;
+            this.getProjects();
         }
     }
 

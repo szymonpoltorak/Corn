@@ -8,6 +8,7 @@ import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
@@ -83,7 +84,7 @@ class ProjectServiceTest {
         final long totalNumberOfMembers = 1L;
         final int page = 0;
         Pageable pageable = PageRequest.of(page, 20);
-        List<ProjectMemberInfoResponse> members = List.of(new ProjectMemberInfoResponse("full Name", 1L));
+        List<UserResponse> members = List.of(new UserResponse(1, "full", "name", "username"));
 
         ProjectInfoResponse response = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers);
         List<ProjectInfoResponse> expected = List.of(response);
