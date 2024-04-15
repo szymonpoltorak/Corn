@@ -5,9 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class StorageService {
 
-    constructor() {
-    }
-
     saveProjectId(projectId: number): void {
         localStorage.setItem('projectId', projectId.toString());
     }

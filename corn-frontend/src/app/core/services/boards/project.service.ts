@@ -9,7 +9,6 @@ import { Observable } from "rxjs";
 export class ProjectService {
 
     constructor(private http: HttpClient) {
-
     }
 
     getProjectsOnPage(pageNumber: number): Observable<Project[]> {

@@ -9,7 +9,8 @@ import { BacklogItemTableComponent } from "@pages/boards/backlog/backlog-item-ta
 import {
     MatAccordion,
     MatExpansionPanel,
-    MatExpansionPanelDescription, MatExpansionPanelHeader,
+    MatExpansionPanelDescription,
+    MatExpansionPanelHeader,
     MatExpansionPanelTitle,
 } from "@angular/material/expansion";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";

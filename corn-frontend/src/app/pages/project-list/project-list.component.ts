@@ -1,9 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ProjectComponent } from "@pages/project-list/project/project.component";
 import { MatGridList, MatGridTile } from "@angular/material/grid-list";
-import { User } from "@core/interfaces/boards/user";
 import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
-import { Subject, take} from "rxjs";
+import { take } from "rxjs";
 import { ProjectService } from "@core/services/boards/project.service";
 import { Project } from "@interfaces/boards/project";
 
@@ -32,19 +31,6 @@ export class ProjectListComponent implements OnInit {
 
     gotAllProjects: boolean = false;
 
-    // @HostListener('window:resize', ['$event'])
-    // onResize(event: any) {
-    //     this.adjustCols();
-    // }
-    //
-    // adjustCols(): void {
-    //     if(window.innerWidth <= 840) {
-    //         this.cols = 3;
-    //     } else {
-    //         this.cols = 5;
-    //     }
-    // }
-
     getProjects(): void {
         this.projectService.getProjectsOnPage(this.pageNumber).pipe(take(1)).subscribe(
             (items: any) => {
@@ -66,8 +52,10 @@ export class ProjectListComponent implements OnInit {
         if(this.gotAllProjects) {
             return;
         }
+
         const position: number = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight;
         const max: number = document.documentElement.scrollHeight;
+
         if(position >= max) {
             this.pageNumber++;
             this.getProjects();

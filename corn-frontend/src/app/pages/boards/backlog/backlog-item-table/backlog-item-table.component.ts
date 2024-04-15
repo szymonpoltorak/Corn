@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import {
@@ -7,11 +7,13 @@ import {
     MatColumnDef,
     MatHeaderCell,
     MatHeaderCellDef,
-    MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
     MatTable
 } from "@angular/material/table";
 import { MatOption, MatSelect } from "@angular/material/select";
-import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
 import { MatPaginator } from "@angular/material/paginator";
 import { catchError, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
 import { NgClass } from "@angular/common";
@@ -29,13 +31,13 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
 import {
     CdkDrag,
-    CdkDragDrop, CdkDragPlaceholder,
+    CdkDragDrop,
+    CdkDragPlaceholder,
     CdkDragPreview,
     CdkDropList,
     moveItemInArray,
     transferArrayItem
 } from "@angular/cdk/drag-drop";
-import { MatTab } from "@angular/material/tabs";
 import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
 import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
 import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
