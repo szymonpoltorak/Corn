@@ -78,17 +78,21 @@ public class PlaceholderData implements CommandLineRunner {
         ).map(UserResponse::userId).toList());
 
         User projectOwner = drawRandom(users);
-        projectService.addNewProject("Sample Project", projectOwner);
-        Project project = projectRepository.findAllByOwnerOrderByName(projectOwner, Pageable.ofSize(1))
-                .stream().findFirst().get();
+        Arrays.stream(PROJECT_NAMES)
+                        .forEach(name -> {
+                            projectService.addNewProject(name, projectOwner);
+                        });
+        Project[] projects = projectRepository.findAllByOwnerOrderByName(projectOwner, Pageable.ofSize(PROJECT_NAMES.length))
+                .stream().toList().toArray(new Project[0]);
+        Project project = projects[0];
 
         users.stream()
                 .filter(user -> user.getUserId() != projectOwner.getUserId())
-                .forEach(user ->
-                        projectMemberService.addMemberToProject(user.getUsername(), project.getProjectId(), projectOwner)
-                );
+                .forEach(user -> Arrays.stream(projects).forEach(currentProject ->
+                        projectMemberService.addMemberToProject(user.getUsername(), currentProject.getProjectId(), projectOwner)));
 
-        List<ProjectMember> members = projectMemberRepository.findAll();
+        List<ProjectMember> members =  projectMemberRepository.findAllByProject(project, Pageable.ofSize(users.size()))
+                .stream().toList();
 
         for(int i = 0; i < 30; i++) {
             sprintService.addNewSprint(new SprintRequest(
@@ -280,5 +284,28 @@ public class PlaceholderData implements CommandLineRunner {
             {"Enhance Email Marketing Tools", "Improve tools for managing and analyzing email marketing campaigns."},
             {"Upgrade CAPTCHA Security", "Enhance CAPTCHA security to prevent spam and abuse."},
             {"Implement Continuous Integration", "Introduce continuous integration for automated code testing and deployment."},
+    };
+
+    private final String[] PROJECT_NAMES = {
+            "BlueSky Initiative",
+            "Phoenix Rising",
+            "InnovateX",
+            "TigerEye Project",
+            "SilverLining Endeavor",
+            "Eclipse Evolution",
+            "Zenith Quest",
+            "Nebula Nexus",
+            "Sapphire Sprint",
+            "Lunar Horizon",
+            "Starlight Stride",
+            "Aurora Ascent",
+            "Galactic Gateway",
+            "Thunderbolt Taskforce",
+            "Crimson Catalyst",
+            "Velocity Venture",
+            "Mystic Momentum",
+            "Titan Triumph",
+            "Ocean Odyssey",
+            "Solar Serenity"
     };
 }

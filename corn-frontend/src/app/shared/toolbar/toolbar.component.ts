@@ -9,6 +9,7 @@ import { KeycloakService } from "keycloak-angular";
 import { Router, RouterLink } from "@angular/router";
 import { RouterPaths } from "@core/enum/RouterPaths";
 import { MatTooltip } from "@angular/material/tooltip";
+import { StorageService } from "@core/services/storage.service";
 
 @Component({
     selector: 'app-toolbar',
@@ -36,7 +37,8 @@ export class ToolbarComponent implements OnInit {
     sidebarShown: boolean = true;
 
     constructor(private keycloak: KeycloakService,
-                private router: Router) {
+                private router: Router,
+                private storage: StorageService) {
     }
 
     async ngOnInit(): Promise<void> {
@@ -44,7 +46,6 @@ export class ToolbarComponent implements OnInit {
 
         if (this.isLoggedIn) {
             this.userProfile = await this.keycloak.loadUserProfile();
-            console.log(this.userProfile);
         } else {
             this.router.navigate([RouterPaths.HOME_DIRECT_PATH]);
         }
@@ -57,6 +58,7 @@ export class ToolbarComponent implements OnInit {
     }
 
     logout(): void {
+        this.storage.deleteProjectId();
         this.keycloak.logout();
     }
 

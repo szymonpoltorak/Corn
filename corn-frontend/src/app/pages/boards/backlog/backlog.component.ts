@@ -9,7 +9,8 @@ import { BacklogItemTableComponent } from "@pages/boards/backlog/backlog-item-ta
 import {
     MatAccordion,
     MatExpansionPanel,
-    MatExpansionPanelDescription, MatExpansionPanelHeader,
+    MatExpansionPanelDescription,
+    MatExpansionPanelHeader,
     MatExpansionPanelTitle,
 } from "@angular/material/expansion";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
@@ -44,7 +45,7 @@ export class BacklogComponent implements OnInit {
 
     ngOnInit(): void {
         //TODO get real projectId from somewhere
-        this.sprintService.getCurrentAndFutureSprints(1).pipe(take(1)).subscribe((sprints) => {
+        this.sprintService.getCurrentAndFutureSprints().pipe(take(1)).subscribe((sprints) => {
             this.sprints = sprints;
             this.sprintIds = sprints.map(sprint => sprint.sprintId.toString());
             this.sprintIds.push('-1')
@@ -68,7 +69,6 @@ export class BacklogComponent implements OnInit {
                 result.description,
                 result.assignee.userId,
                 result.sprintId,
-                1,  //TODO get real projectId from somewhere
                 result.type
             ).pipe(take(1)).subscribe((newItem) => {
                 const table: BacklogItemTableComponent | undefined = this.findBacklogItemTableById(newItem.sprintId.toString());

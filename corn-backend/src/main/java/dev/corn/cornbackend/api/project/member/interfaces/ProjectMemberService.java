@@ -46,7 +46,7 @@ public interface ProjectMemberService {
      * @param projectId the id of the project to get the members info of
      * @return list of project assignee info response data
      */
-    List<ProjectMemberInfoResponse> getProjectMembersInfo(long projectId);
+    List<UserResponse> getProjectMembersInfo(long projectId);
 
     /**
      * Get the total number of members of a project

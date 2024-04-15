@@ -8,6 +8,7 @@ import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
@@ -25,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static dev.corn.cornbackend.api.project.ProjectServiceImpl.PROJECTS_PER_PAGE;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -82,8 +83,8 @@ class ProjectServiceTest {
         // given
         final long totalNumberOfMembers = 1L;
         final int page = 0;
-        Pageable pageable = PageRequest.of(page, 20);
-        List<ProjectMemberInfoResponse> members = List.of(new ProjectMemberInfoResponse("full Name", 1L));
+        Pageable pageable = PageRequest.of(page, PROJECTS_PER_PAGE);
+        List<UserResponse> members = List.of(new UserResponse(1, "full", "name", "username"));
 
         ProjectInfoResponse response = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers);
         List<ProjectInfoResponse> expected = List.of(response);
