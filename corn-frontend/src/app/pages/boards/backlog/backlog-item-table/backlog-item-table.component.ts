@@ -40,6 +40,10 @@ import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
 import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
 import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
 import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-details/backlog-item-details.component";
+import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
+import { UserService } from "@core/services/users/user.service";
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -80,7 +84,10 @@ import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/b
 export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
 
     constructor(private backlogItemService: BacklogItemService,
-                private backlogComponent: BacklogComponent) {
+                private sprintService: SprintService,
+                private userService: UserService,
+                private backlogComponent: BacklogComponent,
+                private dialog: MatDialog) {
     }
 
     @Input() sprintId: number = 0;
@@ -89,7 +96,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
     dataToDisplay: BacklogItem[] = [];
 
 
-    displayedColumns = ['title', 'description', 'status', 'type', 'assignee'];
+    displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
 
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -163,7 +170,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
         })
     }
 
-    drop(event: CdkDragDrop<BacklogItem[]>) {
+    drop(event: CdkDragDrop<BacklogItem[]>): void {
 
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -179,6 +186,23 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
         }
 
         this.table.renderRows();
+    }
+
+    openDetails(item: BacklogItem): void {
+        const dialogRef: MatDialogRef<BacklogItemDetailsComponent> = this.dialog.open(BacklogItemDetailsComponent, {
+            width: '1000px',
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '100ms',
+            data: item
+        });
+
+        dialogRef.afterClosed().pipe(take(1)).subscribe((result: BacklogItem) => {
+            if(!result) {
+                return;
+            }
+
+            this.updateBacklogItem(result);
+        })
     }
 
     ngOnDestroy(): void {

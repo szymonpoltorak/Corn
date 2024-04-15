@@ -1,22 +1,22 @@
-@switch (backlogItem.itemType) {
+@switch (backlogItemType) {
     @case (BacklogItemType.BUG) {
         <div matTooltip="Bug" class="type-icon" style="background-color: #ff0000;">
-            <ng-icon name="bootstrapBugFill"></ng-icon>
+            <ng-icon class="text-stone-50" name="bootstrapBugFill"></ng-icon>
         </div>
     }
     @case (BacklogItemType.STORY) {
         <div matTooltip="Story" class="type-icon" style="background-color: #005f9f;">
-            <ng-icon name="featherBook"></ng-icon>
+            <ng-icon class="text-stone-50" name="featherBook"></ng-icon>
         </div>
     }
     @case (BacklogItemType.TASK) {
         <div matTooltip="Task" class="type-icon" style="background-color: #00910a; ">
-            <ng-icon name="matTask"></ng-icon>
+            <ng-icon class="text-stone-50" name="matTask"></ng-icon>
         </div>
     }
     @case (BacklogItemType.EPIC) {
         <div matTooltip="Epic" class="type-icon" style="background-color: #5200af;">
-            <ng-icon name="octContainer"></ng-icon>
+            <ng-icon class="text-stone-50" name="octContainer"></ng-icon>
         </div>
     }
 }

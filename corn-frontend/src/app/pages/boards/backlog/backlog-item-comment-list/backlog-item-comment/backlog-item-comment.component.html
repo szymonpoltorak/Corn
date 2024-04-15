@@ -1,0 +1,22 @@
+<div class="flex flex-col justify-center items-center">
+    <div class="flex flex-row justify-start items-center w-full">
+        <div class="w-8 h-8 mr-2">
+            <app-user-avatar [user]="comment.user"></app-user-avatar>
+        </div>
+        <h2>commented on {{formatDate(comment.commentTime)}} (lastEdit: {{formatDate(comment.lastEditTime)}}) :</h2>
+    </div>
+
+    <form [formGroup]="commentForm" class="w-full">
+        <mat-form-field class="w-full">
+            <textarea rows="1" [cdkTextareaAutosize]="true" [cdkAutosizeMaxRows]="1" [readonly]="!isEditing" matInput #textArea maxLength="500" formControlName="comment"></textarea>
+            <button *ngIf="canEdit()" [disabled]="commentForm.controls['comment'].invalid" type="button" mat-icon-button matSuffix (click)="isEditing = !isEditing">
+                <ng-icon class="text-amber-400" [name]="isEditing ? 'matDone' : 'matEdit'"></ng-icon>
+            </button>
+            @if(isEditing) {
+                <mat-hint align="end">{{textArea.value.length}} / {{textArea.maxLength}}</mat-hint>
+            }
+        </mat-form-field>
+    </form>
+
+
+</div>

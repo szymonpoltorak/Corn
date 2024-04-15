@@ -1,0 +1,131 @@
+<mat-dialog-content class="h-full">
+    <form [formGroup]="itemForm" class="flex flex-col justify-center items-center">
+        <mat-form-field class="mb-3 w-full">
+            <mat-label>Title</mat-label>
+            <input matInput maxlength="100" #title [readonly]="!isEditingTitle" formControlName="title">
+            <button [disabled]="itemForm.controls['title'].invalid" type="button" class="text-amber-400" mat-icon-button matSuffix (click)="isEditingTitle = !isEditingTitle">
+                <ng-icon class="text-amber-400" [name]="isEditingTitle ? 'matDone' : 'matEdit'"></ng-icon>
+            </button>
+            @if(isEditingTitle) {
+                <mat-hint align="end">{{title.value.length}} / {{title.maxLength}}</mat-hint>
+            }
+            @if(itemForm.controls['title'].hasError('required')) {
+                <mat-error>Title is <strong>required</strong></mat-error>
+            } @else if (itemForm.controls['title'].hasError('maxlength')) {
+                <mat-error>Title cannot be more than <strong>100</strong> characters</mat-error>
+            } @else if (itemForm.controls['title'].hasError('notWhitespace')) {
+                <mat-error>Title cannot be only <strong>whitespace</strong></mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="mb-3 w-full">
+            <mat-label>Description</mat-label>
+            <textarea rows="5" [cdkAutosizeMaxRows]="5" [readonly]="!isEditingDescription" [cdkTextareaAutosize]="true" matInput #textArea maxlength="500" formControlName="description"></textarea>
+            <button [disabled]="itemForm.controls['description'].invalid" type="button" class="text-amber-400" mat-icon-button matSuffix (click)="isEditingDescription = !isEditingDescription">
+                <ng-icon class="text-amber-400" [name]="isEditingDescription ? 'matDone' : 'matEdit'"></ng-icon>
+            </button>
+            @if(isEditingDescription) {
+                <mat-hint align="end">{{textArea.textLength}} / {{textArea.maxLength}}</mat-hint>
+            }
+
+            @if(itemForm.controls['description'].hasError('required')) {
+                <mat-error>Description is <strong>required</strong></mat-error>
+            } @else if (itemForm.controls['description'].hasError('maxlength')) {
+                <mat-error>Description cannot be more than <strong>500</strong> characters</mat-error>
+            } @else if (itemForm.controls['description'].hasError('notWhitespace')) {
+                <mat-error>Description cannot be only <strong>whitespace</strong></mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="mb-3 w-full">
+            <mat-label>Sprint</mat-label>
+
+            <mat-select [(value)]="tmpItem.sprintId" #sprintSelect formControlName="sprint">
+                <mat-option [value]="-1">
+                    <span class="text-gray-400">None</span>
+                </mat-option>
+                @for (sprint of sprints; track sprint) {
+                    <mat-option [value]="sprint.sprintId">
+                        {{ sprint.sprintName }}
+                    </mat-option>
+                }
+            </mat-select>
+
+        </mat-form-field>
+
+        <div class="flex flex-row justify-between items-center w-full">
+            <mat-form-field class="w-44 flex items-center justify-center">
+                <mat-label>Type</mat-label>
+
+                <mat-select [(value)]="tmpItem.itemType" formControlName="type">
+                    <mat-select-trigger>
+                        <div class="flex flex-row items-center space-x-2">
+                            <app-backlog-type [backlogItemType]="tmpItem.itemType"></app-backlog-type>
+
+                            <h3>{{tmpItem.itemType.charAt(0) + tmpItem.itemType.substring(1).toLowerCase()}}</h3>
+                        </div>
+                    </mat-select-trigger>
+                    @for (type of types; track type) {
+                        <mat-option [value]="type">
+                            <div class="flex flex-row items-center justify-center space-x-2">
+                                <app-backlog-type [backlogItemType]="type"></app-backlog-type>
+
+                                <h3>{{type.charAt(0) + type.substring(1).toLowerCase()}}</h3>
+                            </div>
+
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <div class="flex flex-col items-center justify-center">
+                <h2>Status: </h2>
+                <app-status-select [backlogItem]="tmpItem"></app-status-select>
+            </div>
+
+            <mat-form-field>
+                <mat-label>Assignee</mat-label>
+
+                <mat-select (selectionChange)="changeAssignee($event)" [value]="selectedAssignee.userId" #assigneeSelect formControlName="assignee">
+                    <mat-select-trigger>
+                        <div class="flex gap-2 items-center">
+                            <app-user-avatar class="h-9 w-9" [user]="selectedAssignee" [isEmpty]="selectedAssignee === unassigned"></app-user-avatar>
+
+                            @if(selectedAssignee !== unassigned) {
+                                {{selectedAssignee.name}} {{selectedAssignee.surname}}
+                            } @else {
+                                <span class="text-gray-400">Unassigned</span>
+                            }
+                        </div>
+                    </mat-select-trigger>
+                    <mat-option [value]="-1">
+                        <div class="flex gap-2 items-center">
+                            <app-user-avatar class="h-9 w-9" [isEmpty]="true"></app-user-avatar>
+
+                            <span class="text-gray-400">Unassigned</span>
+                        </div>
+                    </mat-option>
+                    @for (user of users; track user) {
+                        <mat-option [value]="user.userId">
+                            <div class="flex gap-2 items-center">
+                                <app-user-avatar class="h-9 w-9" [user]="user"></app-user-avatar>
+
+                                {{ user.name }} {{ user.surname }}
+                            </div>
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+
+    <app-backlog-item-comment-list [comments]="comments"></app-backlog-item-comment-list>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="flex flex-row justify-between items-center">
+        <button mat-button mat-dialog-close>Cancel</button>
+<!--        <button mat-button [disabled]="itemForm.invalid" (click)="submitForm()">Submit</button>-->
+    </div>
+</mat-dialog-actions>
