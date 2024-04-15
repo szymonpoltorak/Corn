@@ -75,7 +75,7 @@ class SprintTest {
     @Test
     final void testEquals_differentStartDateSameID() {
         // Given
-        Sprint sprint = Sprint.builder().sprintStartDate(LocalDate.now()).sprintId(1L).build();
+        Sprint sprint = Sprint.builder().startDate(LocalDate.now()).sprintId(1L).build();
         Sprint sprint2 = Sprint.builder().sprintId(1L).build();
 
         // When-Then
@@ -164,8 +164,8 @@ class SprintTest {
         // given
         Sprint sprint = new Sprint();
         sprint.setProject(null);
-        sprint.setSprintStartDate(null);
-        sprint.setSprintEndDate(null);
+        sprint.setStartDate(null);
+        sprint.setEndDate(null);
 
         // when
 
@@ -239,7 +239,7 @@ class SprintTest {
     final void test_shouldReturnFutureOrPresentViolationOnPastStartDate() {
         // given
         Sprint sprint = new Sprint();
-        sprint.setSprintStartDate(LocalDate.now().minusDays(2L));
+        sprint.setStartDate(LocalDate.now().minusDays(2L));
 
         // when
 
@@ -256,7 +256,7 @@ class SprintTest {
     final void test_shouldReturnFutureViolationOnPastEndDate() {
         // given
         Sprint sprint = new Sprint();
-        sprint.setSprintEndDate(LocalDate.now().minusDays(2L));
+        sprint.setEndDate(LocalDate.now().minusDays(2L));
 
         // when
 
@@ -272,7 +272,7 @@ class SprintTest {
     final void test_shouldReturnFutureViolationOnPresentEndDate() {
         // given
         Sprint sprint = new Sprint();
-        sprint.setSprintEndDate(LocalDate.now());
+        sprint.setEndDate(LocalDate.now());
 
         // when
 
@@ -288,8 +288,8 @@ class SprintTest {
     final void test_shouldReturnLaterThanViolationOnStartDateLaterThanEndDate() {
         // given
         Sprint sprint = createSampleSprint();
-        sprint.setSprintStartDate(LocalDate.now().plusDays(5L));
-        sprint.setSprintEndDate(LocalDate.now().plusDays(2L));
+        sprint.setStartDate(LocalDate.now().plusDays(5L));
+        sprint.setEndDate(LocalDate.now().plusDays(2L));
 
         // when
         Set<ConstraintViolation<Sprint>> violations = validator.validate(sprint);
@@ -320,7 +320,7 @@ class SprintTest {
     void givenSprintWithStartDateInPast_whenIsStartBeforeFutureDate_thenReturnsTrue() {
         // Given
         Sprint sprint = Sprint.builder()
-                .sprintStartDate(LocalDate.now().minusDays(1))
+                .startDate(LocalDate.now().minusDays(1))
                 .build();
 
         // When
@@ -334,7 +334,7 @@ class SprintTest {
     void givenSprintWithStartDateInFuture_whenIsStartBeforePastDate_thenReturnsFalse() {
         // Given
         Sprint sprint = Sprint.builder()
-                .sprintStartDate(LocalDate.now().plusDays(1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         // When
@@ -348,7 +348,7 @@ class SprintTest {
     void givenSprintWithStartDateInPast_whenIsStartAfterFutureDate_thenReturnsFalse() {
         // Given
         Sprint sprint = Sprint.builder()
-                .sprintStartDate(LocalDate.now().minusDays(1))
+                .startDate(LocalDate.now().minusDays(1))
                 .build();
 
         // When
@@ -362,7 +362,7 @@ class SprintTest {
     void givenSprintWithStartDateInFuture_whenIsStartAfterPastDate_thenReturnsTrue() {
         // Given
         Sprint sprint = Sprint.builder()
-                .sprintStartDate(LocalDate.now().plusDays(1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         // When
@@ -377,7 +377,7 @@ class SprintTest {
     void givenSprintWithEndDateInPast_whenIsEndAfterFutureDate_thenReturnsTrue() {
         // Given
         Sprint sprint = Sprint.builder()
-                .sprintEndDate(LocalDate.now().minusDays(1))
+                .endDate(LocalDate.now().minusDays(1))
                 .build();
 
         // When
@@ -391,7 +391,7 @@ class SprintTest {
     void givenSprintWithEndDateInFuture_whenIsEndAfterPastDate_thenReturnsFalse() {
         // Given
         Sprint sprint = Sprint.builder()
-                .sprintEndDate(LocalDate.now().plusDays(1))
+                .endDate(LocalDate.now().plusDays(1))
                 .build();
 
         // When
@@ -407,8 +407,8 @@ class SprintTest {
                 .project(new Project())
                 .sprintName("Sample Sprint")
                 .sprintDescription("Sample description")
-                .sprintStartDate(LocalDate.now())
-                .sprintEndDate(LocalDate.now().plusDays(7L))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(7L))
                 .build();
     }
 

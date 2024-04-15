@@ -94,11 +94,15 @@ public class PlaceholderData implements CommandLineRunner {
         List<ProjectMember> members =  projectMemberRepository.findAllByProject(project, Pageable.ofSize(users.size()))
                 .stream().toList();
 
-        for(int i = 0; i < 30; i++) {
+        LocalDate prevDate = LocalDate.now();
+
+        for (int i = 0; i < 30; i++) {
             sprintService.addNewSprint(new SprintRequest(
-                    project.getProjectId(), String.format("Sprint %d", i), LocalDate.now(), LocalDate.now().plusDays(7),
+                    project.getProjectId(), String.format("Sprint %d", i), prevDate, prevDate.plusDays(7),
                     String.format("Sprintd %d description", i)
             ), projectOwner);
+
+            prevDate = prevDate.plusDays(8L);
         }
 
         List<Sprint> allSprints = sprintRepository.findAll();
