@@ -8,8 +8,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { CustomValidators } from "@core/validators/custom-validators";
 import { MatIconButton } from "@angular/material/button";
 import { NgIcon, provideIcons } from "@ng-icons/core";
-import { matDone, matEdit } from "@ng-icons/material-icons/baseline";
+import { matDelete, matDone, matEdit } from "@ng-icons/material-icons/baseline";
 import { NgIf } from "@angular/common";
+import { MatTooltip } from "@angular/material/tooltip";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: 'app-backlog-item-comment',
@@ -25,22 +28,30 @@ import { NgIf } from "@angular/common";
         MatSuffix,
         NgIcon,
         NgIf,
+        MatTooltip,
+        MatMenuTrigger,
+        MatIcon,
+        MatMenu,
+        MatMenuItem,
     ],
     templateUrl: './backlog-item-comment.component.html',
     styleUrl: './backlog-item-comment.component.scss',
-    providers: [provideIcons({ matEdit, matDone })],
+    providers: [provideIcons({ matEdit, matDone, matDelete })],
 })
 export class BacklogItemCommentComponent implements OnInit {
 
     @Input() comment!: BacklogItemComment;
 
     isEditing: boolean = false;
+    edited = false;
 
     commentForm!: FormGroup;
 
     ngOnInit(): void {
         this.comment.commentTime = new Date(this.comment.commentTime);
         this.comment.lastEditTime = new Date(this.comment.lastEditTime);
+
+        this.edited = this.comment.commentTime.getTime() !== this.comment.lastEditTime.getTime();
 
         this.commentForm = new FormGroup({
             comment: new FormControl(this.comment.comment, [Validators.required, CustomValidators.notWhitespace()]),

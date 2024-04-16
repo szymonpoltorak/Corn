@@ -115,9 +115,11 @@ public class PlaceholderData implements CommandLineRunner {
             for (int j = 0; j < random.nextInt(4); j++) {
                 long backlogItemId = drawRandom(backlogItems).getBacklogItemId();
                 User commenter = drawRandom(users);
-                backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
-                        drawRandom(SAMPLE_COMMENTS), backlogItemId
-                ), commenter);
+                for(int k = 0; k < 5; k++) {
+                    backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
+                            drawRandom(SAMPLE_COMMENTS), backlogItemId
+                    ), commenter);
+                }
             }
         }
 
