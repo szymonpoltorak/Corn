@@ -14,7 +14,7 @@ import {
     MatExpansionPanelTitle,
 } from "@angular/material/expansion";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
-import { NgForOf } from "@angular/common";
+import { DatePipe, NgForOf } from "@angular/common";
 
 @Component({
     selector: 'app-backlog',
@@ -27,7 +27,8 @@ import { NgForOf } from "@angular/common";
         MatExpansionPanelDescription,
         MatExpansionPanelHeader,
         NgForOf,
-        BacklogItemTableComponent
+        BacklogItemTableComponent,
+        DatePipe
     ],
     templateUrl: './backlog.component.html',
     styleUrl: './backlog.component.scss',
@@ -35,24 +36,25 @@ import { NgForOf } from "@angular/common";
 })
 export class BacklogComponent implements OnInit {
 
+    @ViewChildren(BacklogItemTableComponent) backlogItemTableComponents!: QueryList<BacklogItemTableComponent>;
+    sprints: Sprint[] = [];
+    sprintIds: string[] = [];
+
     constructor(private dialog: MatDialog,
                 private backlogItemService: BacklogItemService,
                 private sprintService: SprintService) {
     }
 
-    sprints: Sprint[] = [];
-    sprintIds: string[] = [];
-
     ngOnInit(): void {
-        //TODO get real projectId from somewhere
-        this.sprintService.getCurrentAndFutureSprints().pipe(take(1)).subscribe((sprints) => {
-            this.sprints = sprints;
-            this.sprintIds = sprints.map(sprint => sprint.sprintId.toString());
-            this.sprintIds.push('-1')
-        })
+        this.sprintService
+            .getCurrentAndFutureSprints()
+            .pipe(take(1))
+            .subscribe((sprints) => {
+                this.sprints = sprints;
+                this.sprintIds = sprints.map(sprint => sprint.sprintId.toString());
+                this.sprintIds.push('-1');
+            })
     }
-
-    @ViewChildren(BacklogItemTableComponent) backlogItemTableComponents!: QueryList<BacklogItemTableComponent>;
 
     showItemForm(): void {
         const dialogRef = this.dialog.open(BacklogFormComponent, {
@@ -72,7 +74,8 @@ export class BacklogComponent implements OnInit {
                 result.type
             ).pipe(take(1)).subscribe((newItem) => {
                 const table: BacklogItemTableComponent | undefined = this.findBacklogItemTableById(newItem.sprintId.toString());
-                if(table) {
+
+                if (table) {
                     table.fetchBacklogItems();
                 }
             })
