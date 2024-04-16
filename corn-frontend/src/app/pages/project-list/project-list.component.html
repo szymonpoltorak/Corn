@@ -3,7 +3,9 @@
 <div class="project-list">
     <mat-grid-list [cols]="cols">
         @for(project of projects; track project) {
-            <mat-grid-tile><app-project [project]="project"></app-project></mat-grid-tile>
+            <mat-grid-tile>
+                <app-project [project]="project"></app-project>
+            </mat-grid-tile>
         }
     </mat-grid-list>
 </div>

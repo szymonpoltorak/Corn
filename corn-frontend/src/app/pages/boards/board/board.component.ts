@@ -46,7 +46,8 @@ export class BoardComponent implements OnInit {
     constructor(
         protected readonly modelService: BoardModelService,
         protected readonly slicesModelService: SlicesModelService<GroupingMetadata>,
-    ) { }
+    ) {
+    }
 
     ngOnInit(): void {
         this.modelService.modelChangeHandler = () => {

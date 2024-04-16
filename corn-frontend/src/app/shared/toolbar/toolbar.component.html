@@ -17,6 +17,14 @@
                 aria-label="Go to projects">
             <mat-icon>apps</mat-icon>
         </button>
+    } @else {
+        <button mat-icon-button
+                [routerLink]="RouterPaths.PROJECT_LIST_DIRECT_PATH"
+                class="center"
+                matTooltip="Add new project"
+                aria-label="Add new project">
+            <mat-icon>add</mat-icon>
+        </button>
     }
 
     @if (isLoggedIn && userProfile) {
