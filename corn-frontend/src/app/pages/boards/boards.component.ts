@@ -42,7 +42,7 @@ import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
 })
 export class BoardsComponent implements OnInit {
 
-    @Input() sidebarShown: boolean = true;
+    @Input() sidebarShown: boolean = false;
     @Input() projectName: string = 'Your Project';
 
     selected: string = '';

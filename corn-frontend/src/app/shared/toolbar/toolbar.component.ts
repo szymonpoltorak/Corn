@@ -34,7 +34,7 @@ export class ToolbarComponent implements OnInit {
     userProfile ?: KeycloakProfile;
     isLoggedIn: boolean = false;
     @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-    sidebarShown: boolean = true;
+    sidebarShown: boolean = false;
 
     constructor(private keycloak: KeycloakService,
                 private router: Router,
