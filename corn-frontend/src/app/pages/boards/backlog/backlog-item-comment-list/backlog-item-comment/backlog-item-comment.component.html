@@ -28,7 +28,7 @@
                         </div>
                     </button>
 
-                    <button mat-menu-item type="button">
+                    <button mat-menu-item type="button" (click)="deleteComment()">
                         <div class="flex flex-row items-center">
                             <div class="w-5 h-5 mr-2">
                                 <ng-icon class="text-red-600" name="matDelete"></ng-icon>
@@ -53,7 +53,7 @@
                     <div class="flex flex-row justify-end items-center w-4/12">
                         <div class="ml-5">
                             <button mat-raised-button color="secondary" (click)="isEditing = !isEditing">Cancel</button>
-                            <button mat-raised-button color="primary" [disabled]="commentControl.invalid" (click)="isEditing = !isEditing">Submit</button>
+                            <button mat-raised-button color="primary" [disabled]="commentControl.invalid" (click)="editComment()">Submit</button>
                         </div>
                     </div>
                 </div>

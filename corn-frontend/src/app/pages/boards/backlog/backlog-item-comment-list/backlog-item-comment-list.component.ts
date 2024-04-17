@@ -35,12 +35,7 @@ export class BacklogItemCommentListComponent implements OnInit, AfterViewInit, O
     }
 
     ngOnInit(): void {
-        this.commentService.getAllByBacklogItemId(this.backlogItemId, this.commentsPageNumber).pipe(take(1)).subscribe(
-            comments => {
-                this.comments = comments.comments;
-                this.totalComments = comments.totalNumber;
-            }
-        )
+        this.getAllComments();
     }
 
     ngAfterViewInit(): void {
@@ -53,6 +48,15 @@ export class BacklogItemCommentListComponent implements OnInit, AfterViewInit, O
                         this.totalComments = comments.totalNumber;
                     }
                 )
+            }
+        )
+    }
+
+    getAllComments(): void {
+        this.commentService.getAllByBacklogItemId(this.backlogItemId, this.commentsPageNumber).pipe(take(1)).subscribe(
+            comments => {
+                this.comments = comments.comments;
+                this.totalComments = comments.totalNumber;
             }
         )
     }

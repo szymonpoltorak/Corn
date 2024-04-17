@@ -1,5 +1,5 @@
 @for (comment of comments; track comment) {
-    <app-backlog-item-comment [comment]="comment"></app-backlog-item-comment>
+    <app-backlog-item-comment [comment]="comment" (commentDeleted)="getAllComments()"></app-backlog-item-comment>
 }
 <mat-paginator [length]="totalComments"
                [pageSize]="3"

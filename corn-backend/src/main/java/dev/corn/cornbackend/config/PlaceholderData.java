@@ -121,7 +121,7 @@ public class PlaceholderData implements CommandLineRunner {
                     ), commenter);
                 }
                 backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
-                       LONG_STRING, backlogItemId),commenter);
+                       LONG_STRING, backlogItemId),users.get(4));
             }
         }
 

@@ -30,9 +30,10 @@ export class BacklogItemCommentService {
     }
 
     updateComment(commentId: number, comment: string): Observable<BacklogItemComment> {
-        return this.http.put<BacklogItemComment>(ApiUrl.UPDATE_COMMENT, {
-            commentId: commentId,
-            comment: comment
+        return this.http.put<BacklogItemComment>(ApiUrl.UPDATE_COMMENT, comment, {
+            params: {
+                commentId: commentId
+            }
         })
     }
 

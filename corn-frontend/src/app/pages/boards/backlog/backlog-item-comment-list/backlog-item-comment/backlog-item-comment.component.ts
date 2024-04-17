@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comment";
 import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";
 import { MatError, MatFormField, MatHint, MatSuffix } from "@angular/material/form-field";
@@ -13,6 +13,10 @@ import { NgIf } from "@angular/common";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatIcon } from "@angular/material/icon";
+import {
+    BacklogItemCommentService
+} from "@core/services/boards/backlog/backlog-item-comment/backlog-item-comment.service";
+import { take } from "rxjs";
 
 @Component({
     selector: 'app-backlog-item-comment',
@@ -43,21 +47,27 @@ import { MatIcon } from "@angular/material/icon";
 export class BacklogItemCommentComponent implements OnInit {
 
     @Input() comment!: BacklogItemComment;
+    @Output() commentDeleted: EventEmitter<void> = new EventEmitter<void>();
 
     isEditing: boolean = false;
     edited = false;
 
-
     commentControl!: FormControl;
 
+    constructor(private commentService: BacklogItemCommentService) {}
+
     ngOnInit(): void {
+        this.prepareComment();
+
+        this.commentControl =  new FormControl(this.comment.comment,
+            [Validators.required, CustomValidators.notWhitespace()]);
+    }
+
+    prepareComment(): void {
         this.comment.commentTime = new Date(this.comment.commentTime);
         this.comment.lastEditTime = new Date(this.comment.lastEditTime);
 
         this.edited = this.comment.commentTime.getTime() !== this.comment.lastEditTime.getTime();
-
-        this.commentControl =  new FormControl(this.comment.comment,
-            [Validators.required, CustomValidators.notWhitespace()]);
     }
 
     canEdit(): boolean {
@@ -65,8 +75,26 @@ export class BacklogItemCommentComponent implements OnInit {
       return true;
     }
 
+    editComment(): void {
+        if(this.commentControl.invalid) {
+            return;
+        }
+
+        this.isEditing = false;
+        this.commentService.updateComment(this.comment.backlogItemCommentId, this.commentControl.value)
+            .pipe(take(1))
+            .subscribe((updatedComment: BacklogItemComment) => {
+                this.comment.comment = updatedComment.comment;
+                this.prepareComment();
+            });
+    }
+
     deleteComment(): void {
-        //TODO implement delete comment
+        this.commentService.deleteComment(this.comment.backlogItemCommentId)
+            .pipe(take(1))
+            .subscribe(() => {
+                this.commentDeleted.emit();
+            });
     }
 
     formatDate(date: Date): string {
