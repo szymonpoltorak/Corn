@@ -15,27 +15,51 @@
                 </div>
             </div>
             <div class="flex flex-row justify-end items-center w-1/2">
-                <button *ngIf="canEdit()" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <button *ngIf="canEdit() && !isEditing" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                     <mat-icon class="text-amber-400">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item [disabled]="commentForm.controls['comment'].invalid" type="button" matSuffix (click)="isEditing = !isEditing">
-                        <ng-icon class="text-amber-400 w-5 h-5" name='matEdit'></ng-icon>
-                        <span>Edit</span>
+                    <button mat-menu-item type="button" (click)="isEditing = !isEditing">
+                        <div class="flex flex-row items-center">
+                            <div class="w-5 h-5 mr-2">
+                                <ng-icon class="text-amber-400" name='matEdit'></ng-icon>
+                            </div>
+                            <span>Edit</span>
+                        </div>
                     </button>
-                    <button mat-menu-item disabled>
-                        <mat-icon>voicemail</mat-icon>
-                        <span>Check voice mail</span>
-                    </button>
-                    <button mat-menu-item>
-                        <mat-icon>notifications_off</mat-icon>
-                        <span>Disable alerts</span>
+
+                    <button mat-menu-item type="button">
+                        <div class="flex flex-row items-center">
+                            <div class="w-5 h-5 mr-2">
+                                <ng-icon class="text-red-600" name="matDelete"></ng-icon>
+                            </div>
+                            <span>Delete</span>
+                        </div>
                     </button>
                 </mat-menu>
             </div>
         </div>
-        <div class="flex flex-row">
-            <h2>{{comment.comment}}</h2>
+        <div class="flex flex-col w-full">
+            @if(isEditing) {
+                <mat-form-field class="w-full">
+                    <textarea rows="3" cols="200" matInput maxlength="500" [formControl]="commentControl" [value]="comment.comment"></textarea>
+                </mat-form-field>
+                <div class="flex flex-row items-center w-full">
+                    <div class="flex flex-row justify-start items-center w-8/12">
+                        @if(commentControl.invalid) {
+                            <mat-error>Comment must be between 1 and 500 characters and cannot contain only whitespace</mat-error>
+                        }
+                    </div>
+                    <div class="flex flex-row justify-end items-center w-4/12">
+                        <div class="ml-5">
+                            <button mat-raised-button color="secondary" (click)="isEditing = !isEditing">Cancel</button>
+                            <button mat-raised-button color="primary" [disabled]="commentControl.invalid" (click)="isEditing = !isEditing">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            } @else {
+                <h2>{{comment.comment}}</h2>
+            }
         </div>
     </div>
 </div>

@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comment";
 import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";
-import { MatFormField, MatHint, MatSuffix } from "@angular/material/form-field";
+import { MatError, MatFormField, MatHint, MatSuffix } from "@angular/material/form-field";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { MatInput } from "@angular/material/input";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CustomValidators } from "@core/validators/custom-validators";
-import { MatIconButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { matDelete, matDone, matEdit } from "@ng-icons/material-icons/baseline";
 import { NgIf } from "@angular/common";
@@ -33,6 +33,8 @@ import { MatIcon } from "@angular/material/icon";
         MatIcon,
         MatMenu,
         MatMenuItem,
+        MatButton,
+        MatError,
     ],
     templateUrl: './backlog-item-comment.component.html',
     styleUrl: './backlog-item-comment.component.scss',
@@ -45,7 +47,8 @@ export class BacklogItemCommentComponent implements OnInit {
     isEditing: boolean = false;
     edited = false;
 
-    commentForm!: FormGroup;
+
+    commentControl!: FormControl;
 
     ngOnInit(): void {
         this.comment.commentTime = new Date(this.comment.commentTime);
@@ -53,9 +56,8 @@ export class BacklogItemCommentComponent implements OnInit {
 
         this.edited = this.comment.commentTime.getTime() !== this.comment.lastEditTime.getTime();
 
-        this.commentForm = new FormGroup({
-            comment: new FormControl(this.comment.comment, [Validators.required, CustomValidators.notWhitespace()]),
-        });
+        this.commentControl =  new FormControl(this.comment.comment,
+            [Validators.required, CustomValidators.notWhitespace()]);
     }
 
     canEdit(): boolean {
@@ -81,6 +83,4 @@ export class BacklogItemCommentComponent implements OnInit {
 
         return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
-
-
 }
