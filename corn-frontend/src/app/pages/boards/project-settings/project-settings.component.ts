@@ -102,4 +102,8 @@ export class ProjectSettingsComponent implements OnInit {
                     });
             });
     }
+
+    deleteProject(): void {
+        // TODO: add deleting project after adding dialogs
+    }
 }
