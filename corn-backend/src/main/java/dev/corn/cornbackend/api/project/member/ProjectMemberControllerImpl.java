@@ -37,16 +37,16 @@ public class ProjectMemberControllerImpl implements ProjectMemberController {
     @Override
     @GetMapping(value = GET_MEMBERS_OF_PROJECT_MAPPING)
     public final List<UserResponse> getProjectMembers(@RequestParam long projectId,
-                                                               @RequestParam int page,
-                                                               @JwtAuthed User user) {
+                                                      @RequestParam int page,
+                                                      @JwtAuthed User user) {
         return projectMemberService.getProjectMembers(projectId, page, user);
     }
 
     @Override
     @DeleteMapping(value = REMOVE_MEMBER_FROM_PROJECT_MAPPING)
     public final UserResponse removeMemberFromProject(@RequestParam String username,
-                                                               @RequestParam long projectId,
-                                                               @JwtAuthed User user) {
+                                                      @RequestParam long projectId,
+                                                      @JwtAuthed User user) {
         return projectMemberService.removeMemberFromProject(username, projectId, user);
     }
 }

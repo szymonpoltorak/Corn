@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Project } from "@interfaces/boards/project";
 import { Observable } from "rxjs";
+import { User } from "@interfaces/boards/user";
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +32,15 @@ export class ProjectService {
         return this.http.put<Project>("/api/v1/project/updateProjectsName", {}, {
             params: {
                 name: newProjectName,
+                projectId: projectId
+            }
+        });
+    }
+
+    deleteMemberFromProject(username: string, projectId: number): Observable<User> {
+        return this.http.delete<User>("/api/v1/project/member/removeMember", {
+            params: {
+                username: username,
                 projectId: projectId
             }
         });
