@@ -172,7 +172,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
                     this.resultsLength = data.totalNumber;
                     return data.backlogItemResponseList;
                 }),
-                takeUntil(this.destroy$)
+                take(1)
             ).subscribe(data => {
             this.dataToDisplay = data;
 
@@ -184,6 +184,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
             if(newItem.sprintId == this.sprintId) {
                 let index: number = this.dataToDisplay.findIndex(item => item.backlogItemId == newItem.backlogItemId);
                 this.dataToDisplay[index] = newItem;
+                this.table.renderRows();
             } else {
                 this.fetchBacklogItems();
                 this.outputSprintChanged.emit(newItem.sprintId);

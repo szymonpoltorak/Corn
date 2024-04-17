@@ -48,6 +48,7 @@ export class BacklogComponent implements OnInit {
         //TODO get real projectId from somewhere
         this.sprintService.getCurrentAndFutureSprints(1).pipe(take(1)).subscribe((sprints) => {
             this.sprints = sprints;
+            console.log(this.sprints);
             this.sprintIds = sprints.map(sprint => sprint.sprintId.toString());
             this.sprintIds.push('-1')
         })

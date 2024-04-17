@@ -231,6 +231,7 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
         this.tmpItem.title = this.itemForm.get('title')!.value;
         this.tmpItem.description = this.itemForm.get('description')!.value;
         this.tmpItem.assignee = this.selectedAssignee;
+        console.log(this.tmpItem);
         this.dialogRef.close(this.tmpItem);
     }
 
