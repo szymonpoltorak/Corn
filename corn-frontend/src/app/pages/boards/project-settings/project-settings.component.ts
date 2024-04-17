@@ -97,7 +97,7 @@ export class ProjectSettingsComponent implements OnInit {
                     return;
                 }
                 this.projectService
-                    .createNewProject(newProjectName)
+                    .updateProjectName(newProjectName, this.storage.getValueFromStorage(StorageKey.PROJECT_ID))
                     .pipe(take(1))
                     .subscribe((project: Project) => {
                         this.storage.saveProject(project);

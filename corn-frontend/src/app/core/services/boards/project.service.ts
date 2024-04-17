@@ -26,4 +26,13 @@ export class ProjectService {
             }
         });
     }
+
+    updateProjectName(newProjectName: string, projectId: number): Observable<Project> {
+        return this.http.put<Project>("/api/v1/project/updateProjectsName", {}, {
+            params: {
+                name: newProjectName,
+                projectId: projectId
+            }
+        });
+    }
 }
