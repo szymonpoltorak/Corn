@@ -19,7 +19,6 @@ import { catchError, merge, Observable, of, startWith, Subject, switchMap, take,
 import { NgClass } from "@angular/common";
 import { map } from "rxjs/operators";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
-import { BacklogItemType } from "@core/enum/BacklogItemType";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { bootstrapBugFill } from "@ng-icons/bootstrap-icons";
 import { featherBook } from "@ng-icons/feather-icons";
@@ -42,7 +41,6 @@ import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
 import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
 import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
 import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
-import { StorageService } from "@core/services/storage.service";
 
 @Component({
     selector: 'app-backlog-item-table',

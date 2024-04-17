@@ -25,4 +25,8 @@ export class StorageService {
         localStorage.setItem(StorageKey.PROJECT_ID, project.projectId.toString());
         localStorage.setItem(StorageKey.PROJECT_NAME, project.name)
     }
+
+    save<T>(key: StorageKey, s: T): void {
+        localStorage.setItem(key, JSON.stringify(s));
+    }
 }

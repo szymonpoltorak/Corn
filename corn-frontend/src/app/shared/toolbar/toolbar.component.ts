@@ -10,6 +10,7 @@ import { Router, RouterLink } from "@angular/router";
 import { RouterPaths } from "@core/enum/RouterPaths";
 import { MatTooltip } from "@angular/material/tooltip";
 import { StorageService } from "@core/services/storage.service";
+import { StorageKey } from "@core/enum/storage-key.enum";
 
 @Component({
     selector: 'app-toolbar',
@@ -30,10 +31,11 @@ import { StorageService } from "@core/services/storage.service";
     styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent implements OnInit {
+    protected readonly RouterPaths = RouterPaths;
+    @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Input() isOnProjectRoute: boolean = false;
     userProfile ?: KeycloakProfile;
     isLoggedIn: boolean = false;
-    @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     sidebarShown: boolean = false;
 
     constructor(private keycloak: KeycloakService,
@@ -46,6 +48,8 @@ export class ToolbarComponent implements OnInit {
 
         if (this.isLoggedIn) {
             this.userProfile = await this.keycloak.loadUserProfile();
+
+            this.storage.save(StorageKey.CURRENT_USER, this.userProfile);
         } else {
             this.router.navigate([RouterPaths.HOME_DIRECT_PATH]);
         }
@@ -61,6 +65,4 @@ export class ToolbarComponent implements OnInit {
         this.storage.deleteProjectFromStorage();
         this.keycloak.logout();
     }
-
-    protected readonly RouterPaths = RouterPaths;
 }
