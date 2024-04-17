@@ -17,17 +17,6 @@ export class BacklogItemService {
                 private storage: StorageService) {
     }
 
-    getAllByProjectId(pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
-        return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_BY_PROJECT_ID, {
-            params: {
-                projectId: this.storage.getValueFromStorage(StorageKey.PROJECT_ID),
-                pageNumber: pageNumber,
-                sortBy: sortBy,
-                order: order
-            }
-        });
-    }
-
     getAllBySprintId(sprintId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
         return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_BY_SPRINT_ID, {
             params: {

@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
@@ -66,7 +67,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final List<UserResponse> getProjectMembers(long projectId, int page, User user) {
+    public final ProjectMemberList getProjectMembers(long projectId, int page, User user) {
         Pageable pageable = PageRequest.of(page, MEMBERS_PAGE_SIZE);
 
         log.info("Getting project members for projectId: {}", projectId);
@@ -79,10 +80,16 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
         log.info("Found projectMembers: {}", projectMembers.getTotalElements());
 
-        return projectMembers
+        List<UserResponse> projectMembersList = projectMembers
                 .stream()
                 .map(projectMemberMapper::mapProjectMememberToUserResponse)
                 .toList();
+
+        return ProjectMemberList
+                .builder()
+                .projectMembers(projectMembersList)
+                .totalNumber(projectMemberRepository.countByProjectProjectId(projectId))
+                .build();
     }
 
     @Override

@@ -1,4 +1,4 @@
-<div class="flex justify-center w-full min-h-[80vh]">
+<div class="flex justify-center w-full h-[80vh]">
     <mat-card class="p-5 w-[60em] flex justify-evenly">
         <div class="text-2xl font-semibold">{{ projectName }}</div>
 
@@ -73,7 +73,7 @@
                 </tr>
             </table>
 
-            <mat-paginator [pageSize]="15" aria-label="Select next page of project members">
+            <mat-paginator [pageSize]="20" [length]="totalNumber" aria-label="Select next page of project members">
             </mat-paginator>
         </div>
 

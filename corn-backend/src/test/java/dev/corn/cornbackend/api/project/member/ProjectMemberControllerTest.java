@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.ProjectMemberMapperImpl;
@@ -64,13 +65,13 @@ class ProjectMemberControllerTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        List<UserResponse> expected = List.of(MAPPER.mapProjectMememberToUserResponse(projectMember));
+        ProjectMemberList expected = new ProjectMemberList(List.of(MAPPER.mapProjectMememberToUserResponse(projectMember)), 0L);
 
         // when
         when(projectMemberService.getProjectMembers(projectId, 0, user))
                 .thenReturn(expected);
 
-        List<UserResponse> actual = projectMemberController.getProjectMembers(projectId, 0, user);
+        ProjectMemberList actual = projectMemberController.getProjectMembers(projectId, 0, user);
 
         // then
         assertEquals(expected, actual, "Should add assignee to project");

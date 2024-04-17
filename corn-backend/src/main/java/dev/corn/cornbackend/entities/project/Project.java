@@ -42,7 +42,6 @@ public class Project implements Jsonable {
     @NotBlank(message = ProjectConstants.PROJECT_NAME_BLANK_MSG)
     @Size(
             max = ProjectConstants.PROJECT_NAME_MAX_SIZE,
-            min = ProjectConstants.PROJECT_NAME_MIN_SIZE,
             message = ProjectConstants.PROJECT_NAME_WRONG_SIZE_MSG
     )
     private String name;

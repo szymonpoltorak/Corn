@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Project } from "@interfaces/boards/project";
 import { Observable } from "rxjs";
 import { User } from "@interfaces/boards/user";
+import { ProjectMemberList } from "@interfaces/boards/project-member-list.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -41,6 +42,15 @@ export class ProjectService {
         return this.http.delete<User>("/api/v1/project/member/removeMember", {
             params: {
                 username: username,
+                projectId: projectId
+            }
+        });
+    }
+
+    getProjectMembersOnPage(pageNumber: number, projectId: number): Observable<ProjectMemberList> {
+        return this.http.get<ProjectMemberList>("/api/v1/project/member/getMembers", {
+            params: {
+                page: pageNumber,
                 projectId: projectId
             }
         });

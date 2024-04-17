@@ -49,6 +49,9 @@ export class ProjectSettingsComponent implements OnInit {
     displayedColumns: string[] = ['fullName', 'username', 'deleteMember'];
     dataSource !: MatTableDataSource<User>;
     isProjectOwner: boolean = true;
+    pageNumber: number = 0;
+    projectId !: number;
+    totalNumber !: number;
 
     constructor(private storage: StorageService,
                 private projectService: ProjectService,
@@ -58,12 +61,20 @@ export class ProjectSettingsComponent implements OnInit {
     ngOnInit(): void {
         this.currentUser = JSON.parse(this.storage.getValueFromStorage(StorageKey.CURRENT_USER));
         this.projectName = this.storage.getValueFromStorage(StorageKey.PROJECT_NAME);
-        this.dataSource = new MatTableDataSource<User>([this.user]);
+        this.projectId = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
+
+        this.projectService
+            .getProjectMembersOnPage(this.pageNumber, this.projectId)
+            .pipe(take(1))
+            .subscribe(membersList => {
+                this.dataSource = new MatTableDataSource<User>(membersList.projectMembers);
+                this.totalNumber = membersList.totalNumber;
+            });
     }
 
     deleteMember(projectMember: User): void {
         this.projectService
-            .deleteMemberFromProject(projectMember.username, this.storage.getValueFromStorage(StorageKey.PROJECT_ID))
+            .deleteMemberFromProject(projectMember.username, this.projectId)
             .pipe(take(1))
             .subscribe();
     }
@@ -82,7 +93,7 @@ export class ProjectSettingsComponent implements OnInit {
                     return;
                 }
                 this.projectService
-                    .updateProjectName(newProjectName, this.storage.getValueFromStorage(StorageKey.PROJECT_ID))
+                    .updateProjectName(newProjectName, this.projectId)
                     .pipe(take(1))
                     .subscribe((project: Project) => {
                         this.storage.saveProject(project);
