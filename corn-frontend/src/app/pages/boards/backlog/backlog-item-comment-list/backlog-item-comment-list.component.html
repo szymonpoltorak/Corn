@@ -1,3 +1,8 @@
 @for (comment of comments; track comment) {
     <app-backlog-item-comment [comment]="comment"></app-backlog-item-comment>
 }
+<mat-paginator [length]="totalComments"
+               [pageSize]="3"
+               [pageSizeOptions]="[3]"
+               aria-label="Select page">
+</mat-paginator>

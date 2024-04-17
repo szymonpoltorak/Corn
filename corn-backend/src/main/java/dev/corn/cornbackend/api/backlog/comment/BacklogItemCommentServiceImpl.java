@@ -39,7 +39,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
 
     private static final String GETTING_BACKLOG_ITEM_COMMENT_OF_ID = "Getting backlogItemComment of id: {}";
 
-    public static final int COMMENTS_PAGE_SIZE = 10;
+    public static final int COMMENTS_PAGE_SIZE = 3;
 
     @Override
     public final BacklogItemCommentResponse addNewComment(BacklogItemCommentRequest request, User user) {

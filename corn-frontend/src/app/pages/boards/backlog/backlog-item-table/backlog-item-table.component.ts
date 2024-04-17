@@ -84,8 +84,6 @@ import { UserService } from "@core/services/users/user.service";
 export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
 
     constructor(private backlogItemService: BacklogItemService,
-                private sprintService: SprintService,
-                private userService: UserService,
                 private backlogComponent: BacklogComponent,
                 private dialog: MatDialog) {
     }
@@ -94,7 +92,6 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
     @Input() sprintIds: string[] = [];
 
     dataToDisplay: BacklogItem[] = [];
-
 
     displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
 

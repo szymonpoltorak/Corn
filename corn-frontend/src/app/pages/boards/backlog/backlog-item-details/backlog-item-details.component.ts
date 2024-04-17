@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButton, MatIconButton } from "@angular/material/button";
 import {
     MAT_DIALOG_DATA,
@@ -11,14 +11,20 @@ import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { Observable, of, Subject, take, takeUntil } from "rxjs";
 import { Sprint } from "@interfaces/boards/backlog/sprint";
 import { User } from "@interfaces/boards/user";
-import { MatError, MatFormField, MatInput, MatSuffix } from "@angular/material/input";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CustomValidators } from "@core/validators/custom-validators";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { matDone, matEdit } from "@ng-icons/material-icons/baseline";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
-import { MatHint } from "@angular/material/form-field";
-import { MatLabel, MatOption, MatSelect, MatSelectChange, MatSelectTrigger } from "@angular/material/select";
+import { MatError, MatHint, MatSuffix } from "@angular/material/form-field";
+import {
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    MatSelectChange,
+    MatSelectTrigger
+} from "@angular/material/select";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
 import { CdkScrollable, ScrollDispatcher } from "@angular/cdk/scrolling";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
@@ -35,6 +41,7 @@ import {
     BacklogItemCommentService
 } from "@core/services/boards/backlog/backlog-item-comment/backlog-item-comment.service";
 import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comment";
+import { MatInput } from "@angular/material/input";
 
 @Component({
     selector: 'app-backlog-item-details',
@@ -69,23 +76,18 @@ import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comm
     templateUrl: './backlog-item-details.component.html',
     styleUrl: './backlog-item-details.component.scss'
 })
-export class BacklogItemDetailsComponent implements OnInit, AfterViewInit {
+export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: BacklogItem,
                 public dialogRef: MatDialogRef<BacklogItemDetailsComponent>,
                 private sprintService: SprintService,
                 private userService: UserService,
                 private scrollDispatcher: ScrollDispatcher,
-                private ngZone: NgZone,
-                private commentService: BacklogItemCommentService) {
+                private ngZone: NgZone) {
     }
 
-    isLoadingComments: boolean = false;
     isEditingTitle: boolean = false;
     isEditingDescription: boolean = false;
-    comments: BacklogItemComment[] = []
-    commentsPageNumber: number = 0;
-    totalComments: number = 0;
 
     tmpItem!: BacklogItem;
 
@@ -131,13 +133,6 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit {
             sprintId: this.data.sprintId,
             projectId: this.data.projectId,
         }
-
-        this.commentService.getAllByBacklogItemId(this.tmpItem.backlogItemId, this.commentsPageNumber).pipe(take(1)).subscribe(
-            comments => {
-                this.comments = comments.comments;
-                this.totalComments = comments.totalNumber;
-            }
-        )
 
         this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(
             sprints => {
@@ -227,6 +222,11 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit {
 
     saveItem() {
         this.dialogRef.close(this.tmpItem);
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
 

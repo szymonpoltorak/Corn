@@ -1,40 +1,41 @@
 <div class="border-2 rounded-lg border-amber-400/10 h-max">
     <div class="flex flex-col justify-start m-4">
-        <div class="flex flex-row justify-start items-center w-full">
-            <div class="w-8 h-8 mr-2 mb-1">
-                <app-user-avatar [user]="comment.user"></app-user-avatar>
+        <div class="flex flex-row justify-between items-center w-full">
+            <div class="flex flex-row justify-start items-center w-1/2">
+                <div class="w-8 h-8 mr-2 mb-1">
+                    <app-user-avatar [user]="comment.user"></app-user-avatar>
+                </div>
+                <div class="flex flex-row">
+                    <h2>commented on {{formatDate(comment.commentTime)}}</h2>
+                    @if(edited) {
+                        <div class="ml-1" matTooltip="edited on {{formatDate(comment.lastEditTime)}}" [matTooltipPosition]="'above'">
+                            <h2>Edited</h2>
+                        </div>
+                    }
+                </div>
             </div>
-            <div class="flex flex-row">
-                <h2>commented on {{formatDate(comment.commentTime)}}</h2>
-                @if(edited) {
-                    <div class="ml-1" matTooltip="edited on {{formatDate(comment.lastEditTime)}}" [matTooltipPosition]="'above'">
-                        <h2>Edited</h2>
-                    </div>
-                }
+            <div class="flex flex-row justify-end items-center w-1/2">
+                <button *ngIf="canEdit()" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon class="text-amber-400">more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item [disabled]="commentForm.controls['comment'].invalid" type="button" matSuffix (click)="isEditing = !isEditing">
+                        <ng-icon class="text-amber-400 w-5 h-5" name='matEdit'></ng-icon>
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item disabled>
+                        <mat-icon>voicemail</mat-icon>
+                        <span>Check voice mail</span>
+                    </button>
+                    <button mat-menu-item>
+                        <mat-icon>notifications_off</mat-icon>
+                        <span>Disable alerts</span>
+                    </button>
+                </mat-menu>
             </div>
         </div>
         <div class="flex flex-row">
             <h2>{{comment.comment}}</h2>
-            <button *ngIf="canEdit()" [disabled]="commentForm.controls['comment'].invalid" type="button" mat-icon-button matSuffix (click)="isEditing = !isEditing">
-                <ng-icon class="text-amber-400" [name]="isEditing ? 'matDone' : 'matEdit'"></ng-icon>
-            </button>
-            <button *ngIf="canEdit()" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                <mat-icon class="text-amber-400">more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item [disabled]="commentForm.controls['comment'].invalid" type="button" matSuffix (click)="isEditing = !isEditing">
-                    <ng-icon class="text-amber-400 w-5 h-5" name='matEdit'></ng-icon>
-                    <span>Edit</span>
-                </button>
-                <button mat-menu-item disabled>
-                    <mat-icon>voicemail</mat-icon>
-                    <span>Check voice mail</span>
-                </button>
-                <button mat-menu-item>
-                    <mat-icon>notifications_off</mat-icon>
-                    <span>Disable alerts</span>
-                </button>
-            </mat-menu>
         </div>
     </div>
 </div>

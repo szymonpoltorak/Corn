@@ -120,6 +120,8 @@ public class PlaceholderData implements CommandLineRunner {
                             drawRandom(SAMPLE_COMMENTS), backlogItemId
                     ), commenter);
                 }
+                backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
+                       LONG_STRING, backlogItemId),commenter);
             }
         }
 
@@ -283,4 +285,12 @@ public class PlaceholderData implements CommandLineRunner {
             {"Upgrade CAPTCHA Security", "Enhance CAPTCHA security to prevent spam and abuse."},
             {"Implement Continuous Integration", "Introduce continuous integration for automated code testing and deployment."},
     };
+
+    private static final String LONG_STRING =
+            """
+            aaa very long string aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            hahahaha you though I was joking this string is reeeeaalllllyyyy loooooooooooooooooooooooooooooong and guess what
+            it ain't stopping dfsdkfbsfdkjsbdfkljdbflkjdsbflksdjbfskldjfblksdjbfklsjdbflkjsdbflkjsdbflksdbfjklsdfb
+            ok I'm done\n\n\n\n\n\n\nhaha just jk ok now I'm done
+            """;
 }
