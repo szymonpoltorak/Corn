@@ -33,6 +33,9 @@ export const theme = {
         },
         fontFamily: {
             'logo': ['Helvetica Neue', 'sans-serif'],
+        },
+        zIndex: {
+            "999": "999"
         }
     },
 };

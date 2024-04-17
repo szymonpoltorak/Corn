@@ -5,6 +5,9 @@ import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
 import { take } from "rxjs";
 import { ProjectService } from "@core/services/boards/project.service";
 import { Project } from "@interfaces/boards/project";
+import { MatFabButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
     selector: 'app-project-list',
@@ -14,6 +17,9 @@ import { Project } from "@interfaces/boards/project";
         MatGridList,
         MatGridTile,
         ToolbarComponent,
+        MatIcon,
+        MatFabButton,
+        MatTooltip
     ],
     templateUrl: './project-list.component.html',
     styleUrl: './project-list.component.scss'

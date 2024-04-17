@@ -12,3 +12,7 @@ mat-grid-list {
         min-width: calc(3 * 11em + 6em);
     }
 }
+
+.add-button {
+    @apply fixed z-999 right-10 bottom-6;
+}
