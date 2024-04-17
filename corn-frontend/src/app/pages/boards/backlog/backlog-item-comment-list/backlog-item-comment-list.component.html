@@ -1,8 +1,20 @@
-@for (comment of comments; track comment) {
-    <app-backlog-item-comment [comment]="comment" (commentDeleted)="getAllComments()"></app-backlog-item-comment>
-}
-<mat-paginator [length]="totalComments"
-               [pageSize]="3"
-               [pageSizeOptions]="[3]"
-               aria-label="Select page">
-</mat-paginator>
+<div class="flex flex-col w-full">
+    <mat-form-field class="w-full">
+        <textarea [formControl]="newComment" matInput placeholder="Add new comment..."></textarea>
+
+    </mat-form-field>
+    <div class="flex flex-row w-full justify-end items-center space-x-2 mb-4">
+        <button mat-raised-button color="secondary" (click)="resetNewComment()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="addNewComment()" [disabled]="newComment.invalid">Submit</button>
+    </div>
+
+    @for (comment of comments; track comment) {
+        <app-backlog-item-comment [comment]="comment" (commentDeleted)="getAllComments()"></app-backlog-item-comment>
+    }
+    <mat-paginator [length]="totalComments"
+                   [pageSize]="3"
+                   [pageSizeOptions]="[3]"
+                   aria-label="Select page">
+    </mat-paginator>
+</div>
+

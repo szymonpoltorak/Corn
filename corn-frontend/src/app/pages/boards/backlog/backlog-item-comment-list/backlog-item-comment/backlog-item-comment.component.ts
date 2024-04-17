@@ -84,7 +84,7 @@ export class BacklogItemCommentComponent implements OnInit {
         this.commentService.updateComment(this.comment.backlogItemCommentId, this.commentControl.value)
             .pipe(take(1))
             .subscribe((updatedComment: BacklogItemComment) => {
-                this.comment.comment = updatedComment.comment;
+                this.comment = updatedComment;
                 this.prepareComment();
             });
     }

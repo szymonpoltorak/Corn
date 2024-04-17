@@ -1,4 +1,13 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit, Output,
+    ViewChild
+} from '@angular/core';
 import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import {
@@ -90,6 +99,9 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
 
     @Input() sprintId: number = 0;
     @Input() sprintIds: string[] = [];
+    @Input() inputSprintChanged!: EventEmitter<number>
+
+    @Output() outputSprintChanged: EventEmitter<number> = new EventEmitter<number>
 
     dataToDisplay: BacklogItem[] = [];
 
@@ -115,6 +127,12 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
     protected readonly BacklogItemType = BacklogItemType;
 
     ngAfterViewInit(): void {
+        this.inputSprintChanged.pipe(takeUntil(this.destroy$)).subscribe((sprintId: number) => {
+            if(sprintId == this.sprintId) {
+                this.fetchBacklogItems();
+            }
+        });
+
         this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(
             () => (this.paginator.pageIndex = 0));
 
@@ -163,7 +181,13 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
 
     updateBacklogItem(item: BacklogItem): void {
         this.backlogItemService.updateBacklogItem(item).pipe(take(1)).subscribe((newItem) => {
-            this.dataToDisplay[this.dataToDisplay.indexOf(item)] = newItem;
+            if(newItem.sprintId == this.sprintId) {
+                let index: number = this.dataToDisplay.findIndex(item => item.backlogItemId == newItem.backlogItemId);
+                this.dataToDisplay[index] = newItem;
+            } else {
+                this.fetchBacklogItems();
+                this.outputSprintChanged.emit(newItem.sprintId);
+            }
         })
     }
 

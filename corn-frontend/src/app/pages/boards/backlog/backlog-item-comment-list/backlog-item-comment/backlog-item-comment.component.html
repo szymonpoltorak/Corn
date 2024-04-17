@@ -42,12 +42,14 @@
         <div class="flex flex-col w-full">
             @if(isEditing) {
                 <mat-form-field class="w-full">
-                    <textarea rows="3" cols="200" matInput maxlength="500" [formControl]="commentControl" [value]="comment.comment"></textarea>
+                    <textarea rows="3" cols="200" #textArea matInput maxlength="500" [formControl]="commentControl" [value]="comment.comment"></textarea>
                 </mat-form-field>
                 <div class="flex flex-row items-center w-full">
                     <div class="flex flex-row justify-start items-center w-8/12">
                         @if(commentControl.invalid) {
                             <mat-error>Comment must be between 1 and 500 characters and cannot contain only whitespace</mat-error>
+                        } @else {
+                            <mat-hint>{{textArea.textLength}} / {{textArea.maxLength}}</mat-hint>
                         }
                     </div>
                     <div class="flex flex-row justify-end items-center w-4/12">

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comment";
 import {
     BacklogItemCommentComponent
@@ -8,13 +8,21 @@ import {
 } from "@core/services/boards/backlog/backlog-item-comment/backlog-item-comment.service";
 import { pipe, Subject, take, takeUntil } from "rxjs";
 import { MatPaginator } from "@angular/material/paginator";
+import { MatFormField, MatInput } from "@angular/material/input";
+import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CustomValidators } from "@core/validators/custom-validators";
+import { MatButton } from "@angular/material/button";
 
 @Component({
     selector: 'app-backlog-item-comment-list',
     standalone: true,
     imports: [
         BacklogItemCommentComponent,
-        MatPaginator
+        MatPaginator,
+        MatInput,
+        MatFormField,
+        ReactiveFormsModule,
+        MatButton
     ],
     templateUrl: './backlog-item-comment-list.component.html',
     styleUrl: './backlog-item-comment-list.component.scss'
@@ -23,6 +31,9 @@ export class BacklogItemCommentListComponent implements OnInit, AfterViewInit, O
 
 
     @Input() backlogItemId!: number;
+
+    @Output() changedPage: EventEmitter<void> = new EventEmitter<void>;
+
     commentsPageNumber: number = 0;
     totalComments: number = 0;
     comments: BacklogItemComment[] = [];
@@ -30,6 +41,9 @@ export class BacklogItemCommentListComponent implements OnInit, AfterViewInit, O
     destroy$: Subject<void> = new Subject();
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+    newComment: FormControl = new FormControl('', [Validators.required, CustomValidators.notWhitespace()])
+
 
     constructor(private commentService: BacklogItemCommentService) {
     }
@@ -46,6 +60,7 @@ export class BacklogItemCommentListComponent implements OnInit, AfterViewInit, O
                     comments => {
                         this.comments = comments.comments;
                         this.totalComments = comments.totalNumber;
+                        this.changedPage.emit();
                     }
                 )
             }
@@ -57,6 +72,23 @@ export class BacklogItemCommentListComponent implements OnInit, AfterViewInit, O
             comments => {
                 this.comments = comments.comments;
                 this.totalComments = comments.totalNumber;
+            }
+        )
+    }
+
+    resetNewComment(): void {
+        this.newComment.reset();
+    }
+
+    addNewComment(): void {
+        if(this.newComment.invalid) {
+            return;
+        }
+
+        this.commentService.createNewComment(this.backlogItemId, this.newComment.value).pipe(take(1)).subscribe(
+            () => {
+                this.resetNewComment();
+                this.getAllComments();
             }
         )
     }

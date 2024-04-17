@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { MatButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
 import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog-form.component";
@@ -42,6 +42,8 @@ export class BacklogComponent implements OnInit {
     sprints: Sprint[] = [];
     sprintIds: string[] = [];
 
+    sprintChangedEmitter: EventEmitter<number> = new EventEmitter<number>();
+
     ngOnInit(): void {
         //TODO get real projectId from somewhere
         this.sprintService.getCurrentAndFutureSprints(1).pipe(take(1)).subscribe((sprints) => {
@@ -77,6 +79,10 @@ export class BacklogComponent implements OnInit {
                 }
             })
         })
+    }
+
+    sprintChanged(sprintId: number): void {
+        this.sprintChangedEmitter.emit(sprintId);
     }
 
     findBacklogItemTableById(id: string): BacklogItemTableComponent | undefined {

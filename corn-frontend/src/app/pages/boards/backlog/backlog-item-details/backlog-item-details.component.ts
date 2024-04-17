@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButton, MatIconButton } from "@angular/material/button";
 import {
     MAT_DIALOG_DATA,
@@ -42,6 +42,7 @@ import {
 } from "@core/services/boards/backlog/backlog-item-comment/backlog-item-comment.service";
 import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comment";
 import { MatInput } from "@angular/material/input";
+import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
 
 @Component({
     selector: 'app-backlog-item-details',
@@ -83,7 +84,8 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
                 private sprintService: SprintService,
                 private userService: UserService,
                 private scrollDispatcher: ScrollDispatcher,
-                private ngZone: NgZone) {
+                private ngZone: NgZone,
+                private backlogItemService: BacklogItemService) {
     }
 
     isEditingTitle: boolean = false;
@@ -98,6 +100,8 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
     private readonly usersPageSize: number = 20;
     private usersPageNumber: number = 0;
     @ViewChild('assigneeSelect') assigneeSelect !: MatSelect;
+
+    @ViewChild('dialogContent') dialogContent!: ElementRef;
 
     destroy$: Subject<void> = new Subject<void>();
 
@@ -221,7 +225,19 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
 
 
     saveItem() {
+        if(this.itemForm.invalid) {
+            return;
+        }
+        this.tmpItem.title = this.itemForm.get('title')!.value;
+        this.tmpItem.description = this.itemForm.get('description')!.value;
+        this.tmpItem.assignee = this.selectedAssignee;
         this.dialogRef.close(this.tmpItem);
+    }
+
+    scrollToBottom() {
+        setTimeout(() => {
+            this.dialogContent.nativeElement.scrollTop = this.dialogContent.nativeElement.scrollHeight;
+        }, 0);
     }
 
     ngOnDestroy(): void {

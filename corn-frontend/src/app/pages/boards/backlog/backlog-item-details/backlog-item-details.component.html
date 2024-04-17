@@ -1,4 +1,4 @@
-<mat-dialog-content class="h-full">
+<mat-dialog-content #dialogContent class="h-full">
     <form [formGroup]="itemForm" class="flex flex-col justify-center items-center">
         <mat-form-field class="mb-3 w-full">
             <mat-label>Title</mat-label>
@@ -119,13 +119,13 @@
         </div>
     </form>
 
-    <app-backlog-item-comment-list [backlogItemId]="tmpItem.backlogItemId"></app-backlog-item-comment-list>
+    <app-backlog-item-comment-list (changedPage)="scrollToBottom()" [backlogItemId]="tmpItem.backlogItemId"></app-backlog-item-comment-list>
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="flex flex-row justify-between items-center">
         <button mat-button mat-dialog-close>Cancel</button>
-<!--        <button mat-button [disabled]="itemForm.invalid" (click)="submitForm()">Submit</button>-->
+        <button mat-button [disabled]="itemForm.invalid" (click)="saveItem()">Submit</button>
     </div>
 </mat-dialog-actions>
