@@ -18,4 +18,12 @@ export class ProjectService {
             }
         });
     }
+
+    createNewProject(newProjectName: string): Observable<Project> {
+        return this.http.post<Project>("/api/v1/project/addProject", {}, {
+            params: {
+                name: newProjectName
+            }
+        });
+    }
 }

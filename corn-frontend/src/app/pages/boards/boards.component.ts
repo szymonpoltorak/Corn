@@ -15,6 +15,8 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { RouterPaths } from '@core/enum/RouterPaths';
 import { BoardsPaths } from '@core/enum/BoardsPaths';
 import { ToolbarComponent } from "@shared/toolbar/toolbar.component";
+import { StorageService } from "@core/services/storage.service";
+import { StorageKey } from "@core/enum/storage-key.enum";
 
 @Component({
     selector: 'app-boards',
@@ -47,13 +49,14 @@ export class BoardsComponent implements OnInit {
 
     selected: string = '';
 
-    constructor(
-        protected readonly router: Router,
-        protected readonly location: Location
-    ) {
+    constructor(protected readonly router: Router,
+                protected readonly location: Location,
+                private readonly storage: StorageService) {
     }
 
     async ngOnInit(): Promise<void> {
+        this.projectName = this.storage.getValueFromStorage(StorageKey.PROJECT_NAME);
+
         this.selected = this.location.path().split('/').pop() || '';
 
         this.router.events.subscribe((val) => {
@@ -64,14 +67,14 @@ export class BoardsComponent implements OnInit {
     }
 
     navigateToBacklog(): void {
-        this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.BACKLOG}`]);
+        this.router.navigate([`/${ RouterPaths.BOARDS_PATH }/${ BoardsPaths.BACKLOG }`]);
     }
 
     navigateToTimeline(): void {
-        this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.TIMELINE}`]);
+        this.router.navigate([`/${ RouterPaths.BOARDS_PATH }/${ BoardsPaths.TIMELINE }`]);
     }
 
     navigateToBoard(): void {
-        this.router.navigate([`/${RouterPaths.BOARDS_PATH}/${BoardsPaths.BOARD}`]);
+        this.router.navigate([`/${ RouterPaths.BOARDS_PATH }/${ BoardsPaths.BOARD }`]);
     }
 }

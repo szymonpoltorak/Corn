@@ -1,24 +1,28 @@
 import { Injectable } from '@angular/core';
+import { Project } from "@interfaces/boards/project";
+import { StorageKey } from "@core/enum/storage-key.enum";
 
 @Injectable({
     providedIn: 'root'
 })
 export class StorageService {
 
-    saveProjectId(projectId: number): void {
-        localStorage.setItem('projectId', projectId.toString());
-    }
+    getValueFromStorage<T>(key: StorageKey): T {
+        let value: string | null = localStorage.getItem(key);
 
-    getProjectId(): number {
-        let id: string | null = localStorage.getItem('projectId');
-
-        if (id === null) {
-            throw Error('Project ID not found');
+        if (value === null) {
+            throw Error('Value not found in storage');
         }
-        return parseInt(id);
+        return value as T;
     }
 
-    deleteProjectId(): void {
-        localStorage.removeItem('projectId');
+    deleteProjectFromStorage(): void {
+        localStorage.removeItem(StorageKey.PROJECT_ID);
+        localStorage.removeItem(StorageKey.PROJECT_NAME);
+    }
+
+    saveProject(project: Project): void {
+        localStorage.setItem(StorageKey.PROJECT_ID, project.projectId.toString());
+        localStorage.setItem(StorageKey.PROJECT_NAME, project.name)
     }
 }

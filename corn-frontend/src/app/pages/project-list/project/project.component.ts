@@ -30,7 +30,7 @@ export class ProjectComponent {
     @Input() project!: Project;
 
     chooseProject(): void {
-        this.storageService.saveProjectId(this.project.projectId);
+        this.storageService.saveProject(this.project);
 
         this.router.navigate([RouterPaths.BOARDS_DIRECT_PATH, RouterPaths.BACKLOG_PATH]);
     }

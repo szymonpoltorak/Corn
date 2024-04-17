@@ -35,7 +35,7 @@ public class ProjectControllerImpl implements ProjectController {
     @PostMapping(value = ADD_PROJECT)
     @ResponseStatus(value = HttpStatus.CREATED)
     public final ProjectInfoResponse addNewProject(@RequestParam String name,
-                                               @JwtAuthed User user) {
+                                                   @JwtAuthed User user) {
         return projectService.addNewProject(name, user);
     }
 

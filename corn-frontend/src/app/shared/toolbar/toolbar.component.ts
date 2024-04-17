@@ -58,7 +58,7 @@ export class ToolbarComponent implements OnInit {
     }
 
     logout(): void {
-        this.storage.deleteProjectId();
+        this.storage.deleteProjectFromStorage();
         this.keycloak.logout();
     }
 
