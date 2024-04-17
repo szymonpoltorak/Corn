@@ -41,6 +41,7 @@ import { StorageKey } from "@core/enum/storage-key.enum";
         ToolbarComponent,
     ],
     templateUrl: './boards.component.html',
+    styleUrl: 'boards.component.scss'
 })
 export class BoardsComponent implements OnInit {
 
@@ -76,5 +77,9 @@ export class BoardsComponent implements OnInit {
 
     navigateToBoard(): void {
         this.router.navigate([`/${ RouterPaths.BOARDS_PATH }/${ BoardsPaths.BOARD }`]);
+    }
+
+    navigateToProjectSettings(): void {
+        this.router.navigate([RouterPaths.BOARDS_DIRECT_PATH, RouterPaths.SETTINGS_PATH])
     }
 }

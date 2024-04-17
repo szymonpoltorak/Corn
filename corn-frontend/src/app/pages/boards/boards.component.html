@@ -3,35 +3,49 @@
 
 <mat-drawer-container>
     <mat-drawer [opened]="sidebarShown" mode="push">
-        <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
+        <div class="flex flex-col justify-between h-[93vh]">
+            <div class="p-[6px] w-[224px] flex flex-col gap-[4px]">
 
-            <span class="text-center text-[20px] m-[4px]">{{ projectName }}</span>
+                <span class="text-center text-[20px] m-[4px]">{{ projectName }}</span>
 
-            <div class="border-t border-gray-300 my-2"></div>
+                <div class="border-t border-gray-300 my-2"></div>
 
-            <sidebar-button (click)="navigateToTimeline()" [iconName]="'matViewTimeline'"
-                            [label]="'Timeline'" [selected]="selected == 'timeline'"></sidebar-button>
+                <sidebar-button (click)="navigateToTimeline()" [iconName]="'matViewTimeline'"
+                                [label]="'Timeline'" [selected]="selected === 'timeline'">
+                </sidebar-button>
 
-            <sidebar-button (click)="navigateToBacklog()" [iconName]="'bootstrapArchiveFill'"
-                            [label]="'Backlog'" [selected]="selected == 'backlog'"></sidebar-button>
+                <sidebar-button (click)="navigateToBacklog()" [iconName]="'bootstrapArchiveFill'"
+                                [label]="'Backlog'" [selected]="selected === 'backlog'">
+                </sidebar-button>
 
-            <sidebar-button (click)="navigateToBoard()" [selected]="selected == 'board'"
-                            [iconName]="'akarClipboard'" [label]="'Board'"></sidebar-button>
+                <sidebar-button (click)="navigateToBoard()" [selected]="selected === 'board'"
+                                [iconName]="'akarClipboard'" [label]="'Board'">
+                </sidebar-button>
 
-            <sidebar-button (click)="{}" [iconName]="'octGraph'" [label]="'Reports'"
-                            [selected]="selected == 'reports'"></sidebar-button>
+                <sidebar-button (click)="{}" [iconName]="'octGraph'" [label]="'Reports'"
+                                [selected]="selected === 'reports'">
+                </sidebar-button>
 
-            <sidebar-button (click)="{}" [iconName]="'octGoal'" [label]="'Goals'"
-                            [selected]="selected == 'goals'"></sidebar-button>
+                <sidebar-button (click)="{}" [iconName]="'octGoal'" [label]="'Goals'"
+                                [selected]="selected === 'goals'">
+                </sidebar-button>
 
-            <sidebar-button (click)="{}" [iconName]="'matError'" [label]="'Issues'"
-                            [selected]="selected == 'issues'"></sidebar-button>
+                <sidebar-button (click)="{}" [iconName]="'matError'" [label]="'Issues'"
+                                [selected]="selected === 'issues'">
+                </sidebar-button>
 
+            </div>
+
+            <div class="p-[6px]">
+                <sidebar-button [label]="'Settings'" [iconName]="'matSettings'"
+                                [selected]="selected === 'settings'" (click)="navigateToProjectSettings()">
+                </sidebar-button>
+            </div>
         </div>
     </mat-drawer>
 
     <mat-drawer-content>
-        <div class="overflow-hidden min-h-screen m-4">
+        <div class="overflow-y-scroll h-[89.5vh] m-4">
             <router-outlet></router-outlet>
         </div>
     </mat-drawer-content>

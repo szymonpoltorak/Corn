@@ -12,4 +12,6 @@ export enum RouterPaths {
     UNKNOWN_PATH = "**",
     BOARDS_DIRECT_PATH = "/boards",
     BACKLOG_PATH = "backlog",
+
+    SETTINGS_PATH = "settings",
 }
