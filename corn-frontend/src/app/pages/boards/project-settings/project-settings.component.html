@@ -79,20 +79,28 @@
 
         <div class="flex justify-between">
             @if (isProjectOwner) {
-                <button mat-raised-button color="primary">
+                <button mat-raised-button
+                        aria-label="Add new member"
+                        (click)="addNewMember()"
+                        color="primary">
                     <mat-icon>add</mat-icon>
+
                     Add new member
                 </button>
 
                 <button mat-raised-button
                         (click)="deleteProject()"
+                        aria-label="Delete project"
                         color="warn">
                     <mat-icon>delete</mat-icon>
 
                     Delete project
                 </button>
             } @else {
-                <button mat-raised-button color="warn">
+                <button mat-raised-button
+                        aria-label="Leave project"
+                        (click)="leaveProject()"
+                        color="warn">
                     <mat-icon>logout</mat-icon>
 
                     Leave project

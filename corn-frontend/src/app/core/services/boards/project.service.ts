@@ -55,4 +55,13 @@ export class ProjectService {
             }
         });
     }
+
+    addMemberToProject(username: string, projectId: number): Observable<User> {
+        return this.http.post<User>("/api/v1/project/member/addMember", {}, {
+            params: {
+                username: username,
+                projectId: projectId
+            }
+        });
+    }
 }

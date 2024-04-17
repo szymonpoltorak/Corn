@@ -1,0 +1,44 @@
+<div class="max-w-[40em] w-[40em] h-72 p-4 flex flex-col">
+    <div class="flex justify-center font-bold text-xl">
+        <div>Add new Project Member</div>
+    </div>
+
+    <mat-dialog-content>
+        <form (ngSubmit)="addNewProjectMember()">
+            <mat-form-field class="mb-3 w-full">
+                <mat-label>Members email</mat-label>
+
+                <input #projectName matInput
+                       placeholder="example@gmail.com"
+                       [formControl]="nameControl" maxlength="120">
+
+                <mat-hint align="end">{{ projectName.value.length }} / 120</mat-hint>
+
+                @if (nameControl.hasError('required')) {
+                    <mat-error>Member email is <strong>required</strong></mat-error>
+                } @else if (nameControl.hasError('maxlength')) {
+                    <mat-error>Member email cannot be more than <strong>120</strong> characters</mat-error>
+                } @else if (nameControl.hasError('minlength')) {
+                    <mat-error>Member email cannot be less than <strong>2</strong> characters</mat-error>
+                } @else if (nameControl.hasError('notWhitespace')) {
+                    <mat-error>Member email cannot be only <strong>whitespace</strong></mat-error>
+                } @else if (nameControl.hasError('email')) {
+                    <mat-error>Value has to be a <strong>valid</strong> email</mat-error>
+                }
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="buttons">
+        <button mat-button type="button" mat-dialog-close aria-label="Close">
+            Close
+        </button>
+
+        <button mat-raised-button color="primary"
+                type="submit" aria-label="Close"
+                (click)="addNewProjectMember()"
+                [disabled]="nameControl.invalid">
+            Submit
+        </button>
+    </mat-dialog-actions>
+</div>

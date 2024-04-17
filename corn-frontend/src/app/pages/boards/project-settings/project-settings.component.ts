@@ -17,6 +17,11 @@ import { NewProjectComponent } from "@pages/project-list/new-project/new-project
 import { take } from "rxjs";
 import { Project } from "@interfaces/boards/project";
 import { ProjectService } from "@core/services/boards/project.service";
+import { Route, Router } from "@angular/router";
+import { RouterPaths } from "@core/enum/RouterPaths";
+import {
+    AddMemberDialogComponent
+} from "@pages/boards/project-settings/add-member-dialog/add-member-dialog.component";
 
 @Component({
     selector: 'app-project-settings',
@@ -48,6 +53,7 @@ export class ProjectSettingsComponent implements OnInit {
     currentUser !: KeycloakProfile;
     displayedColumns: string[] = ['fullName', 'username', 'deleteMember'];
     dataSource !: MatTableDataSource<User>;
+    //TODO: add checking if user is project owner or not
     isProjectOwner: boolean = true;
     pageNumber: number = 0;
     projectId !: number;
@@ -55,6 +61,7 @@ export class ProjectSettingsComponent implements OnInit {
 
     constructor(private storage: StorageService,
                 private projectService: ProjectService,
+                private router: Router,
                 private dialog: MatDialog) {
     }
 
@@ -63,13 +70,7 @@ export class ProjectSettingsComponent implements OnInit {
         this.projectName = this.storage.getValueFromStorage(StorageKey.PROJECT_NAME);
         this.projectId = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
 
-        this.projectService
-            .getProjectMembersOnPage(this.pageNumber, this.projectId)
-            .pipe(take(1))
-            .subscribe(membersList => {
-                this.dataSource = new MatTableDataSource<User>(membersList.projectMembers);
-                this.totalNumber = membersList.totalNumber;
-            });
+        this.getProjectMembers();
     }
 
     deleteMember(projectMember: User): void {
@@ -105,5 +106,50 @@ export class ProjectSettingsComponent implements OnInit {
 
     deleteProject(): void {
         // TODO: add deleting project after adding dialogs
+    }
+
+    addNewMember(): void {
+        const dialogRef = this.dialog.open(AddMemberDialogComponent, {
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '100ms',
+        });
+
+        dialogRef
+            .afterClosed()
+            .pipe(take(1))
+            .subscribe((username: string) => {
+                if (username === null || username === "") {
+                    return;
+                }
+                this.projectService
+                    .addMemberToProject(username, this.projectId)
+                    .pipe(take(1))
+                    .subscribe((member: User) => {
+                        this.pageNumber = 0;
+
+                        this.getProjectMembers();
+                    });
+            });
+    }
+
+    leaveProject(): void {
+        this.projectService
+            .deleteMemberFromProject(this.currentUser.email as string, this.projectId)
+            .pipe(take(1))
+            .subscribe(() => this.router.navigate([RouterPaths.PROJECT_LIST_DIRECT_PATH]));
+    }
+
+    private getProjectMembers(): void {
+        this.projectService
+            .getProjectMembersOnPage(this.pageNumber, this.projectId)
+            .pipe(take(1))
+            .subscribe(membersList => {
+                this.dataSource = new MatTableDataSource<User>(membersList.projectMembers);
+                this.totalNumber = membersList.totalNumber;
+
+                if (membersList.projectMembers.length === 20) {
+                    this.pageNumber++;
+                }
+            });
     }
 }
