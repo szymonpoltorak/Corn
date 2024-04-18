@@ -97,7 +97,4 @@ export class BacklogItemCommentListComponent implements OnInit, AfterViewInit, O
         this.destroy$.next();
         this.destroy$.complete();
     }
-
-
-
 }

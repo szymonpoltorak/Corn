@@ -50,7 +50,7 @@ export class BacklogItemCommentComponent implements OnInit {
     @Output() commentDeleted: EventEmitter<void> = new EventEmitter<void>();
 
     isEditing: boolean = false;
-    edited = false;
+    edited: boolean = false;
 
     commentControl!: FormControl;
 

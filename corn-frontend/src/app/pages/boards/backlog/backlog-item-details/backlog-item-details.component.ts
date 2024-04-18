@@ -80,8 +80,7 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
                 private sprintService: SprintService,
                 private userService: UserService,
                 private scrollDispatcher: ScrollDispatcher,
-                private ngZone: NgZone,
-                private backlogItemService: BacklogItemService) {
+                private ngZone: NgZone) {
     }
 
     isEditingTitle: boolean = false;
@@ -241,6 +240,4 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
         this.destroy$.next();
         this.destroy$.complete();
     }
-
-
 }
