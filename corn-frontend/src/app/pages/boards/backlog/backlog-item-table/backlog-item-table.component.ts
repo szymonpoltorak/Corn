@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import {
@@ -41,6 +41,8 @@ import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
 import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
 import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
 import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-details/backlog-item-details.component";
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -82,6 +84,14 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
 
     @Input() sprintId: number = 0;
     @Input() sprintIds: string[] = [];
+    @Input() inputSprintChanged!: EventEmitter<number>
+
+    @Output() outputSprintChanged: EventEmitter<number> = new EventEmitter<number>
+
+    dataToDisplay: BacklogItem[] = [];
+
+    displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
+
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatTable) table!: MatTable<BacklogItem>;
@@ -93,7 +103,8 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
 
     constructor(private backlogItemService: BacklogItemService,
-                private backlogComponent: BacklogComponent) {
+                private backlogComponent: BacklogComponent,
+                private dialog: MatDialog) {
     }
 
     deleteItem(item: BacklogItem): void {
@@ -104,6 +115,12 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
+        this.inputSprintChanged.pipe(takeUntil(this.destroy$)).subscribe((sprintId: number) => {
+            if(sprintId == this.sprintId) {
+                this.fetchBacklogItems();
+            }
+        });
+
         this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(
             () => (this.paginator.pageIndex = 0));
 
@@ -129,27 +146,33 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         }
 
         source.pipe(
-            catchError(() => of(null)),
-            map(data => {
-                this.isLoading = false;
+                catchError(() => of(null)),
+                map(data => {
+                    this.isLoading = false;
 
-                if (!data) {
-                    return [];
-                }
+                    if (!data) {
+                        return [];
+                    }
 
-                this.resultsLength = data.totalNumber;
-                return data.backlogItemResponseList;
-            }),
-            takeUntil(this.destroy$)
-        ).subscribe(data => {
-            this.dataToDisplay = data;
-
+                    this.resultsLength = data.totalNumber;
+                    return data.backlogItemResponseList;
+                }),
+                take(1)
+            ).subscribe(data => {
+              this.dataToDisplay = data;
         })
     }
 
     updateBacklogItem(item: BacklogItem): void {
         this.backlogItemService.updateBacklogItem(item).pipe(take(1)).subscribe((newItem) => {
-            this.dataToDisplay[this.dataToDisplay.indexOf(item)] = newItem;
+            if(newItem.sprintId == this.sprintId) {
+                let index: number = this.dataToDisplay.findIndex(item => item.backlogItemId == newItem.backlogItemId);
+                this.dataToDisplay[index] = newItem;
+                this.table.renderRows();
+            } else {
+                this.fetchBacklogItems();
+                this.outputSprintChanged.emit(newItem.sprintId);
+            }
         })
     }
 
@@ -169,6 +192,23 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         }
 
         this.table.renderRows();
+    }
+
+    openDetails(item: BacklogItem): void {
+        const dialogRef: MatDialogRef<BacklogItemDetailsComponent> = this.dialog.open(BacklogItemDetailsComponent, {
+            width: '1000px',
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '100ms',
+            data: item
+        });
+
+        dialogRef.afterClosed().pipe(take(1)).subscribe((result: BacklogItem) => {
+            if(!result) {
+                return;
+            }
+
+            this.updateBacklogItem(result);
+        })
     }
 
     ngOnDestroy(): void {

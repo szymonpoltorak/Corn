@@ -1,8 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
 import { MatTooltip } from "@angular/material/tooltip";
-import { NgIcon } from "@ng-icons/core";
+import { NgIcon, provideIcons } from "@ng-icons/core";
+import { bootstrapBugFill } from "@ng-icons/bootstrap-icons";
+import { featherBook } from "@ng-icons/feather-icons";
+import { matTask } from "@ng-icons/material-icons/baseline";
+import { octContainer } from "@ng-icons/octicons";
 
 @Component({
   selector: 'app-backlog-type',
@@ -13,9 +16,10 @@ import { NgIcon } from "@ng-icons/core";
   ],
   templateUrl: './backlog-type.component.html',
   styleUrl: './backlog-type.component.scss'
+  ,providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer })]
 })
 export class BacklogTypeComponent {
 
-  @Input() backlogItem!: BacklogItem;
+  @Input() backlogItemType!: BacklogItemType;
   protected readonly BacklogItemType = BacklogItemType;
 }

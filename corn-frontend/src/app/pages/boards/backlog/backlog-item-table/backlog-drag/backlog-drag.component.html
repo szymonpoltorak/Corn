@@ -2,7 +2,7 @@
     <h2 class="ml-2">{{backlogItem.title}}</h2>
     <h2>{{backlogItem.description}}</h2>
     <app-status-select [backlogItem]="backlogItem"></app-status-select>
-    <app-backlog-type [backlogItem]="backlogItem"></app-backlog-type>
+    <app-backlog-type [backlogItemType]="backlogItem.itemType"></app-backlog-type>
     <div class="w-10 h-10">
         <app-user-avatar [user]="backlogItem.assignee" [isEmpty]="!backlogItem.assignee"></app-user-avatar>
     </div>

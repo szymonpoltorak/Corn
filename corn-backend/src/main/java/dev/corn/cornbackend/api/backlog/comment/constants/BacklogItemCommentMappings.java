@@ -7,6 +7,7 @@ public final class BacklogItemCommentMappings {
     public static final String BACKLOG_ITEM_COMMENT_UPDATE_MAPPING = "/update";
     public static final String BACKLOG_ITEM_COMMENT_DELETE_MAPPING = "/delete";
     public static final String BACKLOG_ITEM_COMMENT_GET_MAPPING = "/get";
+    public static final String BACKLOG_ITEM_COMMENT_GET_FOR_ITEM_MAPPING = "/getForItem";
     private BacklogItemCommentMappings() {
     }
 }
