@@ -11,6 +11,11 @@
     @for (comment of comments; track comment) {
         <app-backlog-item-comment [comment]="comment" (commentDeleted)="getAllComments()"></app-backlog-item-comment>
     }
+    @if(comments.length == 0) {
+        <div class="w-full flex flex-row justify-center items-center">
+            <span>No comments.</span>
+        </div>
+    }
     <mat-paginator [length]="totalComments"
                    [pageSize]="3"
                    [pageSizeOptions]="[3]"

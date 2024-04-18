@@ -4,7 +4,7 @@ import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.compon
 import { MatError, MatFormField, MatHint, MatSuffix } from "@angular/material/form-field";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { MatInput } from "@angular/material/input";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CustomValidators } from "@core/validators/custom-validators";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { NgIcon, provideIcons } from "@ng-icons/core";

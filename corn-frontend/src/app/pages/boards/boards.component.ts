@@ -11,8 +11,6 @@ import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { FeatureComponent } from '@pages/home/feature/feature.component';
 import { UserinfoComponent } from '@pages/boards/userinfo/userinfo.component';
-import { KeycloakService } from 'keycloak-angular';
-import { KeycloakProfile } from 'keycloak-js';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { RouterPaths } from '@core/enum/RouterPaths';
 import { BoardsPaths } from '@core/enum/BoardsPaths';

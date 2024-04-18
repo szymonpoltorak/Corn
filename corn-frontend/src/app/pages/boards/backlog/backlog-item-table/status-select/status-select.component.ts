@@ -3,7 +3,6 @@ import { MatOption, MatSelect } from "@angular/material/select";
 import { NgClass } from "@angular/common";
 import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
 import { BacklogItemStatus } from "@core/enum/BacklogItemStatus";
-import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
 
 @Component({
     selector: 'app-status-select',

@@ -3,12 +3,13 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import {
     MAT_DIALOG_DATA,
     MatDialogActions,
-    MatDialogClose, MatDialogContent,
+    MatDialogClose,
+    MatDialogContent,
     MatDialogRef,
     MatDialogTitle
 } from "@angular/material/dialog";
 import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
-import { Observable, of, Subject, take, takeUntil } from "rxjs";
+import { Observable, Subject, take, takeUntil } from "rxjs";
 import { Sprint } from "@interfaces/boards/backlog/sprint";
 import { User } from "@interfaces/boards/user";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
@@ -36,11 +37,6 @@ import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/
 import {
     BacklogItemCommentListComponent
 } from "@pages/boards/backlog/backlog-item-comment-list/backlog-item-comment-list.component";
-import { BacklogItemCommentList } from "@interfaces/boards/backlog/backlog-item-comment-list";
-import {
-    BacklogItemCommentService
-} from "@core/services/boards/backlog/backlog-item-comment/backlog-item-comment.service";
-import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comment";
 import { MatInput } from "@angular/material/input";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
 

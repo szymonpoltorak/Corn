@@ -6,7 +6,7 @@ import {
 import {
     BacklogItemCommentService
 } from "@core/services/boards/backlog/backlog-item-comment/backlog-item-comment.service";
-import { pipe, Subject, take, takeUntil } from "rxjs";
+import { Subject, take, takeUntil } from "rxjs";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatFormField, MatInput } from "@angular/material/input";
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
