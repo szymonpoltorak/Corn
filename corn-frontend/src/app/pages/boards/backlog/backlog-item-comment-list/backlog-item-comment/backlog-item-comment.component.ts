@@ -64,9 +64,6 @@ export class BacklogItemCommentComponent implements OnInit {
     }
 
     prepareComment(): void {
-        this.comment.commentTime = new Date(this.comment.commentTime);
-        this.comment.lastEditTime = new Date(this.comment.lastEditTime);
-
         this.edited = this.comment.commentTime.getTime() !== this.comment.lastEditTime.getTime();
     }
 
