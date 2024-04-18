@@ -16,7 +16,7 @@ public class ProjectMemberMapperImpl implements ProjectMemberMapper {
 
         return UserResponse
                 .builder()
-                .userId(user.getUserId())
+                .userId(projectMember.getProjectMemberId())
                 .name(user.getName())
                 .username(user.getUsername())
                 .surname(user.getSurname())
