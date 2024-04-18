@@ -144,8 +144,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
         let source: Observable<BacklogItemList>;
 
         if(this.sprintId === -1) {
-            //TODO get real projectId from somewhere
-            source = this.backlogItemService.getAllWithoutSprint(1, this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
+            source = this.backlogItemService.getAllWithoutSprint(this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
         } else {
             source = this.backlogItemService.getAllBySprintId(this.sprintId, this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
         }

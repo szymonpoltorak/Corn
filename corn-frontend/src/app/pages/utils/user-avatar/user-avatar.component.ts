@@ -17,7 +17,7 @@ import { heroUser } from "@ng-icons/heroicons/outline";
 })
 export class UserAvatarComponent {
 
-    @Input() user: User | undefined;
+    @Input() user: User | undefined  | null;
     @Input() usersLeft: number = 0;
     @Input() isEmpty: boolean = false;
 

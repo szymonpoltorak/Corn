@@ -146,10 +146,10 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.userService.getProjectMembersOnPage(1, this.membersPageNumber).pipe(take(1)).subscribe(users => {
+        this.userService.getProjectMembersOnPage(this.membersPageNumber).pipe(take(1)).subscribe(users => {
             this.users = users;
         });
-        this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(sprints => {
+        this.sprintService.getSprintsOnPageForProject(this.sprintsPageNumber).pipe(take(1)).subscribe(sprints => {
             this.sprints = sprints;
         });
 
@@ -175,7 +175,7 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
                         return;
                     }
                     this.sprintsPageNumber++;
-                    this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(newSprints => {
+                    this.sprintService.getSprintsOnPageForProject(this.sprintsPageNumber).pipe(take(1)).subscribe(newSprints => {
                         this.ngZone.run(() => {
                             this.sprints = [...this.sprints, ...newSprints];
                         })
@@ -202,7 +202,7 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
                         return;
                     }
                     this.membersPageNumber++;
-                    this.userService.getProjectMembersOnPage(1, this.membersPageNumber).pipe(take(1)).subscribe(newUsers => {
+                    this.userService.getProjectMembersOnPage(this.membersPageNumber).pipe(take(1)).subscribe(newUsers => {
                         this.ngZone.run(() => {
                             this.users = [...this.users, ...newUsers];
                         })

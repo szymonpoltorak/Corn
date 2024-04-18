@@ -1,23 +1,23 @@
-<div class="background">
+<div (click)="chooseProject()" class="background">
     <div matRipple>
         <div class="project">
 
             <div class="title">
-                <h1 matTooltip="{{title}}">{{ title }}</h1>
-                @if(title !== '') {
+                <h1 matTooltip="{{project.name}}">{{project.name}}</h1>
+                @if(project.name !== '') {
                     <div class="line"></div>
                 }
             </div>
 
             <div class="member-row">
-                @for (member of members | slice:0:3; track 1) {
+                @for (member of project.membersInfo | slice:0:3; track 1) {
                     <div class="member">
                         <app-user-avatar [user]="member"></app-user-avatar>
                     </div>
                 }
-                @if (members.length > 3) {
+                @if (project.membersInfo.length > 3) {
                     <div class="member">
-                        <app-user-avatar [usersLeft]="members.length - 3"></app-user-avatar>
+                        <app-user-avatar [usersLeft]="project.membersInfo.length - 3"></app-user-avatar>
                     </div>
                 }
             </div>

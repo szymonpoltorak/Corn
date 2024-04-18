@@ -11,6 +11,7 @@ import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberRepository;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
-    private static final int PROJECTS_PER_PAGE = 20;
+    public static final int PROJECTS_PER_PAGE = 10;
     private static final long NEW_PROJECT_MEMBER_NUMBER = 0L;
     private static final String PROJECT_DOES_NOT_EXIST = "Project does not exist!";
     private final ProjectRepository projectRepository;
@@ -117,7 +118,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private ProjectInfoResponse mapToProjectInfoResponse(Project project, long totalNumberOfUsers) {
-        List<ProjectMemberInfoResponse> members = projectMemberService.getProjectMembersInfo(project.getProjectId());
+        List<UserResponse> members = projectMemberService.getProjectMembersInfo(project.getProjectId());
 
         return projectMapper.toProjectInfoResponse(project, members, totalNumberOfUsers);
     }

@@ -57,30 +57,30 @@ public class Sprint implements Jsonable, DateController {
 
     @NotNull(message = SprintConstants.SPRINT_START_DATE_NULL_MSG)
     @FutureOrPresent(message = SprintConstants.SPRINT_START_DATE_FUTURE_OR_PRESENT_MSG)
-    private LocalDate sprintStartDate;
+    private LocalDate startDate;
 
     @NotNull(message = SprintConstants.SPRINT_END_DATE_NULL_MSG)
     @Future(message = SprintConstants.SPRINT_END_DATE_FUTURE_MSG)
-    private LocalDate sprintEndDate;
+    private LocalDate endDate;
 
     @Override
     public final boolean isStartBefore(LocalDate date) {
-        return sprintStartDate.isBefore(date);
+        return startDate.isBefore(date);
     }
 
     @Override
     public final boolean isStartAfter(LocalDate date) {
-        return sprintStartDate.isAfter(date);
+        return startDate.isAfter(date);
     }
 
     @Override
     public final boolean isEndBefore(LocalDate date) {
-        return sprintEndDate.isBefore(date);
+        return endDate.isBefore(date);
     }
 
     @Override
     public final boolean isEndAfter(LocalDate date) {
-        return sprintEndDate.isAfter(date);
+        return endDate.isAfter(date);
     }
 
     @Override
