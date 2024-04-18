@@ -1,7 +1,9 @@
 <div class="flex flex-col w-full">
     <mat-form-field class="w-full">
-        <textarea [formControl]="newComment" matInput placeholder="Add new comment..."></textarea>
-
+        <textarea #textArea rows="3" maxlength="500" [formControl]="newComment" matInput placeholder="Add new comment..."></textarea>
+        @if(textArea.textLength > 0) {
+            <mat-hint>{{ textArea.textLength }} / {{ textArea.maxLength }}</mat-hint>
+        }
     </mat-form-field>
     <div class="flex flex-row w-full justify-end items-center space-x-2 mb-4">
         <button mat-raised-button color="secondary" (click)="resetNewComment()">Cancel</button>

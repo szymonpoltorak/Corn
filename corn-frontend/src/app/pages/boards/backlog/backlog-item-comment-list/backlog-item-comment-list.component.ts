@@ -12,6 +12,8 @@ import { MatFormField, MatInput } from "@angular/material/input";
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CustomValidators } from "@core/validators/custom-validators";
 import { MatButton } from "@angular/material/button";
+import { MatHint } from "@angular/material/form-field";
+import { NgIf } from "@angular/common";
 
 @Component({
     selector: 'app-backlog-item-comment-list',
@@ -22,7 +24,9 @@ import { MatButton } from "@angular/material/button";
         MatInput,
         MatFormField,
         ReactiveFormsModule,
-        MatButton
+        MatButton,
+        MatHint,
+        NgIf,
     ],
     templateUrl: './backlog-item-comment-list.component.html',
     styleUrl: './backlog-item-comment-list.component.scss'
