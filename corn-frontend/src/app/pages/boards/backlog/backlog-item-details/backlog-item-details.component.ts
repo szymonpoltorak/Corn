@@ -38,7 +38,6 @@ import {
     BacklogItemCommentListComponent
 } from "@pages/boards/backlog/backlog-item-comment-list/backlog-item-comment-list.component";
 import { MatInput } from "@angular/material/input";
-import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
 
 @Component({
     selector: 'app-backlog-item-details',
@@ -75,17 +74,8 @@ import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/b
 })
 export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: BacklogItem,
-                public dialogRef: MatDialogRef<BacklogItemDetailsComponent>,
-                private sprintService: SprintService,
-                private userService: UserService,
-                private scrollDispatcher: ScrollDispatcher,
-                private ngZone: NgZone) {
-    }
-
     isEditingTitle: boolean = false;
     isEditingDescription: boolean = false;
-
     tmpItem!: BacklogItem;
 
     private readonly sprintPageSize: number = 20;
@@ -99,18 +89,16 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
     @ViewChild('dialogContent') dialogContent!: ElementRef;
 
     destroy$: Subject<void> = new Subject<void>();
-
     sprints: Sprint[] = [];
     users: User[] = [];
-
     itemForm!: FormGroup;
+
     types: BacklogItemType[] = [
         BacklogItemType.STORY,
         BacklogItemType.BUG,
         BacklogItemType.TASK,
         BacklogItemType.EPIC
     ];
-
     unassigned: User = {
         userId: -1,
         name: '',
@@ -118,8 +106,15 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
         username: ''
 
     }
-
     selectedAssignee!: User;
+
+    constructor(@Inject(MAT_DIALOG_DATA) public data: BacklogItem,
+                public dialogRef: MatDialogRef<BacklogItemDetailsComponent>,
+                private sprintService: SprintService,
+                private userService: UserService,
+                private scrollDispatcher: ScrollDispatcher,
+                private ngZone: NgZone) {
+    }
 
     ngOnInit(): void {
         this.tmpItem = {
@@ -139,7 +134,7 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
             })
         this.userService.getProjectMembersOnPage(this.usersPageNumber).pipe(take(1)).subscribe(
             users => {
-                this.users = users;
+                this.users = users.projectMembers;
             })
         this.selectedAssignee = this.tmpItem.assignee;
 
@@ -187,7 +182,7 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
                 this.usersPageNumber++;
                 this.userService.getProjectMembersOnPage(this.usersPageNumber).pipe(take(1)).subscribe(newUsers => {
                     this.ngZone.run(() => {
-                        this.users = [...this.users, ...newUsers];
+                        this.users = [...this.users, ...newUsers.projectMembers];
                     })
                 })
             }

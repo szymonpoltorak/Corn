@@ -2,7 +2,6 @@ export enum ApiUrl {
     SPRINT_API_URL = '/api/v1/sprint',
     BACKLOG_ITEM_API_URL = '/api/v1/backlog/item',
     PROJECT_MEMBER_API_URL = '/api/v1/project/member',
-    PROJECT_MEMBER_API_URL = '/api/v1/project/assignee',
     BACKLOG_ITEM_COMMENT_API_RUL = '/api/v1/backlog/comment',
 
     GET_BACKLOG_ITEMS_BY_SPRINT_ID = BACKLOG_ITEM_API_URL + '/getBySprint',

@@ -85,22 +85,17 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     @Input() sprintId: number = 0;
     @Input() sprintIds: string[] = [];
     @Input() inputSprintChanged!: EventEmitter<number>
-
-    @Output() outputSprintChanged: EventEmitter<number> = new EventEmitter<number>
-
-    dataToDisplay: BacklogItem[] = [];
-
-    displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
-
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatTable) table!: MatTable<BacklogItem>;
+    @Output() outputSprintChanged: EventEmitter<number> = new EventEmitter<number>
+
+    dataToDisplay: BacklogItem[] = [];
+    displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
     destroy$: Subject<void> = new Subject<void>();
     resultsLength: number = 0;
     hoveredRow: BacklogItem | null = null;
     isLoading: boolean = true;
-    dataToDisplay: BacklogItem[] = [];
-    displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
 
     constructor(private backlogItemService: BacklogItemService,
                 private backlogComponent: BacklogComponent,
