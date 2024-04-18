@@ -134,11 +134,11 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
             projectId: this.data.projectId,
         }
 
-        this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(
+        this.sprintService.getSprintsOnPageForProject(this.sprintsPageNumber).pipe(take(1)).subscribe(
             sprints => {
                 this.sprints = sprints;
             })
-        this.userService.getProjectMembersOnPage(1, this.usersPageNumber).pipe(take(1)).subscribe(
+        this.userService.getProjectMembersOnPage(this.usersPageNumber).pipe(take(1)).subscribe(
             users => {
                 this.users = users;
             })
@@ -172,7 +172,7 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
                     return;
                 }
                 this.sprintsPageNumber++;
-                this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(newSprints => {
+                this.sprintService.getSprintsOnPageForProject(this.sprintsPageNumber).pipe(take(1)).subscribe(newSprints => {
                     this.ngZone.run(() => {
                         this.sprints = [...this.sprints, ...newSprints];
                     })
@@ -186,7 +186,7 @@ export class BacklogItemDetailsComponent implements OnInit, AfterViewInit, OnDes
                     return;
                 }
                 this.usersPageNumber++;
-                this.userService.getProjectMembersOnPage(1, this.usersPageNumber).pipe(take(1)).subscribe(newUsers => {
+                this.userService.getProjectMembersOnPage(this.usersPageNumber).pipe(take(1)).subscribe(newUsers => {
                     this.ngZone.run(() => {
                         this.users = [...this.users, ...newUsers];
                     })
