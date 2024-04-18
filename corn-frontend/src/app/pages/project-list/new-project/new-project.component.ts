@@ -37,14 +37,10 @@ export class NewProjectComponent {
     }
 
     createNewProject(): void {
-        console.log(this.nameControl.invalid);
-
         if (this.nameControl.invalid) {
             return;
         }
         const projectName: string = this.nameControl.value as string;
-
-        console.log(projectName);
 
         this.dialogRef.close(projectName);
     }

@@ -38,8 +38,6 @@ export class AddMemberDialogComponent {
     }
 
     addNewProjectMember(): void {
-        console.log(this.nameControl.invalid);
-
         if (this.nameControl.invalid) {
             return;
         }
