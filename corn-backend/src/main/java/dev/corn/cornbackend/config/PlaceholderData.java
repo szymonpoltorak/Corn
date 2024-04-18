@@ -123,9 +123,13 @@ public class PlaceholderData implements CommandLineRunner {
             for (int j = 0; j < random.nextInt(4); j++) {
                 long backlogItemId = drawRandom(backlogItems).getBacklogItemId();
                 User commenter = drawRandom(users);
+                for(int k = 0; k < 5; k++) {
+                    backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
+                            drawRandom(SAMPLE_COMMENTS), backlogItemId
+                    ), commenter);
+                }
                 backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
-                        drawRandom(SAMPLE_COMMENTS), backlogItemId
-                ), commenter);
+                       LONG_STRING, backlogItemId),users.get(4));
             }
         }
 
@@ -289,6 +293,14 @@ public class PlaceholderData implements CommandLineRunner {
             {"Upgrade CAPTCHA Security", "Enhance CAPTCHA security to prevent spam and abuse."},
             {"Implement Continuous Integration", "Introduce continuous integration for automated code testing and deployment."},
     };
+    
+    private static final String LONG_STRING =
+            """
+            aaa very long string aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            hahahaha you though I was joking this string is reeeeaalllllyyyy loooooooooooooooooooooooooooooong and guess what
+            it ain't stopping dfsdkfbsfdkjsbdfkljdbflkjdsbflksdjbfskldjfblksdjbfklsjdbflkjsdbflkjsdbflksdbfjklsdfb
+            ok I'm done\n\n\n\n\n\n\nhaha just jk ok now I'm done
+            """;
 
     private final String[] PROJECT_NAMES = {
             "BlueSky Initiative",
@@ -312,4 +324,5 @@ public class PlaceholderData implements CommandLineRunner {
             "Ocean Odyssey",
             "Solar Serenity"
     };
+
 }

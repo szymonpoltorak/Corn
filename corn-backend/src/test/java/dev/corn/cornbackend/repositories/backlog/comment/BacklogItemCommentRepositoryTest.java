@@ -2,6 +2,7 @@ package dev.corn.cornbackend.repositories.backlog.comment;
 
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.comment.interfaces.BacklogItemCommentRepository;
+import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.repositories.backlog.comment.data.BacklogItemCommentRepositoryTestData;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -181,5 +185,19 @@ class BacklogItemCommentRepositoryTest {
 
         //then
         assertTrue(backlogItemComment.isEmpty(), OPTIONAL_EMPTY);
+    }
+
+    @Test
+    final void test_getAllByBacklogItemOrderByCommentDateDescShouldReturnCorrectPageOfComments() {
+        //given
+        BacklogItem backlogItem = TEST_DATA.backlogItemWithComment();
+        Pageable pageable = PageRequest.of(0, 10);
+
+        //when
+        Page<BacklogItemComment> comments = backlogItemCommentRepository.getAllByBacklogItemOrderByCommentDateDesc(backlogItem, pageable);
+
+        //then
+        assertEquals(1, comments.getNumberOfElements(), "Should return page of correct number of elements");
+        assertEquals(TEST_DATA.comment(), comments.toList().get(0), "Page should contain correct comment");
     }
 }

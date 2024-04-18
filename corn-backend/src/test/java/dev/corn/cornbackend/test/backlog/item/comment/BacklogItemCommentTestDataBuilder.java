@@ -2,17 +2,35 @@ package dev.corn.cornbackend.test.backlog.item.comment;
 
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentRequest;
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponse;
+import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponseList;
 import dev.corn.cornbackend.entities.backlog.comment.BacklogItemComment;
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.user.User;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.test.backlog.item.comment.data.BacklogItemCommentTestData;
 import dev.corn.cornbackend.test.backlog.item.comment.data.UpdateBacklogItemCommentTestData;
+
+import java.util.Collections;
+import java.util.List;
 
 public final class BacklogItemCommentTestDataBuilder {
 
     public static BacklogItemCommentTestData backlogItemCommentTestData() {
 
-        User user = new User();
+        User user = User.builder()
+                .userId(1L)
+                .name("Name")
+                .surname("Surname")
+                .authorities(Collections.emptyList())
+                .username("Username")
+                .build();
+
+        UserResponse userResponse = UserResponse.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .username(user.getUsername())
+                .build();
 
         BacklogItemComment backLogItemComment = BacklogItemComment.builder()
                 .backlogItemCommentId(1L)
@@ -28,7 +46,7 @@ public final class BacklogItemCommentTestDataBuilder {
 
         BacklogItemCommentResponse backlogItemCommentResponse = BacklogItemCommentResponse.builder()
                 .comment("comment")
-                .user(user)
+                .user(userResponse)
                 .build();
 
         BacklogItemComment backLogItemCommentToSave = BacklogItemComment.builder()
@@ -38,11 +56,36 @@ public final class BacklogItemCommentTestDataBuilder {
                 .backlogItemCommentId(0L)
                 .build();
 
-        return new BacklogItemCommentTestData(backlogItemCommentRequest, backLogItemComment, backlogItemCommentResponse, backLogItemCommentToSave, user);
+        BacklogItemCommentResponseList backlogItemCommentResponseList = BacklogItemCommentResponseList.builder()
+                .comments(List.of(backlogItemCommentResponse))
+                .totalNumber(1L)
+                .build();
+
+        return BacklogItemCommentTestData.builder()
+                .backlogItemComment(backLogItemComment)
+                .backlogItemCommentRequest(backlogItemCommentRequest)
+                .backlogItemCommentResponseList(backlogItemCommentResponseList)
+                .backlogItemCommentToSave(backLogItemCommentToSave)
+                .backlogItemCommentResponse(backlogItemCommentResponse)
+                .user(user)
+                .build();
     }
 
     public static UpdateBacklogItemCommentTestData updateBacklogItemCommentTestData() {
-        User user = new User();
+        User user = User.builder()
+                .userId(1L)
+                .name("Name")
+                .surname("Surname")
+                .authorities(Collections.emptyList())
+                .username("Username")
+                .build();
+
+        UserResponse userResponse = UserResponse.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .username(user.getUsername())
+                .build();
         String newComment = "new comment";
 
         BacklogItemComment backlogItemComment = BacklogItemComment.builder()
@@ -61,7 +104,7 @@ public final class BacklogItemCommentTestDataBuilder {
 
         BacklogItemCommentResponse backlogItemCommentResponse = BacklogItemCommentResponse.builder()
                 .comment(updatedBacklogItemComment.getComment())
-                .user(updatedBacklogItemComment.getUser())
+                .user(userResponse)
                 .build();
 
         return new UpdateBacklogItemCommentTestData(backlogItemComment, newComment, updatedBacklogItemComment, backlogItemCommentResponse, user);

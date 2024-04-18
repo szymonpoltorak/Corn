@@ -67,6 +67,7 @@ public class BacklogItemCommentRepositoryTestDataBuilder {
                 .commentOwner(commentOwner)
                 .nonCommentOwner(nonCommentOwner)
                 .nonProjectMember(nonProjectMember)
+                .backlogItemWithComment(backlogItemWithComment)
                 .comment(comment)
                 .build();
     }

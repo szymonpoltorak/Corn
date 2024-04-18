@@ -1,6 +1,7 @@
 package dev.corn.cornbackend.api.backlog.comment;
 
 import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponse;
+import dev.corn.cornbackend.api.backlog.comment.data.BacklogItemCommentResponseList;
 import dev.corn.cornbackend.api.backlog.comment.interfaces.BacklogItemCommentService;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.test.backlog.item.comment.BacklogItemCommentTestDataBuilder;
@@ -104,6 +105,23 @@ class BacklogItemCommentControllerImplTest {
         //then
         assertEquals(expected, backlogItemCommentController.getComment(commentId, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_COMMENT_RESPONSE);
+    }
+
+    @Test
+    final void test_getCommentsForBacklogItemShouldReturnCorrectBacklogItemCommentsResponseList() {
+        //given
+        long backlogItemId = 1l;
+        int pageNumber = 0;
+
+        //when
+        when(backlogItemCommentService.getCommentsForBacklogItem(backlogItemId, pageNumber, SAMPLE_USER))
+                .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponseList());
+
+        BacklogItemCommentResponseList expected = BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponseList();
+
+        //then
+        assertEquals(expected, backlogItemCommentController.getCommentsForBacklogItem(backlogItemId, pageNumber, SAMPLE_USER),
+                "Should return correct BacklogItemCommentResponseList");
     }
 
 }

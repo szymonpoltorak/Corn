@@ -21,6 +21,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Builder
 @Getter
@@ -45,6 +47,12 @@ public class BacklogItemComment implements Jsonable {
     @ManyToOne
     @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_NULL_MSG)
     private BacklogItem backlogItem;
+
+    @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_TIME_NULL_MSG)
+    private LocalDateTime commentDate;
+
+    @NotNull(message = BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_LAST_EDIT_TIME_NULL_MSG)
+    private LocalDateTime lastEditTime;
 
     @Override
     public final String toJson() {

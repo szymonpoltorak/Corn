@@ -10,6 +10,7 @@ import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.user.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 public class SampleEntitiesBuilder {
@@ -74,6 +75,8 @@ public class SampleEntitiesBuilder {
                 .comment("Comment")
                 .backlogItem(null)
                 .user(null)
+                .lastEditTime(LocalDateTime.now())
+                .commentDate(LocalDateTime.now())
                 .build();
     }
 }

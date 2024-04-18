@@ -1,6 +1,5 @@
 package dev.corn.cornbackend.api.project.member.interfaces;
 
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 
