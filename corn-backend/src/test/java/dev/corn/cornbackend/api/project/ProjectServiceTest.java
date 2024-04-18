@@ -2,7 +2,6 @@ package dev.corn.cornbackend.api.project;
 
 import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
@@ -27,7 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static dev.corn.cornbackend.api.project.ProjectServiceImpl.PROJECTS_PER_PAGE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
