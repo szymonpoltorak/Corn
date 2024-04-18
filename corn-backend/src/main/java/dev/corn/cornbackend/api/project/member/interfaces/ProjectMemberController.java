@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member.interfaces;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 
@@ -25,9 +26,9 @@ public interface ProjectMemberController {
      * @param projectId the id of the project to get the members of
      * @param page the page number to get the members from
      * @param user the user making the request
-     * @return a list of UserResponse objects
+     * @return a list of UserResponse objects and total number of project members
      */
-    List<UserResponse> getProjectMembers(long projectId, int page, User user);
+    ProjectMemberList getProjectMembers(long projectId, int page, User user);
 
     /**
      * Removes a assignee from a project

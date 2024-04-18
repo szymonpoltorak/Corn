@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.ProjectMemberMapperImpl;
@@ -157,7 +158,7 @@ class ProjectMemberServiceTest {
                 .user(user)
                 .project(ADD_NEW_PROJECT_DATA.project())
                 .build();
-        List<UserResponse> expected = List.of(MAPPER.mapProjectMememberToUserResponse(projectMember));
+        ProjectMemberList expected = new ProjectMemberList(List.of(MAPPER.mapProjectMememberToUserResponse(projectMember)), 0L);
 
         // when
         when(projectRepository.findByIdWithProjectMember(projectId, user))
@@ -166,8 +167,10 @@ class ProjectMemberServiceTest {
                 .thenReturn(new PageImpl<>(List.of(projectMember)));
         when(projectMemberMapper.mapProjectMememberToUserResponse(projectMember))
                 .thenReturn(MAPPER.mapProjectMememberToUserResponse(projectMember));
+        when(projectMemberRepository.countByProjectProjectId(ADD_NEW_PROJECT_DATA.project().getProjectId()))
+                .thenReturn(0L);
 
-        List<UserResponse> actual = projectMemberService.getProjectMembers(projectId, page, user);
+        ProjectMemberList actual = projectMemberService.getProjectMembers(projectId, page, user);
 
         // then
         assertEquals(expected, actual, "Should get project members");

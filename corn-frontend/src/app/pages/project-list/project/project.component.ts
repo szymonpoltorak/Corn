@@ -6,6 +6,7 @@ import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.compon
 import { StorageService } from "@core/services/storage.service";
 import { Project } from "@interfaces/boards/project";
 import { Router } from "@angular/router";
+import { RouterPaths } from "@core/enum/RouterPaths";
 
 @Component({
     selector: 'app-project',
@@ -29,7 +30,8 @@ export class ProjectComponent {
     @Input() project!: Project;
 
     chooseProject(): void {
-        this.storageService.saveProjectId(this.project.projectId);
-        this.router.navigate(['/boards'])
+        this.storageService.saveProject(this.project);
+
+        this.router.navigate([RouterPaths.BOARDS_DIRECT_PATH, RouterPaths.BACKLOG_PATH]);
     }
 }

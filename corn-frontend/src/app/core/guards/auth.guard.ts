@@ -13,7 +13,7 @@ export const authGuard: CanActivateFn = (route, state) => {
         return true;
     }
 
-    storage.deleteProjectId();
+    storage.deleteProjectFromStorage();
 
     return routerService.createUrlTree([RouterPaths.HOME_DIRECT_PATH]);
 };

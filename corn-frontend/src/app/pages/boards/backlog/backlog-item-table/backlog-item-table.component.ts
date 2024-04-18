@@ -19,7 +19,6 @@ import { catchError, merge, Observable, of, startWith, Subject, switchMap, take,
 import { NgClass } from "@angular/common";
 import { map } from "rxjs/operators";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
-import { BacklogItemType } from "@core/enum/BacklogItemType";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { bootstrapBugFill } from "@ng-icons/bootstrap-icons";
 import { featherBook } from "@ng-icons/feather-icons";
@@ -81,32 +80,27 @@ import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-
     styleUrl: './backlog-item-table.component.scss',
     providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer, matDelete })],
 })
-export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
+export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
+
+    @Input() sprintId: number = 0;
+    @Input() sprintIds: string[] = [];
+    @Input() inputSprintChanged!: EventEmitter<number>
+    @ViewChild(MatSort) sort!: MatSort;
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatTable) table!: MatTable<BacklogItem>;
+    @Output() outputSprintChanged: EventEmitter<number> = new EventEmitter<number>
+
+    dataToDisplay: BacklogItem[] = [];
+    displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
+    destroy$: Subject<void> = new Subject<void>();
+    resultsLength: number = 0;
+    hoveredRow: BacklogItem | null = null;
+    isLoading: boolean = true;
 
     constructor(private backlogItemService: BacklogItemService,
                 private backlogComponent: BacklogComponent,
                 private dialog: MatDialog) {
     }
-
-    @Input() sprintId: number = 0;
-    @Input() sprintIds: string[] = [];
-    @Input() inputSprintChanged!: EventEmitter<number>
-
-    @Output() outputSprintChanged: EventEmitter<number> = new EventEmitter<number>
-
-    dataToDisplay: BacklogItem[] = [];
-
-    displayedColumns: string[] = ['title', 'description', 'status', 'type', 'assignee'];
-
-    @ViewChild(MatSort) sort!: MatSort;
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @ViewChild(MatTable) table!: MatTable<BacklogItem>;
-
-    destroy$: Subject<void> = new Subject();
-
-    resultsLength: number = 0;
-    hoveredRow: BacklogItem | null = null;
-    isLoading: boolean = true;
 
     deleteItem(item: BacklogItem): void {
         this.backlogItemService.deleteBacklogItem(item).pipe(take(1)).subscribe((deletedItem: BacklogItem) => {
@@ -114,8 +108,6 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
             this.resultsLength -= 1;
         });
     }
-
-    protected readonly BacklogItemType = BacklogItemType;
 
     ngAfterViewInit(): void {
         this.inputSprintChanged.pipe(takeUntil(this.destroy$)).subscribe((sprintId: number) => {
@@ -140,15 +132,13 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
     fetchBacklogItems(): void {
         this.isLoading = true;
         let active: string = this.sort.active === 'type' ? 'itemType' : this.sort.active;
-
         let source: Observable<BacklogItemList>;
 
-        if(this.sprintId === -1) {
+        if (this.sprintId === -1) {
             source = this.backlogItemService.getAllWithoutSprint(this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
         } else {
             source = this.backlogItemService.getAllBySprintId(this.sprintId, this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
         }
-
 
         source.pipe(
                 catchError(() => of(null)),
@@ -164,8 +154,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
                 }),
                 take(1)
             ).subscribe(data => {
-            this.dataToDisplay = data;
-
+              this.dataToDisplay = data;
         })
     }
 
@@ -190,7 +179,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy{
             transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
 
             const previousTable = this.backlogComponent.findBacklogItemTableById(event.previousContainer.id);
-            if(previousTable) {
+            if (previousTable) {
                 previousTable.table.renderRows();
             }
             event.container.data[event.currentIndex].sprintId = this.sprintId;

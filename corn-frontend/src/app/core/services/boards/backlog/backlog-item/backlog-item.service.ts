@@ -6,6 +6,7 @@ import { ApiUrl } from "@core/enum/api-url";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
 import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
 import { StorageService } from "@core/services/storage.service";
+import { StorageKey } from "@core/enum/storage-key.enum";
 
 @Injectable({
     providedIn: 'root'
@@ -14,17 +15,6 @@ export class BacklogItemService {
 
     constructor(private http: HttpClient,
                 private storage: StorageService) {
-    }
-
-    getAllByProjectId(pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
-        return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_BY_PROJECT_ID, {
-            params: {
-                projectId: this.storage.getProjectId(),
-                pageNumber: pageNumber,
-                sortBy: sortBy,
-                order: order
-            }
-        });
     }
 
     getAllBySprintId(sprintId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
@@ -41,7 +31,7 @@ export class BacklogItemService {
     getAllWithoutSprint(pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
         return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_WITHOUT_SPRINT, {
             params: {
-                projectId: this.storage.getProjectId(),
+                projectId: this.storage.getValueFromStorage(StorageKey.PROJECT_ID),
                 pageNumber: pageNumber,
                 sortBy: sortBy,
                 order: order
@@ -56,7 +46,7 @@ export class BacklogItemService {
             description: description,
             projectMemberId: projectMemberId,
             sprintId: sprintId,
-            projectId: this.storage.getProjectId(),
+            projectId: this.storage.getValueFromStorage(StorageKey.PROJECT_ID),
             itemType: itemType.toString()
         })
     }
@@ -67,7 +57,7 @@ export class BacklogItemService {
             description: item.description,
             projectMemberId: item.assignee ? item.assignee.userId : -1,
             sprintId: item.sprintId,
-            projectId: this.storage.getProjectId(),
+            projectId: this.storage.getValueFromStorage(StorageKey.PROJECT_ID),
             itemType: item.itemType.toString(),
             itemStatus: item.status.toString()
         }, {

@@ -34,6 +34,11 @@ export const routes: Routes = [
                 loadComponent: () => import("@pages/boards/board/board.component")
                     .then(c => c.BoardComponent)
             },
+            {
+                path: RouterPaths.SETTINGS_PATH,
+                loadComponent: () => import("@pages/boards/project-settings/project-settings.component")
+                    .then(c => c.ProjectSettingsComponent)
+            }
         ],
     },
     {

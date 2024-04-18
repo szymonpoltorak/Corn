@@ -12,6 +12,7 @@ public final class ProjectConstants {
 
     public static final String PROJECT_OWNER_FIELD_NAME = "owner";
     public static final String PROJECT_OWNER_NULL_MSG = "Owner cannot be null";
+    public static final int PROJECT_NAME_MIN_SIZE = 2;
 
     private ProjectConstants() {
 

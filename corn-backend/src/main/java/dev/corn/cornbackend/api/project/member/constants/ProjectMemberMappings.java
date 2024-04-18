@@ -1,7 +1,7 @@
 package dev.corn.cornbackend.api.project.member.constants;
 
 public final class ProjectMemberMappings {
-    public static final String PROJECT_MEMBER_MAPPING = "/api/v1/project/assignee";
+    public static final String PROJECT_MEMBER_MAPPING = "/api/v1/project/member";
 
     public static final String ADD_MEMBER_TO_PROJECT_MAPPING = "/addMember";
 
