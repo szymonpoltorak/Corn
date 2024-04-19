@@ -6,6 +6,8 @@ import { SliceDescriptor } from '@core/services/boards/board/slice/slice_descrip
 import { SlicesModelService } from '@core/services/boards/board/slice/slices_model.service';
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { ColumnSetLayout } from '../layout/column_set_layout.component';
+import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
+import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 
 @Component({
     selector: 'slice',
@@ -21,6 +23,8 @@ export class SliceComponent<T> implements AfterViewInit, OnDestroy {
 
     @Input() sliceDescriptor?: SliceDescriptor<T>;
 
+    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee>) => void;
+
     @ViewChild('todoTasklist') private todoTasklist!: TaskListComponent;
     @ViewChild('inprogressTasklist') private inprogressTasklist!: TaskListComponent;
     @ViewChild('doneTasklist') private doneTasklist!: TaskListComponent;
@@ -31,6 +35,9 @@ export class SliceComponent<T> implements AfterViewInit, OnDestroy {
     ) { }
 
     ngAfterViewInit(): void {
+        this.assigneeChangedHandler0 = (event: TaskChangedGroupEvent<Assignee>) => {
+            this.assigneeChangedHandler && this.assigneeChangedHandler(event);
+        }
         this.sliceService.register(this);
     }
 
@@ -53,5 +60,8 @@ export class SliceComponent<T> implements AfterViewInit, OnDestroy {
             this.doneTasklist.getDroplistInstance(),
         ] : [];
     }
+
+    // this is necessary to bind proper `this` reference to passed functions
+    protected assigneeChangedHandler0:(event: TaskChangedGroupEvent<Assignee>) => void = () => {};
 
 }

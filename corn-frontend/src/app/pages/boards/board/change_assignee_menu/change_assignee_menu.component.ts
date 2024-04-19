@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { BoardModelService } from '@core/services/boards/board/model.service';
 import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 import { Task } from '@core/interfaces/boards/board/task.interface';
+import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
 
 @Component({
     selector: 'change-assignee-menu',
@@ -25,6 +26,8 @@ export class ChangeAssigneeMenuComponent {
     protected filteredAssignees: Assignee[] = [];
 
     @Input() associatedTask?: Task;
+
+    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee>) => void;
 
     @ViewChild('filterStringInput') private input?: ElementRef;
 
@@ -46,7 +49,11 @@ export class ChangeAssigneeMenuComponent {
     protected assigneeChanged(assignee: Assignee): void {
         if (!this.associatedTask)
             return;
-        this.modelService.setAssigneeForTask(this.associatedTask, assignee);
+        this.assigneeChangedHandler && this.assigneeChangedHandler({
+            task: this.associatedTask,
+            sourceGroupMetadata: this.associatedTask.assignee,
+            destinationGroupMetadata: assignee
+        });
     }
 
 }

@@ -1,7 +1,8 @@
 import { Assignee } from "./assignee.interface";
 
 export interface Task {
-    taskid: string;
+    associatedBacklogItemId: number;
+    taskTag: string;
     content: string;
     assignee: Assignee
 }

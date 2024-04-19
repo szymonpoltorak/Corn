@@ -8,7 +8,6 @@ import { SliceService } from '@core/services/boards/board/slice/slice.service';
 import { SliceComponent } from './slice/slice.component';
 import { BoardModelService } from '@core/services/boards/board/model.service';
 import { MatIconModule } from '@angular/material/icon';
-import { ASSIGNEES, TASKS } from './placeholder_data';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 import { TaskGrouping } from '@core/enum/boards/board/TaskGrouping';
@@ -18,6 +17,13 @@ import { TaskGrouper } from '@core/types/board/boards/TaskGrouper';
 import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
 import { TaskChangedColumnEvent } from '@core/interfaces/boards/board/task_changed_column_event.interface';
 import { Hideable } from '@core/interfaces/boards/board/hideable.interface';
+import { SprintApi } from '@core/services/api/v1/sprint/sprint-api.service';
+import { StorageService } from '@core/services/storage.service';
+import { SprintResponse } from '@core/services/api/v1/sprint/data/sprint-response.interface';
+import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
+import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { BacklogItemStatus } from '@core/enum/BacklogItemStatus';
+import { StorageKey } from '@core/enum/storage-key.enum';
 
 @Component({
     selector: 'app-board',
@@ -40,10 +46,15 @@ import { Hideable } from '@core/interfaces/boards/board/hideable.interface';
 })
 export class BoardComponent implements OnInit {
 
+    protected currentSprint: SprintResponse | null | undefined = undefined;
     protected filterString: string = "";
     protected taskGrouping: TaskGrouping = TaskGrouping.NONE;
 
     constructor(
+        protected readonly sprintApi: SprintApi,
+        protected readonly projectMemberApi: ProjectMemberApi,
+        protected readonly backlogItemApi: BacklogItemApi,
+        protected readonly storage: StorageService,
         protected readonly modelService: BoardModelService,
         protected readonly slicesModelService: SlicesModelService<GroupingMetadata>,
     ) {
@@ -53,25 +64,98 @@ export class BoardComponent implements OnInit {
         this.modelService.modelChangeHandler = () => {
             this.slicesModelService.rebuildSlices();
         }
-        this.modelService.assignees = Object.values(ASSIGNEES);
-        this.modelService.todo = TASKS.TODO;
-        this.modelService.inprogress = TASKS.INPROGRESS;
-        this.modelService.done = TASKS.DONE;
-        this.slicesModelService.groupChangedHandler = (event: TaskChangedGroupEvent) => {
-            if (this.taskGrouping == TaskGrouping.BY_ASSIGNEE &&
-                event.sourceGroupMetadata != event.destinationGroupMetadata
-            ) {
-                this.modelService.setAssigneeForTask(event.task, event.destinationGroupMetadata);
+        this.slicesModelService.groupChangedHandler = this.groupChangedHandler.bind(this);
+        this.slicesModelService.columnChangedHandler = this.columnChangedHandler.bind(this);
+        this.sprintApi.getCurrentAndFutureSprints(this.storage.getValueFromStorage(StorageKey.PROJECT_ID)).subscribe(list => {
+            this.setSprint(list.length > 0 ? list[0] : null);
+        });
+    }
+
+    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee>): void {
+        this.modelService.setAssigneeForTask(event.task, event.destinationGroupMetadata);
+        this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
+            projectMemberId: event.task.assignee.associatedProjectMemberId,
+        }).subscribe((_) => { });
+    }
+
+    protected groupChangedHandler(event: TaskChangedGroupEvent<GroupingMetadata>): void {
+        if (this.taskGrouping == TaskGrouping.BY_ASSIGNEE &&
+            event.sourceGroupMetadata != event.destinationGroupMetadata &&
+            event.destinationGroupMetadata != null &&
+            event.destinationGroupMetadata != undefined
+        ) {
+            this.assigneeChangedHandler(event as TaskChangedGroupEvent<Assignee>);
+            this.modelService.setAssigneeForTask(event.task, event.destinationGroupMetadata);
+        }
+    }
+
+    private columnChangedHandler(event: TaskChangedColumnEvent): void {
+        this.modelService.moveTaskToArray(event.task,
+            event.sourceColumn, event.sourceColumnIndex,
+            event.destinationColumn, event.destinationColumnIndex
+        );
+        const status = (() => {
+            if (event.destinationColumn === this.modelService.todo) {
+                return BacklogItemStatus.TODO;
+            } else if (event.destinationColumn === this.modelService.inprogress) {
+                return BacklogItemStatus.IN_PROGRESS;
+            } else if (event.destinationColumn === this.modelService.done) {
+                return BacklogItemStatus.DONE;
             }
+            throw new Error("Unknown column");
+        })();
+        setTimeout(() => {
+            // this prevents race condition
+            this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
+                itemStatus: status,
+            }).subscribe((_) => { });
+        }, 500);
+    }
+
+    protected setSprint(sprint: SprintResponse | null | undefined): void {
+        if (sprint === null || sprint === undefined) {
+            return;
         }
-        this.slicesModelService.columnChangedHandler = (event: TaskChangedColumnEvent) => {
-            this.modelService.moveTaskToArray(event.task,
-                event.sourceColumn, event.sourceColumnIndex,
-                event.destinationColumn, event.destinationColumnIndex
-            );
-        }
-        this.updateFilterString(this.filterString);
-        this.updateTaskGrouping(this.taskGrouping);
+        this.currentSprint = undefined;
+        this.projectMemberApi.getAllProjectMembers(this.storage.getValueFromStorage(StorageKey.PROJECT_ID)).subscribe(members => {
+            this.modelService.assignees = members.map(member => {
+                return {
+                    associatedUserId: member.user.userId,
+                    associatedUsername: member.user.username,
+                    associatedProjectMemberId: member.projectMemberId,
+                    firstName: member.user.name,
+                    familyName: member.user.surname,
+                    avatarUrl: "/assets/assignee-avatars/alice.png",
+                };
+            });
+            const userIdToAssigneesMap = this.modelService.assignees.reduce((acc: any, next) => {
+                acc[next.associatedUsername] = next;
+                return acc;
+            }, {})
+            this.backlogItemApi.getAllBySprintId(sprint.sprintId).subscribe(items => {
+                this.modelService.todo = [];
+                this.modelService.inprogress = [];
+                this.modelService.done = [];
+                items.forEach(item => {
+                    const task: Task = {
+                        associatedBacklogItemId: item.backlogItemId,
+                        taskTag: item.itemType + "-" + item.backlogItemId,
+                        content: item.title,
+                        assignee: userIdToAssigneesMap[item.assignee.username],
+                    };
+                    if (item.status == BacklogItemStatus.TODO) {
+                        this.modelService.todo.push(task)
+                    } else if (item.status == BacklogItemStatus.IN_PROGRESS) {
+                        this.modelService.inprogress.push(task)
+                    } else if (item.status == BacklogItemStatus.DONE) {
+                        this.modelService.done.push(task)
+                    }
+                })
+                this.currentSprint = sprint;
+                this.updateFilterString(this.filterString);
+                this.updateTaskGrouping(this.taskGrouping);
+            });
+        });
     }
 
     protected updateFilterString(filterString: string): void {
@@ -83,7 +167,8 @@ export class BoardComponent implements OnInit {
                 || stringPredicate(t.assignee.firstName)
                 || stringPredicate(t.assignee.firstName + " " + t.assignee.familyName)
                 || stringPredicate(t.assignee.familyName)
-                || stringPredicate(t.taskid);
+                || stringPredicate(t.associatedBacklogItemId + "")
+                || stringPredicate(t.taskTag);
         };
         this.slicesModelService.rebuildSlices();
     }

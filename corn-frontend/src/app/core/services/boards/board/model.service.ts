@@ -6,7 +6,6 @@ import { Task } from '@core/interfaces/boards/board/task.interface';
 @Injectable()
 export class BoardModelService {
 
-    sprintName: string = 'Sprint 1';
     assignees: Assignee[] = [];
     todo: Task[] = [];
     inprogress: Task[] = [];
