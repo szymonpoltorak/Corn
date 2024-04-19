@@ -29,4 +29,9 @@ export class StorageService {
     save<T>(key: StorageKey, s: T): void {
         localStorage.setItem(key, JSON.stringify(s));
     }
+
+    isProjectIdSet(): boolean {
+        return localStorage.getItem('projectId') != null;
+    }
+    
 }

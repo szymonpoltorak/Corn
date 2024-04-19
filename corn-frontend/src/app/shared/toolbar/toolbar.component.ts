@@ -6,7 +6,7 @@ import { MatToolbar } from "@angular/material/toolbar";
 import { KeycloakProfile } from "keycloak-js";
 import { UserinfoComponent } from "@pages/boards/userinfo/userinfo.component";
 import { KeycloakService } from "keycloak-angular";
-import { Router, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { RouterPaths } from "@core/enum/RouterPaths";
 import { MatTooltip } from "@angular/material/tooltip";
 import { StorageService } from "@core/services/storage.service";
@@ -39,7 +39,6 @@ export class ToolbarComponent implements OnInit {
     sidebarShown: boolean = false;
 
     constructor(private keycloak: KeycloakService,
-                private router: Router,
                 private storage: StorageService) {
     }
 
@@ -48,10 +47,7 @@ export class ToolbarComponent implements OnInit {
 
         if (this.isLoggedIn) {
             this.userProfile = await this.keycloak.loadUserProfile();
-
             this.storage.save(StorageKey.CURRENT_USER, this.userProfile);
-        } else {
-            this.router.navigate([RouterPaths.HOME_DIRECT_PATH]);
         }
     }
 
