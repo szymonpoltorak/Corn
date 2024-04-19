@@ -16,6 +16,10 @@ public class BacklogItemMappings {
 
     public static final String BACKLOG_ITEM_GET_ALL_WITHOUT_SPRINT_MAPPING = "/getAllWithoutSprint";
 
+    public static final String BACKLOG_ITEM_GET_ALL_BY_SPRINT_MAPPING = "/getAllBySprint";
+
+    public static final String BACKLOG_ITEM_PARTIAL_UPDATE_MAPPING = "/partialUpdate";
+
     private BacklogItemMappings() {
     }
 }

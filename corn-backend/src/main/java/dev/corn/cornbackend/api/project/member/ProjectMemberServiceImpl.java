@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoExtendedResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
 import dev.corn.cornbackend.entities.project.Project;
@@ -139,6 +140,38 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         log.info("Total number of members: {}", totalNumberOfMembers);
 
         return totalNumberOfMembers;
+    }
+
+    @Override
+    public ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
+        log.info("Getting project member id  for projectId: {}", projectId);
+
+        ProjectMember projectMember = projectMemberRepository
+                .findByProjectAndUser(getProjectFromRepositoryIfOwnerOrMember(projectId, user), user)
+                .orElseThrow(() -> new ProjectMemberDoesNotExistException(
+                                String.format("Project member does not exist for user %s for projectid %d",
+                                        user.getUsername(), projectId)
+                        )
+                );
+
+        return ProjectMemberInfoExtendedResponse.fromProjectMember(projectMember);
+    }
+
+    @Override
+    public List<ProjectMemberInfoExtendedResponse> getAllProjectMembers(long projectId, User user) {
+        Pageable wholePage = Pageable.unpaged();
+
+        log.info("Getting all project members for projectId: {}", projectId);
+
+        Project project = getProjectFromRepositoryIfOwnerOrMember(projectId, user);
+
+        log.info("Found project: {}", project);
+
+        Page<ProjectMember> projectMembers = projectMemberRepository.findAllByProject(project, wholePage);
+
+        log.info("Found all projectMembers: {}", projectMembers.getTotalElements());
+
+        return projectMembers.map(ProjectMemberInfoExtendedResponse::fromProjectMember).toList();
     }
 
     private User getUserFromRepository(String username) {

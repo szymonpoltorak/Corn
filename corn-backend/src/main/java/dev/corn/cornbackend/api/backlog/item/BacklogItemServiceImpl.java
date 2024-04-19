@@ -214,6 +214,62 @@ public class BacklogItemServiceImpl implements BacklogItemService {
                 .build();
     }
 
+    @Override
+    public List<BacklogItemResponse> getAllBySprintId(long sprintId, User user) {
+        Pageable wholePage = Pageable.unpaged();
+
+        log.info(GETTING_BY_ID, SPRINT, sprintId);
+
+        Sprint sprint = sprintRepository.findByIdWithProjectMember(sprintId, user)
+                .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
+
+        log.info(GETTING_BACKLOG_ITEMS_WITH_PAGEABLE, SPRINT, sprint, wholePage);
+        Page<BacklogItem> items = backlogItemRepository.getBySprint(sprint, wholePage);
+
+        log.info(RETURNING_BACKLOG_ITEMS_OF_QUANTITY, items.getNumberOfElements());
+
+        return items.stream()
+                .map(backlogItemMapper::backlogItemToBacklogItemResponse)
+                .toList();
+    }
+
+    @Override
+    public BacklogItemResponse partialUpdate(long id, BacklogItemRequest backlogItemRequest, User user) {
+        log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
+
+        BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
+                .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
+
+        if (backlogItemRequest.title() != null) {
+            item.setTitle(backlogItemRequest.title());
+        }
+        if (backlogItemRequest.description() != null) {
+            item.setDescription(backlogItemRequest.description());
+        }
+        if (backlogItemRequest.projectMemberId() != null) {
+            item.setAssignee(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), item.getProject())
+                    .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE)));
+        }
+        if (backlogItemRequest.sprintId() != null) {
+            item.setSprint(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), item.getProject())
+                    .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE)));
+        }
+        if (backlogItemRequest.projectId() != null) {
+            item.setProject(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
+                    .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE)));
+        }
+        if(backlogItemRequest.itemType() != null) {
+            item.setItemType(backlogItemRequest.itemType());
+        }
+        if(backlogItemRequest.itemStatus() != null) {
+            item.setStatus(backlogItemRequest.itemStatus());
+        }
+
+        BacklogItem savedItem = backlogItemRepository.save(item);
+
+        return backlogItemMapper.backlogItemToBacklogItemResponse(savedItem);
+    }
+
     private record BacklogItemBuilderDto(Sprint sprint, Project project, ProjectMember assignee) {
     }
 

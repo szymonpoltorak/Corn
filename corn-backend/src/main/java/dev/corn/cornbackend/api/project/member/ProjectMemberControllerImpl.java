@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoExtendedResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberController;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static dev.corn.cornbackend.api.project.member.constants.ProjectMemberMappings.ADD_MEMBER_TO_PROJECT_MAPPING;
+import static dev.corn.cornbackend.api.project.member.constants.ProjectMemberMappings.GET_ALL_MEMBERS_OF_PROJECT_MAPPING;
 import static dev.corn.cornbackend.api.project.member.constants.ProjectMemberMappings.GET_MEMBERS_OF_PROJECT_MAPPING;
+import static dev.corn.cornbackend.api.project.member.constants.ProjectMemberMappings.GET_PROJECT_MEMBER_ID_MAPPING;
 import static dev.corn.cornbackend.api.project.member.constants.ProjectMemberMappings.PROJECT_MEMBER_MAPPING;
 import static dev.corn.cornbackend.api.project.member.constants.ProjectMemberMappings.REMOVE_MEMBER_FROM_PROJECT_MAPPING;
 
@@ -50,4 +53,18 @@ public class ProjectMemberControllerImpl implements ProjectMemberController {
                                                       @JwtAuthed User user) {
         return projectMemberService.removeMemberFromProject(username, projectId, user);
     }
+
+    @Override
+    @GetMapping(value = GET_PROJECT_MEMBER_ID_MAPPING)
+    public ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
+        return projectMemberService.getProjectMemberId(projectId, user);
+    }
+
+    @Override
+    @GetMapping(value = GET_ALL_MEMBERS_OF_PROJECT_MAPPING)
+    public final List<ProjectMemberInfoExtendedResponse> getAllProjectMembers(@RequestParam long projectId,
+                                                      @JwtAuthed User user) {
+        return projectMemberService.getAllProjectMembers(projectId, user);
+    }
+
 }
