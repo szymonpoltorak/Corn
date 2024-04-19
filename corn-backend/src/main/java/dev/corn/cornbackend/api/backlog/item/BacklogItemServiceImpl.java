@@ -263,6 +263,9 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         }
         if(backlogItemRequest.itemStatus() != null) {
             item.setStatus(backlogItemRequest.itemStatus());
+            if(backlogItemRequest.itemStatus() == ItemStatus.DONE) {
+                item.setTaskFinishDate(LocalDate.now());
+            }
         }
 
         BacklogItem savedItem = backlogItemRepository.save(item);
