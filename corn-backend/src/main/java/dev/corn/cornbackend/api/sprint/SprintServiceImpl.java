@@ -217,7 +217,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public Page<SprintResponse> getSprintsAfterSprint(long sprintId, Pageable pageable, User user) {
+    public final Page<SprintResponse> getSprintsAfterSprint(long sprintId, Pageable pageable, User user) {
         log.info("Getting sprints after: {}", sprintId);
 
         Sprint sprint = resolveSprintForProjectMember(sprintId, user);
@@ -233,7 +233,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user) {
+    public final Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user) {
         log.info("Getting sprints before: {}", sprintId);
 
         Sprint sprint = resolveSprintForProjectMember(sprintId, user);
