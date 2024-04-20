@@ -11,6 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -180,4 +184,43 @@ class SprintControllerTest {
         // then
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
     }
+
+    @Test
+    final void test_getSprintsAfterSprint_shouldReturnListOfSprints() {
+        // given
+        long sprintId = 1L;
+        Pageable pageable = PageRequest.of(0, 5);
+        List<SprintResponse> sprints = List.of(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()));
+        PageImpl<SprintResponse> expected = new PageImpl<>(sprints, pageable, sprints.size());
+
+        // when
+        when(sprintService.getSprintsAfterSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner())).thenReturn(expected);
+
+        Page<SprintResponse> actual = sprintController.getSprintsAfterSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner());
+
+        // then
+        assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
+
+    @Test
+    final void test_getSprintsBeforeSprint_shouldReturnListOfSprints() {
+        // given
+        long sprintId = 1L;
+        Pageable pageable = PageRequest.of(0, 5);
+        List<SprintResponse> sprints = List.of(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()));
+        PageImpl<SprintResponse> expected = new PageImpl<>(sprints, pageable, sprints.size());
+
+        // when
+        when(sprintService.getSprintsBeforeSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner())).thenReturn(expected);
+
+        Page<SprintResponse> actual = sprintController.getSprintsBeforeSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner());
+
+        // then
+        assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
+
 }

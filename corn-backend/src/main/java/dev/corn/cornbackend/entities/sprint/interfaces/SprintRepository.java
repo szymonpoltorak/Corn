@@ -108,4 +108,25 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
      */
     Page<Sprint> findAllByProjectAndEndDateAfter(Project project, LocalDate date, Pageable pageable);
 
+    /**
+     * Finds all sprints with given project that have start date after specified date and pages them
+     *
+     * @param project  project to find sprints associated with
+     * @param date     date after which found sprints should start
+     * @param pageable pageable to page and sort sprints
+     * @return Page of found sprints
+     */
+    Page<Sprint> findAllByProjectAndStartDateAfter(Project project, LocalDate date, Pageable pageable);
+
+    /**
+     * Finds all sprints with given project that have end date before specified date and pages them
+     *
+     * @param project  project to find sprints associated with
+     * @param date     date before which found sprints should end
+     * @param pageable pageable to page and sort sprints
+     * @return Page of found sprints
+     */
+    Page<Sprint> findAllByProjectAndEndDateBefore(Project project, LocalDate date, Pageable pageable);
+
+
 }

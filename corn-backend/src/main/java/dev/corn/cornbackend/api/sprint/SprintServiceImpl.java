@@ -76,8 +76,7 @@ public class SprintServiceImpl implements SprintService {
     public final SprintResponse getSprintById(long sprintId, User user) {
         log.info("Getting sprint with id: {} for user: {}", sprintId, user);
 
-        Sprint sprint = sprintRepository.findByIdWithProjectMember(sprintId, user)
-                .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
+        Sprint sprint = resolveSprintForProjectMember(sprintId, user);
 
         log.info("Sprint found : {}", sprint);
 
@@ -201,10 +200,7 @@ public class SprintServiceImpl implements SprintService {
     public List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user) {
         log.info("Getting current and future sprints for project with id: {}", projectId);
 
-        Project project = projectRepository.findByIdWithProjectMember(projectId, user)
-                .orElseThrow(() -> new ProjectDoesNotExistException(
-                        String.format(PROJECT_NOT_FOUND, projectId)
-                ));
+        Project project = resolveProjectForProjectMember(projectId, user);
 
         log.info("Found project with id: {}", project);
 
@@ -218,6 +214,50 @@ public class SprintServiceImpl implements SprintService {
         log.info(SPRINTS_ON_PAGE, sprints.getNumberOfElements());
 
         return sprints.map(sprintMapper::toSprintResponse).toList();
+    }
+
+    @Override
+    public Page<SprintResponse> getSprintsAfterSprint(long sprintId, Pageable pageable, User user) {
+        log.info("Getting sprints after: {}", sprintId);
+
+        Sprint sprint = resolveSprintForProjectMember(sprintId, user);
+
+        log.info("Found sprint: {}", sprint);
+
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndStartDateAfter(sprint.getProject(),
+                sprint.getStartDate(), pageable);
+
+        log.info(SPRINTS_ON_PAGE, sprints.getNumberOfElements());
+
+        return sprints.map(sprintMapper::toSprintResponse);
+    }
+
+    @Override
+    public Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user) {
+        log.info("Getting sprints before: {}", sprintId);
+
+        Sprint sprint = resolveSprintForProjectMember(sprintId, user);
+
+        log.info("Found sprint: {}", sprint);
+
+        Page<Sprint> sprints = sprintRepository.findAllByProjectAndEndDateBefore(sprint.getProject(),
+                sprint.getEndDate(), pageable);
+
+        log.info(SPRINTS_ON_PAGE, sprints.getNumberOfElements());
+
+        return sprints.map(sprintMapper::toSprintResponse);
+    }
+
+    private Project resolveProjectForProjectMember(long projectId, User user) {
+        return projectRepository.findByIdWithProjectMember(projectId, user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(
+                        String.format(PROJECT_NOT_FOUND, projectId)
+                ));
+    }
+
+    private Sprint resolveSprintForProjectMember(long sprintId, User user) {
+        return sprintRepository.findByIdWithProjectMember(sprintId, user)
+                .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
     }
 
 }
