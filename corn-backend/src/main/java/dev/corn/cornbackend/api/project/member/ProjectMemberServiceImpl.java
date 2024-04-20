@@ -143,7 +143,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
+    public final ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
         log.info("Getting project member id  for projectId: {}", projectId);
 
         ProjectMember projectMember = projectMemberRepository
@@ -158,7 +158,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public List<ProjectMemberInfoExtendedResponse> getAllProjectMembers(long projectId, User user) {
+    public final List<ProjectMemberInfoExtendedResponse> getAllProjectMembers(long projectId, User user) {
         Pageable wholePage = Pageable.unpaged();
 
         log.info("Getting all project members for projectId: {}", projectId);

@@ -107,7 +107,7 @@ public class BacklogItemControllerImpl implements BacklogItemController {
 
     @Override
     @GetMapping(BACKLOG_ITEM_GET_ALL_BY_SPRINT_MAPPING)
-    public List<BacklogItemResponse> getAllBySprintId(
+    public final List<BacklogItemResponse> getAllBySprintId(
             @RequestParam long sprintId,
             @JwtAuthed User user) {
         return backlogItemService.getAllBySprintId(sprintId, user);
@@ -115,7 +115,7 @@ public class BacklogItemControllerImpl implements BacklogItemController {
 
     @Override
     @PatchMapping(BACKLOG_ITEM_PARTIAL_UPDATE_MAPPING)
-    public BacklogItemResponse partialUpdate(@RequestParam long id,
+    public final BacklogItemResponse partialUpdate(@RequestParam long id,
                                              @RequestBody BacklogItemRequest backlogItemRequest,
                                              @JwtAuthed User user) {
         return backlogItemService.partialUpdate(id, backlogItemRequest, user);

@@ -56,7 +56,7 @@ public class ProjectMemberControllerImpl implements ProjectMemberController {
 
     @Override
     @GetMapping(value = GET_PROJECT_MEMBER_ID_MAPPING)
-    public ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
+    public final ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
         return projectMemberService.getProjectMemberId(projectId, user);
     }
 

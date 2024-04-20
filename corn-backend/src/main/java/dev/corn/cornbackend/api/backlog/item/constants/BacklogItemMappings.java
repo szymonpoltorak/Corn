@@ -1,6 +1,6 @@
 package dev.corn.cornbackend.api.backlog.item.constants;
 
-public class BacklogItemMappings {
+public final class BacklogItemMappings {
 
     public static final String BACKLOG_ITEM_API_MAPPING = "/api/v1/backlog/item";
     public static final String BACKLOG_ITEM_ADD_MAPPING = "/add";
