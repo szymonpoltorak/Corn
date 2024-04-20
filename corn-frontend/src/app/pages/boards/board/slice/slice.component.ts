@@ -61,7 +61,6 @@ export class SliceComponent<T> implements AfterViewInit, OnDestroy {
         ] : [];
     }
 
-    // this is necessary to bind proper `this` reference to passed functions
     protected assigneeChangedHandler0:(event: TaskChangedGroupEvent<Assignee>) => void = () => {};
 
 }

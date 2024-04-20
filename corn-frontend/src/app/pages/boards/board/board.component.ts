@@ -105,7 +105,6 @@ export class BoardComponent implements OnInit {
             throw new Error("Unknown column");
         })();
         setTimeout(() => {
-            // this prevents race condition
             this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
                 itemStatus: status,
             }).subscribe((_) => { });
