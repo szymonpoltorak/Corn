@@ -77,7 +77,7 @@ export class BoardComponent implements OnInit {
         await this.loadAndDisplayCurrentSprint();
     }
 
-    private async loadAndDisplayCurrentSprint() {
+    private async loadAndDisplayCurrentSprint(): Promise<void> {
         const projectId: number = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
         const sprints = await firstValueFrom(this.sprintApi.getCurrentAndFutureSprints(projectId));
         if (sprints.length == 0) {
@@ -88,7 +88,7 @@ export class BoardComponent implements OnInit {
         }
     }
 
-    private async loadSprintInfo(sprint: SimpleSprint) {
+    private async loadSprintInfo(sprint: SimpleSprint): Promise<void> {
         const [nextSprint, previousSprint] = [
             await firstValueFrom(this.sprintApi.getSprintsAfterSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "ASC"))),
             await firstValueFrom(this.sprintApi.getSprintsBeforeSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "DESC"))),
@@ -111,7 +111,7 @@ export class BoardComponent implements OnInit {
         this.updateModel(sprint, items, usernameToAssingeeMapper);
     }
 
-    private async updateModel(sprint: SimpleSprint, items: BacklogItemResponse[], mapper: UsernameToAssigneeMapper) {
+    private async updateModel(sprint: SimpleSprint, items: BacklogItemResponse[], mapper: UsernameToAssigneeMapper): Promise<void> {
         this.modelService.todo = [];
         this.modelService.inprogress = [];
         this.modelService.done = [];
@@ -133,13 +133,13 @@ export class BoardComponent implements OnInit {
         this.updateTaskGrouping(this.taskGrouping);
     }
 
-    protected switchDisplayedSprint(forward: boolean) {
+    protected async switchDisplayedSprint(forward: boolean): Promise<void> {
         if(forward && this.nextSprint) {
             this.currentSprint = undefined;
-            this.loadSprintInfo(this.nextSprint);
+            await this.loadSprintInfo(this.nextSprint);
         } else if(!forward && this.previousSprint) {
             this.currentSprint = undefined;
-            this.loadSprintInfo(this.previousSprint);
+            await this.loadSprintInfo(this.previousSprint);
         }
     }
 
