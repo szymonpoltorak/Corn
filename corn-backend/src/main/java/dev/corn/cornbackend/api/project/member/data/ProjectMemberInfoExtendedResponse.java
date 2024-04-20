@@ -1,17 +1,19 @@
 package dev.corn.cornbackend.api.project.member.data;
 
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
+import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 
 public record ProjectMemberInfoExtendedResponse(UserResponse user, long projectId, long projectMemberId) {
 
     public static ProjectMemberInfoExtendedResponse fromProjectMember(ProjectMember pm) {
+        User user = pm.getUser();
         return new ProjectMemberInfoExtendedResponse(
                 new UserResponse(
-                        pm.getUser().getUserId(),
-                        pm.getUser().getName(),
-                        pm.getUser().getSurname(),
-                        pm.getUser().getUsername()
+                        user.getUserId(),
+                        user.getName(),
+                        user.getSurname(),
+                        user.getUsername()
                 ),
                 pm.getProject().getProjectId(),
                 pm.getProjectMemberId()
