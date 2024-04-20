@@ -9,4 +9,6 @@ export enum SprintApiMappings {
     UPDATE_SPRINTS_END_DATE = ROOT + "/updateSprintsEndDate",
     DELETE_SPRINT = ROOT + "/deleteSprint",
     CURRENT_AND_FUTURE_SPRINTS = ROOT + "/currentAndFuture",
+    SPRINTS_AFTER_SPRINT = ROOT + "/getSprintsAfterSprint",
+    SPRINTS_BEFORE_SPRINT = ROOT + "/getSprintsBeforeSprint",
 }
