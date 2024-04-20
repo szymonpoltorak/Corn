@@ -4,7 +4,20 @@
     } @else if(currentSprint === undefined) {
         <span>Ładowanie sprintów...</span>
     } @else {
-        <h1 class="text-3xl">{{ currentSprint.sprintName }}</h1>
+        <div class="flex items-center gap-4">
+            <div class="flex">
+                <button mat-icon-button color="primary" (click)="switchDisplayedSprint(false)" [disabled]="!previousSprint">
+                    <mat-icon>navigate_before</mat-icon>
+                </button>
+                <h1 class="text-3xl">{{ currentSprint.sprintName }}</h1>
+                <button mat-icon-button color="primary" (click)="switchDisplayedSprint(true)" [disabled]="!nextSprint">
+                    <mat-icon>navigate_next</mat-icon>
+                </button>
+            </div>
+            @if (!isDisplayedSprintEditable()) {
+                <span>This is not ongoing sprint and it is in read only mode!</span>
+            }
+        </div>
 
         <div class="flex items-center gap-4">
             <mat-form-field class="border-solid border-[1px] rounded-md border-dark-color-settings-container-background" subscriptSizing="dynamic">
