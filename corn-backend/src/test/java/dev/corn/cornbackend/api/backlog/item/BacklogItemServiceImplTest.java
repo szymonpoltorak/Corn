@@ -38,6 +38,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
 import java.util.Optional;
 
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM_PAGE_SIZE;
@@ -694,6 +695,113 @@ class BacklogItemServiceImplTest {
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
     }
 
+    @Test
+    final void getByAllSprintId_shouldReturnCorrectBacklogItemListResponseOnCorrectId() {
+        //given
+        long id = 1L;
+        Pageable wholePage = Pageable.unpaged();
 
+        //when
+        when(sprintRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
+
+        when(backlogItemRepository.getBySprint(ENTITY_DATA.sprint(), wholePage))
+                .thenReturn(new PageImpl<>(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems()));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(0)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(0));
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_LIST_TEST_DATA.backlogItems().get(1)))
+                .thenReturn(BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponses().get(1));
+
+        List<BacklogItemResponse> backlogItemResponses = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList()
+                .backlogItemResponseList();
+
+        //then
+        assertEquals(backlogItemResponses, backlogItemServiceImpl.getAllBySprintId(id, SAMPLE_USER),
+                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE_LIST);
+    }
+
+    @Test
+    final void getAllBySprintId_shouldThrowSprintNotFoundExceptionOnIncorrectId() {
+        //given
+        long id = -1L;
+
+        //when
+        when(sprintRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.empty());
+
+        //then
+        assertThrows(SprintNotFoundException.class, () -> backlogItemServiceImpl.getAllBySprintId(id, SAMPLE_USER),
+                String.format(SHOULD_THROW, SprintNotFoundException.class.getSimpleName()));
+    }
+
+    @Test
+    final void partialUpdate_ShouldReturnCorrectBacklogItemResponseOnCorrectData() {
+        //given
+        long id = 1L;
+        BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemRequest();
+
+        //when
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.of(BACKLOG_ITEM_UPDATE_TEST_DATA.backLogItem()));
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
+
+        when(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
+
+        when(backlogItemRepository.save(BACKLOG_ITEM_UPDATE_TEST_DATA.updatedBacklogItem()))
+                .thenReturn(BACKLOG_ITEM_UPDATE_TEST_DATA.updatedBacklogItem());
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_UPDATE_TEST_DATA.updatedBacklogItem()))
+                .thenReturn(BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemResponse());
+
+        BacklogItemResponse expected = BACKLOG_ITEM_UPDATE_TEST_DATA.backlogItemResponse();
+
+        BacklogItemResponse actual = backlogItemServiceImpl.partialUpdate(id, backlogItemRequest, SAMPLE_USER);
+
+        //then
+        assertEquals(expected, actual, SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+        assertNull(actual.taskFinishDate(), "Task finish date should be null on DONE status");
+    }
+
+    @Test
+    final void partialUpdate_shouldReturnResponseWithTaskFinishDate() {
+        //given
+        long id = 1L;
+        BacklogItemRequest backlogItemRequest = BACKLOG_ITEM_UPDATE_FINISH_DATA.backlogItemRequest();
+
+        //when
+        when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
+                .thenReturn(Optional.of(BACKLOG_ITEM_UPDATE_FINISH_DATA.backLogItem()));
+
+        when(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), SAMPLE_USER))
+                .thenReturn(Optional.of(ENTITY_DATA.project()));
+
+        when(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.projectmember()));
+
+        when(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), ENTITY_DATA.project()))
+                .thenReturn(Optional.of(ENTITY_DATA.sprint()));
+
+        when(backlogItemRepository.save(BACKLOG_ITEM_UPDATE_FINISH_DATA.updatedBacklogItem()))
+                .thenReturn(BACKLOG_ITEM_UPDATE_FINISH_DATA.updatedBacklogItem());
+
+        when(backlogItemMapper.backlogItemToBacklogItemResponse(BACKLOG_ITEM_UPDATE_FINISH_DATA.updatedBacklogItem()))
+                .thenReturn(BACKLOG_ITEM_UPDATE_FINISH_DATA.backlogItemResponse());
+
+        BacklogItemResponse expected = BACKLOG_ITEM_UPDATE_FINISH_DATA.backlogItemResponse();
+
+        BacklogItemResponse actual = backlogItemServiceImpl.partialUpdate(id, backlogItemRequest, SAMPLE_USER);
+
+        //then
+        assertEquals(expected, actual, SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+        assertNotNull(actual.taskFinishDate(), "Task finish date should not be null on not DONE status");
+    }
 
 }

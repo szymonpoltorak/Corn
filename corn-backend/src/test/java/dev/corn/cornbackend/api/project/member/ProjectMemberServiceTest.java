@@ -1,5 +1,6 @@
 package dev.corn.cornbackend.api.project.member;
 
+import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoExtendedResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
@@ -292,4 +293,76 @@ class ProjectMemberServiceTest {
         assertThrows(InvalidUsernameException.class, () -> projectMemberService
                 .removeMemberFromProject(user.getUsername(), projectId, user));
     }
+
+    @Test
+    final void test_getProjectMemberId_shouldGetProjectMemberId() {
+        // given
+        long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
+        User user = ADD_NEW_PROJECT_DATA.owner();
+        ProjectMember projectMember = ProjectMember
+                .builder()
+                .user(user)
+                .project(ADD_NEW_PROJECT_DATA.project())
+                .build();
+        ProjectMemberInfoExtendedResponse expected = ProjectMemberInfoExtendedResponse.fromProjectMember(projectMember);
+
+        // when
+        when(projectRepository.findByIdWithProjectMember(projectId, user))
+                .thenReturn(Optional.of(ADD_NEW_PROJECT_DATA.project()));
+        when(projectMemberRepository.findByProjectAndUser(ADD_NEW_PROJECT_DATA.project(), user))
+                .thenReturn(Optional.of(projectMember));
+
+        ProjectMemberInfoExtendedResponse actual = projectMemberService.getProjectMemberId(projectId, user);
+
+        // then
+        assertEquals(expected, actual, "Should get all project members");
+    }
+
+    @Test
+    final void test_getProjectMemberId_shouldThrowWhenProjectMemberDoesNotExist() {
+        // given
+        long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
+        User user = ADD_NEW_PROJECT_DATA.owner();
+
+        // when
+        when(projectRepository.findByIdWithProjectMember(projectId, user))
+                .thenReturn(Optional.of(ADD_NEW_PROJECT_DATA.project()));
+        when(projectMemberRepository.findByProjectAndUser(ADD_NEW_PROJECT_DATA.project(), user))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThrows(ProjectMemberDoesNotExistException.class, () -> projectMemberService
+                .getProjectMemberId(projectId, user));
+    }
+
+    @Test
+    final void test_getAllProjectMembers_shouldGetAllMembers() {
+        // given
+        long projectId = ADD_NEW_PROJECT_DATA.project().getProjectId();
+        Pageable wholePage = Pageable.unpaged();
+        User user = ADD_NEW_PROJECT_DATA.owner();
+        ProjectMember projectMember = ProjectMember
+                .builder()
+                .user(user)
+                .project(ADD_NEW_PROJECT_DATA.project())
+                .build();
+        List<ProjectMemberInfoExtendedResponse> expected =
+                List.of(ProjectMemberInfoExtendedResponse.fromProjectMember(projectMember));
+
+        // when
+        when(projectRepository.findByIdWithProjectMember(projectId, user))
+                .thenReturn(Optional.of(ADD_NEW_PROJECT_DATA.project()));
+        when(projectMemberRepository.findAllByProject(ADD_NEW_PROJECT_DATA.project(), wholePage))
+                .thenReturn(new PageImpl<>(List.of(projectMember)));
+        when(projectMemberMapper.mapProjectMememberToUserResponse(projectMember))
+                .thenReturn(MAPPER.mapProjectMememberToUserResponse(projectMember));
+        when(projectMemberRepository.countByProjectProjectId(ADD_NEW_PROJECT_DATA.project().getProjectId()))
+                .thenReturn(0L);
+
+        List<ProjectMemberInfoExtendedResponse> actual = projectMemberService.getAllProjectMembers(projectId, user);
+
+        // then
+        assertEquals(expected, actual, "Should get all project members");
+    }
+
 }
