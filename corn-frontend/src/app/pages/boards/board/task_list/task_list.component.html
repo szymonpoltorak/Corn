@@ -7,6 +7,6 @@
     (cdkDropListDropped)="droppedHandler($event)"
 >
     @for (item of tasks; track item) {
-        <taskcard class="w-full" cdkDrag [task]="item"></taskcard>
+        <taskcard class="w-full" cdkDrag [task]="item" [assigneeChangedHandler]="assigneeChangedHandler"></taskcard>
     }
 </div>

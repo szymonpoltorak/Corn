@@ -1,6 +1,6 @@
 package dev.corn.cornbackend.api.backlog.item.constants;
 
-public class BacklogItemMappings {
+public final class BacklogItemMappings {
 
     public static final String BACKLOG_ITEM_API_MAPPING = "/api/v1/backlog/item";
     public static final String BACKLOG_ITEM_ADD_MAPPING = "/add";
@@ -15,6 +15,10 @@ public class BacklogItemMappings {
     public static final String BACKLOG_ITEM_GET_DETAILS_MAPPING = "/getDetails";
 
     public static final String BACKLOG_ITEM_GET_ALL_WITHOUT_SPRINT_MAPPING = "/getAllWithoutSprint";
+
+    public static final String BACKLOG_ITEM_GET_ALL_BY_SPRINT_MAPPING = "/getAllBySprint";
+
+    public static final String BACKLOG_ITEM_PARTIAL_UPDATE_MAPPING = "/partialUpdate";
 
     private BacklogItemMappings() {
     }

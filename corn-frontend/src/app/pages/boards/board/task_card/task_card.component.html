@@ -2,8 +2,8 @@
     <mat-card class="flex flex-col gap-[6px] shadow-md pt-1 pb-1 pl-2 pr-2">
         <h1 class="font-bold">{{ task.content }}</h1>
         <div class="flex items-center justify-between">
-            <span class="text-gray-300 text-sm font-bold">{{ task.taskid }}</span>
-            <change-assignee-menu [associatedTask]="task">
+            <span class="text-gray-300 text-sm font-bold">{{ task.taskTag }}</span>
+            <change-assignee-menu [associatedTask]="task" [assigneeChangedHandler]="assigneeChangedHandler">
                 <img
                     class="w-7 h-7 rounded-full cursor-pointer"
                     src="{{ task.assignee.avatarUrl }}"

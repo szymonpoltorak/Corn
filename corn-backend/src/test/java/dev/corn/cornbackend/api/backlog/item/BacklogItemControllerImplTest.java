@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -169,6 +171,39 @@ class BacklogItemControllerImplTest {
         //then
         assertEquals(expected, backlogItemController.getAllWithoutSprint(projectId, pageNumber, sortBy, orderBy, SAMPLE_USER),
                 SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+    }
+
+    @Test
+    final void test_getAllBySprintIdShouldReturnCorrectResponse() {
+        //given
+        long projectId = 1L;
+
+        //when
+        List<BacklogItemResponse> responseList = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList().backlogItemResponseList();
+        when(backlogItemService.getAllBySprintId(projectId, SAMPLE_USER))
+                .thenReturn(responseList);
+
+        List<BacklogItemResponse> expected = BACKLOG_ITEM_LIST_TEST_DATA.backlogItemResponseList().backlogItemResponseList();
+
+        //then
+        assertEquals(expected, backlogItemController.getAllBySprintId(projectId, SAMPLE_USER),
+                SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
+    }
+
+    @Test
+    final void test_partialUpdateShouldReturnCorrectResponse() {
+        //given
+        long projectId = 1L;
+
+        //when
+        when(backlogItemService.partialUpdate(projectId, ADD_BACKLOG_ITEM_DATA.backlogItemRequest(), SAMPLE_USER))
+                .thenReturn(ADD_BACKLOG_ITEM_DATA.backlogItemResponse());
+
+        BacklogItemResponse expected = ADD_BACKLOG_ITEM_DATA.backlogItemResponse();
+
+        //then
+        assertEquals(expected, backlogItemController.partialUpdate(projectId, ADD_BACKLOG_ITEM_DATA.backlogItemRequest(),
+                        SAMPLE_USER), SHOULD_RETURN_CORRECT_BACKLOG_ITEM_RESPONSE);
     }
 
 }

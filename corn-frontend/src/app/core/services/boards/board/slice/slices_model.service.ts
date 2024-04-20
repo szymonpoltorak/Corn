@@ -14,7 +14,7 @@ export class SlicesModelService<T> {
     @Input() filter?: (task: Task) => boolean;
     @Input() grouper?: TaskGrouper<T>;
 
-    @Input() groupChangedHandler?: (event: TaskChangedGroupEvent) => void;
+    @Input() groupChangedHandler?: (event: TaskChangedGroupEvent<T>) => void;
     @Input() columnChangedHandler?: (event: TaskChangedColumnEvent) => void;
 
     constructor(
