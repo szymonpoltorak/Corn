@@ -89,12 +89,12 @@ export class BoardComponent implements OnInit {
     }
 
     private async loadSprintInfo(sprint: SimpleSprint) {
-        const [maybeNextSprint, maybePreviousSprint] = [
+        const [nextSprint, previousSprint] = [
             await firstValueFrom(this.sprintApi.getSprintsAfterSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "ASC"))),
             await firstValueFrom(this.sprintApi.getSprintsBeforeSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "DESC"))),
         ].map(page => page.numberOfElements > 0 ? this.toSimpleSprint(page.content[0]) : null);
-        this.nextSprint = maybeNextSprint;
-        this.previousSprint = maybePreviousSprint;
+        this.nextSprint = nextSprint;
+        this.previousSprint = previousSprint;
 
         const members = await firstValueFrom(this.projectMemberApi.getAllProjectMembers(sprint.projectId));
 
