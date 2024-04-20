@@ -37,6 +37,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemServiceConstants.BACKLOG_ITEM_NOT_FOUND_MESSAGE;
@@ -234,39 +238,30 @@ public class BacklogItemServiceImpl implements BacklogItemService {
     }
 
     @Override
-    public BacklogItemResponse partialUpdate(long id, BacklogItemRequest backlogItemRequest, User user) {
+    public BacklogItemResponse partialUpdate(long id, BacklogItemRequest request, User user) {
         log.info(GETTING_BY_ID, BACKLOG_ITEM, id);
 
         BacklogItem item = backlogItemRepository.findByIdWithProjectMember(id, user)
                 .orElseThrow(() -> new BacklogItemNotFoundException(BACKLOG_ITEM_NOT_FOUND_MESSAGE));
 
-        if (backlogItemRequest.title() != null) {
-            item.setTitle(backlogItemRequest.title());
+        setIfPresent(request::title, item::setTitle);
+        setIfPresent(request::description, item::setDescription);
+        setIfPresent(request::itemType, item::setItemType);
+        setIfPresent(request::itemStatus, item::setStatus);
+
+        ItemStatus itemStatus = request.itemStatus();
+        if(itemStatus != null) {
+            item.setTaskFinishDate(itemStatus == ItemStatus.DONE ? LocalDate.now() : null);
         }
-        if (backlogItemRequest.description() != null) {
-            item.setDescription(backlogItemRequest.description());
-        }
-        if (backlogItemRequest.projectMemberId() != null) {
-            item.setAssignee(projectMemberRepository.findByProjectMemberIdAndProject(backlogItemRequest.projectMemberId(), item.getProject())
-                    .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE)));
-        }
-        if (backlogItemRequest.sprintId() != null) {
-            item.setSprint(sprintRepository.findBySprintIdAndProject(backlogItemRequest.sprintId(), item.getProject())
-                    .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE)));
-        }
-        if (backlogItemRequest.projectId() != null) {
-            item.setProject(projectRepository.findByIdWithProjectMember(backlogItemRequest.projectId(), user)
-                    .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE)));
-        }
-        if(backlogItemRequest.itemType() != null) {
-            item.setItemType(backlogItemRequest.itemType());
-        }
-        if(backlogItemRequest.itemStatus() != null) {
-            item.setStatus(backlogItemRequest.itemStatus());
-            if(backlogItemRequest.itemStatus() == ItemStatus.DONE) {
-                item.setTaskFinishDate(LocalDate.now());
-            }
-        }
+
+        setResolvedIfPresent(request::projectId, presentId ->
+                resolveProjectForUser(user, id), item::setProject);
+        Project project = item.getProject();
+
+        setResolvedIfPresent(request::projectMemberId, presentId ->
+                resolveProjectMemberForProject(presentId, project), item::setAssignee);
+        setResolvedIfPresent(request::sprintId, presentId ->
+                resolveSprintForProject(presentId, project), item::setSprint);
 
         BacklogItem savedItem = backlogItemRepository.save(item);
 
@@ -370,4 +365,28 @@ public class BacklogItemServiceImpl implements BacklogItemService {
         log.info("Returning pageable: {}", pageable);
         return pageable;
     }
+
+    private <T, R> void setResolvedIfPresent(Supplier<T> getter, Function<T, R> resolver, Consumer<R> setter) {
+        setIfPresent(getter, value -> setter.accept(resolver.apply(value)));
+    }
+
+    private <T> void setIfPresent(Supplier<T> getter, Consumer<T> setter) {
+        Optional.ofNullable(getter.get()).ifPresent(setter);
+    }
+
+    private Project resolveProjectForUser(User user, Long projectId) {
+        return projectRepository.findByIdWithProjectMember(projectId, user)
+                .orElseThrow(() -> new ProjectDoesNotExistException(PROJECT_NOT_FOUND_MESSAGE));
+    }
+
+    private Sprint resolveSprintForProject(Long sprintId, Project project) {
+        return sprintRepository.findBySprintIdAndProject(sprintId, project)
+                .orElseThrow(() -> new SprintNotFoundException(SPRINT_NOT_FOUND_MESSAGE));
+    }
+
+    private ProjectMember resolveProjectMemberForProject(Long projectMemberId, Project project) {
+        return projectMemberRepository.findByProjectMemberIdAndProject(projectMemberId, project)
+                .orElseThrow(() -> new ProjectMemberDoesNotExistException(PROJECT_MEMBER_NOT_FOUND_MESSAGE));
+    }
+
 }
