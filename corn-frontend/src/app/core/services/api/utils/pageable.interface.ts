@@ -1,3 +1,5 @@
+import { SortDirection } from "./sort_direction.type";
+
 export interface Pageable<T> {
     page?: number;
     size?: number;
@@ -5,7 +7,7 @@ export interface Pageable<T> {
     phony: T;
 }
 
-function of<T>(page?: number, size?: number, sortBy?: keyof T, direction?: 'ASC' | 'DESC'): Pageable<T> {
+function of<T>(page?: number, size?: number, sortBy?: keyof T, direction?: SortDirection): Pageable<T> {
     const pageable: Pageable<T> = {} as Pageable<T>;
     if (page !== undefined) {
         pageable.page = page;
