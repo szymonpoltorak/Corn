@@ -15,7 +15,6 @@ public final class CornRealm extends RealmRepresentation {
         setClients(List.of(new CornClient()));
         setIdentityProviders(ExternalConfig.getIdentityProviders());
         setRevokeRefreshToken(true);
-        setRememberMe(true);
         setBruteForceProtected(true);
 
         if(ExternalConfig.shouldCreatePlaceholderUsers()) {

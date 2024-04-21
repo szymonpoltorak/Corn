@@ -40,6 +40,7 @@
         tabindex="${tabindex}" type="${type}"
         id="${id}" name="${name}"
         placeholder="${placeholder}"
+        autocomplete="on"
         value="${value}"
         class=" w-full bg-gray-600 border border-gray-600 rounded-md text-white
                 placeholder-gray-200 focus:outline-none focus:border-blue-500"
