@@ -79,6 +79,10 @@ export class BoardsComponent implements OnInit {
         this.router.navigate([`/${ RouterPaths.BOARDS_PATH }/${ BoardsPaths.BOARD }`]);
     }
 
+    navigateToReports(): void {
+        this.router.navigate([`/${ RouterPaths.BOARDS_PATH }/${ BoardsPaths.REPORTS }`]);
+    }
+
     navigateToProjectSettings(): void {
         this.router.navigate([RouterPaths.BOARDS_DIRECT_PATH, RouterPaths.SETTINGS_PATH])
     }

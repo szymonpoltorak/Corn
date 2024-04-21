@@ -1,0 +1,20 @@
+<div class="flex flex-col gap-[16px]">
+    @if (currentSprint === null) {
+        <span>Brak sprintów w projekcie</span>
+    } @else if(currentSprint === undefined) {
+        <span>Ładowanie sprintów...</span>
+    } @else {
+        <div class="flex">
+            <button mat-icon-button color="primary" (click)="switchDisplayedSprint(false)" [disabled]="!previousSprint">
+                <mat-icon>navigate_before</mat-icon>
+            </button>
+            <h1 class="text-3xl">{{ currentSprint.sprintName }}</h1>
+            <button mat-icon-button color="primary" (click)="switchDisplayedSprint(true)" [disabled]="!nextSprint">
+                <mat-icon>navigate_next</mat-icon>
+            </button>
+        </div>
+    }
+    <div>
+        <div id="chartContainer" style="height: 470px; width: 100%; margin:auto;"></div>
+    </div>
+</div>
