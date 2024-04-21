@@ -4,7 +4,7 @@
     } @else if(currentSprint === undefined) {
         <span>Ładowanie sprintów...</span>
     } @else {
-        <div class="flex">
+        <div class="flex items-center">
             <button mat-icon-button color="primary" (click)="switchDisplayedSprint(false)" [disabled]="!previousSprint">
                 <mat-icon>navigate_before</mat-icon>
             </button>
