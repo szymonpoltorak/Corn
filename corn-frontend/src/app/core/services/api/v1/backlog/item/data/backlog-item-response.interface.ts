@@ -7,7 +7,7 @@ export interface BacklogItemResponse {
     status: string;
     assignee: User;
     itemType: string;
-    taskFinishDate: string;
+    taskFinishDate: Date;
     projectId: number;
     sprintId: number;
 }

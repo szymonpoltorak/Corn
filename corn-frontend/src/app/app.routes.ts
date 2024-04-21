@@ -37,6 +37,11 @@ export const routes: Routes = [
                     .then(c => c.BoardComponent)
             },
             {
+                path: BoardsPaths.REPORTS,
+                loadComponent: () => import("@pages/boards/reports/reports.component")
+                    .then(c => c.ReportsComponent)
+            },
+            {
                 path: RouterPaths.SETTINGS_PATH,
                 loadComponent: () => import("@pages/boards/project-settings/project-settings.component")
                     .then(c => c.ProjectSettingsComponent)
