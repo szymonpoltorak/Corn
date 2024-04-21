@@ -21,7 +21,6 @@ import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.entities.user.interfaces.UserRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,11 +30,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Configuration
@@ -85,9 +86,9 @@ public class PlaceholderData implements CommandLineRunner {
 
         User projectOwner = drawRandom(users);
         Arrays.stream(PROJECT_NAMES)
-                        .forEach(name -> {
-                            projectService.addNewProject(name, projectOwner);
-                        });
+                .forEach(name -> {
+                    projectService.addNewProject(name, projectOwner);
+                });
         Project[] projects = projectRepository.findAllByOwnerOrderByName(projectOwner, Pageable.ofSize(PROJECT_NAMES.length))
                 .stream().toList().toArray(new Project[0]);
         Project project = projects[0];
@@ -97,7 +98,7 @@ public class PlaceholderData implements CommandLineRunner {
                 .forEach(user -> Arrays.stream(projects).forEach(currentProject ->
                         projectMemberService.addMemberToProject(user.getUsername(), currentProject.getProjectId(), projectOwner)));
 
-        List<ProjectMember> members =  projectMemberRepository.findAllByProject(project, Pageable.ofSize(users.size()))
+        List<ProjectMember> members = projectMemberRepository.findAllByProject(project, Pageable.ofSize(users.size()))
                 .stream().toList();
 
         LocalDate prevDate = LocalDate.now();
@@ -113,29 +114,34 @@ public class PlaceholderData implements CommandLineRunner {
 
         List<Sprint> allSprints = sprintRepository.findAll();
 
-        List<BacklogItem> backlogItems = Arrays.stream(SAMPLE_BACKLOG_ITEMS)
-                .map(item -> new BacklogItem(0,
-                        item[0], item[1],
-                        drawRandom(statusesPool),
-                        LocalDate.now().plusDays(random.nextInt(14)),
-                        Collections.emptyList(),
-                        drawRandom(members),
-                        drawRandom(allSprints),
-                        project,
-                        drawRandom(typesPool)
-                )).map(backlogItemRepository::save).toList();
+        List<BacklogItem> backlogItems = new ArrayList<>();
+
+        for (Sprint sprint : allSprints) {
+            backlogItems.addAll(IntStream.range(0, 8 + random.nextInt(8))
+                    .mapToObj(i -> drawRandom(SAMPLE_BACKLOG_ITEMS))
+                    .map(item -> new BacklogItem(0,
+                            item[0], item[1],
+                            drawRandom(statusesPool),
+                            null,
+                            Collections.emptyList(),
+                            drawRandom(members),
+                            sprint,
+                            project,
+                            drawRandom(typesPool)
+                    )).map(backlogItemRepository::save).toList());
+        }
 
         for (int i = 0; i < SAMPLE_BACKLOG_ITEMS.length / 4; i++) {
             for (int j = 0; j < random.nextInt(4); j++) {
                 long backlogItemId = drawRandom(backlogItems).getBacklogItemId();
                 User commenter = drawRandom(users);
-                for(int k = 0; k < 5; k++) {
+                for (int k = 0; k < 5; k++) {
                     backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
                             drawRandom(SAMPLE_COMMENTS), backlogItemId
                     ), commenter);
                 }
                 backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
-                       LONG_STRING, backlogItemId),users.get(4));
+                        LONG_STRING, backlogItemId), users.get(4));
             }
         }
 
@@ -151,9 +157,31 @@ public class PlaceholderData implements CommandLineRunner {
                         drawRandom(typesPool)))
                 .forEach(backlogItemRepository::save);
 
+        int dayShift = 24;
+
+        backlogItemRepository.saveAll(backlogItems.stream()
+                .filter(item -> item.getSprint().isStartAfter(LocalDate.now().plusDays(dayShift)))
+                .peek(item -> item.setStatus(ItemStatus.TODO))
+                .toList()
+        );
+        backlogItemRepository.saveAll(backlogItems.stream()
+                .filter(item -> item.getSprint().isEndBefore(LocalDate.now().plusDays(dayShift)))
+                .peek(item -> {
+                    if (random.nextDouble() < 0.53) {
+                        item.setStatus(ItemStatus.DONE);
+                        LocalDate start = item.getSprint().getStartDate();
+                        LocalDate end = item.getSprint().getEndDate();
+                        int daysBetween = (int) ChronoUnit.DAYS.between(start, end);
+                        item.setTaskFinishDate(start.plusDays(1+random.nextInt(daysBetween-2)).minusDays(dayShift));
+                    } else {
+                        item.setStatus(random.nextDouble() < 0.5 ? ItemStatus.IN_PROGRESS : ItemStatus.TODO);
+                    }
+                }).toList()
+        );
+
         Query query = entityManager.createNativeQuery("UPDATE sprint SET " +
-                "end_date = end_date - INTERVAL '17 days', " +
-                "start_date = start_date - INTERVAL '17 days';");
+                "end_date = end_date - INTERVAL '"+dayShift+" days', " +
+                "start_date = start_date - INTERVAL '"+dayShift+" days';");
         query.executeUpdate();
     }
 
@@ -161,6 +189,10 @@ public class PlaceholderData implements CommandLineRunner {
         ArrayList<T> tmp = new ArrayList<>(list);
         Collections.shuffle(tmp, random);
         return tmp.get(0);
+    }
+
+    private <T> T drawRandom(T[] array) {
+        return array[random.nextInt(array.length)];
     }
 
     private final String[][] SAMPLE_BACKLOG_ITEMS = {
@@ -304,14 +336,14 @@ public class PlaceholderData implements CommandLineRunner {
             {"Upgrade CAPTCHA Security", "Enhance CAPTCHA security to prevent spam and abuse."},
             {"Implement Continuous Integration", "Introduce continuous integration for automated code testing and deployment."},
     };
-    
+
     private static final String LONG_STRING =
             """
-            aaa very long string aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            hahahaha you though I was joking this string is reeeeaalllllyyyy loooooooooooooooooooooooooooooong and guess what
-            it ain't stopping dfsdkfbsfdkjsbdfkljdbflkjdsbflksdjbfskldjfblksdjbfklsjdbflkjsdbflkjsdbflksdbfjklsdfb
-            ok I'm done\n\n\n\n\n\n\nhaha just jk ok now I'm done
-            """;
+                    aaa very long string aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    hahahaha you though I was joking this string is reeeeaalllllyyyy loooooooooooooooooooooooooooooong and guess what
+                    it ain't stopping dfsdkfbsfdkjsbdfkljdbflkjdsbflksdjbfskldjfblksdjbfklsjdbflkjsdbflkjsdbflksdbfjklsdfb
+                    ok I'm done\n\n\n\n\n\n\nhaha just jk ok now I'm done
+                    """;
 
     private final String[] PROJECT_NAMES = {
             "BlueSky Initiative",
