@@ -75,12 +75,12 @@ public class PlaceholderData implements CommandLineRunner {
                 ItemStatus.DONE, ItemStatus.DONE, ItemStatus.DONE
         );
         List<User> users = userRepository.findAllById(Stream.of(
-                userService.registerUser("Jan", "Kowalski", "jan"),
-                userService.registerUser("Andrzej", "Switch", "andrzej"),
-                userService.registerUser("John", "Doe", "john"),
-                userService.registerUser("Jane", "Doe", "jane"),
-                userService.registerUser("Alice", "Smith", "alice"),
-                userService.registerUser("Bob", "Johnson", "bob")
+                userService.registerUser("Jan", "Kowalski", "jan@gmail.com"),
+                userService.registerUser("Andrzej", "Switch", "andrzej@gmail.com"),
+                userService.registerUser("John", "Doe", "john@gmail.com"),
+                userService.registerUser("Jane", "Doe", "jane@gmail.com"),
+                userService.registerUser("Alice", "Smith", "alice@gmail.com"),
+                userService.registerUser("Bob", "Johnson", "bob@gmail.com")
         ).map(UserResponse::userId).toList());
 
         User projectOwner = drawRandom(users);
