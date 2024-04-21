@@ -20,11 +20,15 @@ import dev.corn.cornbackend.entities.sprint.interfaces.SprintRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.entities.user.interfaces.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -48,12 +52,14 @@ public class PlaceholderData implements CommandLineRunner {
     private final BacklogItemCommentService backlogItemCommentService;
     private final ProjectMemberService projectMemberService;
     private final ProjectMemberRepository projectMemberRepository;
+    private final EntityManager entityManager;
     private final Random random = new Random(0);
 
     @Value("${CREATE_PLACEHOLDER_DATA:false}")
     private String CREATE_PLACEHOLDER_DATA;
 
     @Override
+    @Transactional
     public void run(String... args) {
         if (!"true".equalsIgnoreCase(CREATE_PLACEHOLDER_DATA)) {
             return;
@@ -96,7 +102,7 @@ public class PlaceholderData implements CommandLineRunner {
 
         LocalDate prevDate = LocalDate.now();
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 8; i++) {
             sprintService.addNewSprint(new SprintRequest(
                     project.getProjectId(), String.format("Sprint %d", i), prevDate, prevDate.plusDays(7),
                     String.format("Sprintd %d description", i)
@@ -144,6 +150,11 @@ public class PlaceholderData implements CommandLineRunner {
                         project,
                         drawRandom(typesPool)))
                 .forEach(backlogItemRepository::save);
+
+        Query query = entityManager.createNativeQuery("UPDATE sprint SET " +
+                "end_date = end_date - INTERVAL '17 days', " +
+                "start_date = start_date - INTERVAL '17 days';");
+        query.executeUpdate();
     }
 
     private <T> T drawRandom(List<T> list) {

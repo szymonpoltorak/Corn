@@ -29,6 +29,7 @@ import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project
 import { BacklogItemResponse } from '@core/services/api/v1/backlog/item/data/backlog-item-response.interface';
 import { UsernameToAssigneeMapper } from '@core/types/board/boards/UsernameToAssigneeMapper';
 import { SimpleSprint } from '@core/interfaces/boards/board/simple_sprint.interface';
+import { Pageable } from '@core/services/api/utils/pageable.interface';
 
 @Component({
     selector: 'app-board',
@@ -52,6 +53,8 @@ import { SimpleSprint } from '@core/interfaces/boards/board/simple_sprint.interf
 export class BoardComponent implements OnInit {
 
     protected currentSprint: SimpleSprint | null | undefined = undefined;
+    protected previousSprint: SimpleSprint | null = null;
+    protected nextSprint: SimpleSprint | null = null;
     protected filterString: string = "";
     protected taskGrouping: TaskGrouping = TaskGrouping.NONE;
 
@@ -74,7 +77,7 @@ export class BoardComponent implements OnInit {
         await this.loadAndDisplayCurrentSprint();
     }
 
-    private async loadAndDisplayCurrentSprint() {
+    private async loadAndDisplayCurrentSprint(): Promise<void> {
         const projectId: number = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
         const sprints = await firstValueFrom(this.sprintApi.getCurrentAndFutureSprints(projectId));
         if (sprints.length == 0) {
@@ -85,7 +88,14 @@ export class BoardComponent implements OnInit {
         }
     }
 
-    private async loadSprintInfo(sprint: SimpleSprint) {
+    private async loadSprintInfo(sprint: SimpleSprint): Promise<void> {
+        const [nextSprint, previousSprint] = [
+            await firstValueFrom(this.sprintApi.getSprintsAfterSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "ASC"))),
+            await firstValueFrom(this.sprintApi.getSprintsBeforeSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "DESC"))),
+        ].map(page => page.numberOfElements > 0 ? this.toSimpleSprint(page.content[0]) : null);
+        this.nextSprint = nextSprint;
+        this.previousSprint = previousSprint;
+
         const members = await firstValueFrom(this.projectMemberApi.getAllProjectMembers(sprint.projectId));
 
         this.modelService.assignees = members.map(this.toAssignee);
@@ -101,7 +111,7 @@ export class BoardComponent implements OnInit {
         this.updateModel(sprint, items, usernameToAssingeeMapper);
     }
 
-    private async updateModel(sprint: SimpleSprint, items: BacklogItemResponse[], mapper: UsernameToAssigneeMapper) {
+    private async updateModel(sprint: SimpleSprint, items: BacklogItemResponse[], mapper: UsernameToAssigneeMapper): Promise<void> {
         this.modelService.todo = [];
         this.modelService.inprogress = [];
         this.modelService.done = [];
@@ -123,7 +133,25 @@ export class BoardComponent implements OnInit {
         this.updateTaskGrouping(this.taskGrouping);
     }
 
+    protected async switchDisplayedSprint(forward: boolean): Promise<void> {
+        if(forward && this.nextSprint) {
+            this.currentSprint = undefined;
+            await this.loadSprintInfo(this.nextSprint);
+        } else if(!forward && this.previousSprint) {
+            this.currentSprint = undefined;
+            await this.loadSprintInfo(this.previousSprint);
+        }
+    }
+
+    protected isDisplayedSprintEditable(): boolean {
+        const currentDate = new Date();
+        return currentDate >= this.currentSprint!.startDate && currentDate <= this.currentSprint!.endDate;
+    }
+
     private columnChangedHandler(event: TaskChangedColumnEvent): void {
+        if(!this.isDisplayedSprintEditable()) {
+            return;
+        }
         this.modelService.moveTaskToArray(event.task,
             event.sourceColumn, event.sourceColumnIndex,
             event.destinationColumn, event.destinationColumnIndex
@@ -137,6 +165,9 @@ export class BoardComponent implements OnInit {
     }
 
     protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee>): void {
+        if(!this.isDisplayedSprintEditable()) {
+            return;
+        }
         this.modelService.setAssigneeForTask(event.task, event.destinationGroupMetadata);
         this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
             projectMemberId: event.task.assignee.associatedProjectMemberId,
@@ -144,6 +175,9 @@ export class BoardComponent implements OnInit {
     }
 
     protected groupChangedHandler(event: TaskChangedGroupEvent<GroupingMetadata>): void {
+        if(!this.isDisplayedSprintEditable()) {
+            return;
+        }
         if (this.taskGrouping == TaskGrouping.BY_ASSIGNEE &&
             event.sourceGroupMetadata != event.destinationGroupMetadata &&
             event.destinationGroupMetadata != null &&

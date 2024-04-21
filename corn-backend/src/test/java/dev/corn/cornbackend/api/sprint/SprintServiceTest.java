@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -454,4 +455,55 @@ class SprintServiceTest {
             sprintService.updateSprintsStartDate(newStartDate, sprintId, owner);
         });
     }
+
+    @Test
+    final void test_getSprintsAfterSprint_shouldReturnListOfSprints() {
+        // given
+        long sprintId = 1L;
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Sprint> sprints = List.of(ADD_SPRINT_DATA.asSprint());
+        List<SprintResponse> sprintResponses = List.of(ADD_SPRINT_DATA.asSprintResponse());
+        Page<Sprint> pageOfSprints = new PageImpl<>(sprints, pageable, sprints.size());
+        Page<SprintResponse> expected = new PageImpl<>(sprintResponses, pageable, sprintResponses.size());
+
+        // when
+        when(sprintRepository.findAllByProjectAndStartDateAfter(ADD_SPRINT_DATA.project(),
+                ADD_SPRINT_DATA.asSprint().getStartDate(), pageable)).thenReturn(pageOfSprints);
+        when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
+                .thenReturn(ADD_SPRINT_DATA.asSprintResponse());
+        when(sprintRepository.findByIdWithProjectMember(sprintId, ADD_SPRINT_DATA.project().getOwner()))
+                .thenReturn(Optional.of(ADD_SPRINT_DATA.asSprint()));
+
+        Page<SprintResponse> actual = sprintService.getSprintsAfterSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner());
+
+        // then
+        assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
+
+    @Test
+    final void test_getSprintsBeforeSprint_shouldReturnListOfSprints() {
+        // given
+        long sprintId = 1L;
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Sprint> sprints = List.of(ADD_SPRINT_DATA.asSprint());
+        List<SprintResponse> sprintResponses = List.of(ADD_SPRINT_DATA.asSprintResponse());
+        Page<Sprint> pageOfSprints = new PageImpl<>(sprints, pageable, sprints.size());
+        Page<SprintResponse> expected = new PageImpl<>(sprintResponses, pageable, sprintResponses.size());
+
+        // when
+        when(sprintRepository.findAllByProjectAndEndDateBefore(ADD_SPRINT_DATA.project(),
+                ADD_SPRINT_DATA.asSprint().getEndDate(), pageable)).thenReturn(pageOfSprints);
+        when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
+                .thenReturn(ADD_SPRINT_DATA.asSprintResponse());
+        when(sprintRepository.findByIdWithProjectMember(sprintId, ADD_SPRINT_DATA.project().getOwner()))
+                .thenReturn(Optional.of(ADD_SPRINT_DATA.asSprint()));
+
+        Page<SprintResponse> actual = sprintService.getSprintsBeforeSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner());
+
+        // then
+        assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
+
 }
