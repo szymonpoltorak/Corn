@@ -21,6 +21,10 @@ public final class SprintMappings {
 
     public static final String CURRENT_AND_FUTURE_SPRINTS = "/currentAndFuture";
 
+    public static final String SPRINTS_AFTER_SPRINT = "/getSprintsAfterSprint";
+
+    public static final String SPRINTS_BEFORE_SPRINT = "/getSprintsBeforeSprint";
+
     private SprintMappings() {
     }
 }

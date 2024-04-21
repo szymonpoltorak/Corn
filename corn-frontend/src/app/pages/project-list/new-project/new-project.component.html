@@ -1,0 +1,40 @@
+<div class="max-w-[50em] w-[50em] h-72 p-4 flex flex-col">
+    <div class="flex justify-center font-bold text-xl">
+        <div>Add new Project</div>
+    </div>
+
+    <mat-dialog-content>
+        <form (ngSubmit)="createNewProject()">
+            <mat-form-field class="mb-3 w-full">
+                <mat-label>Title</mat-label>
+
+                <input #projectName matInput [formControl]="nameControl" maxlength="120">
+
+                <mat-hint align="end">{{ projectName.value.length }} / 120</mat-hint>
+
+                @if (nameControl.hasError('required')) {
+                    <mat-error>Title is <strong>required</strong></mat-error>
+                } @else if (nameControl.hasError('maxlength')) {
+                    <mat-error>Title cannot be more than <strong>120</strong> characters</mat-error>
+                } @else if (nameControl.hasError('minlength')) {
+                    <mat-error>Title cannot be less than <strong>2</strong> characters</mat-error>
+                } @else if (nameControl.hasError('notWhitespace')) {
+                    <mat-error>Title cannot be only <strong>whitespace</strong></mat-error>
+                }
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="buttons">
+        <button mat-button type="button" mat-dialog-close aria-label="Close">
+            Close
+        </button>
+
+        <button mat-raised-button color="primary"
+                type="submit" aria-label="Close"
+                (click)="createNewProject()"
+                [disabled]="nameControl.invalid">
+            Submit
+        </button>
+    </mat-dialog-actions>
+</div>

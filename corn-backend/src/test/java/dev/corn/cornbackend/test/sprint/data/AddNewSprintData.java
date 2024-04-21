@@ -28,8 +28,8 @@ public record AddNewSprintData(Project project, String name, String description,
                 .sprintName(name)
                 .projectId(project.getProjectId())
                 .sprintDescription(description)
-                .sprintStartDate(startDate)
-                .sprintEndDate(endDate)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
     }
 

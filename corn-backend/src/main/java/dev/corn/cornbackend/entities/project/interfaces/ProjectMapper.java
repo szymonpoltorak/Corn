@@ -2,12 +2,12 @@ package dev.corn.cornbackend.entities.project.interfaces;
 
 import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.sprint.SprintMapperImpl;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public interface ProjectMapper {
      * @param membersInfo the members info of the project
      * @return the project info response
      */
-    ProjectInfoResponse toProjectInfoResponse(Project project, List<ProjectMemberInfoResponse> membersInfo,
+    ProjectInfoResponse toProjectInfoResponse(Project project, List<UserResponse> membersInfo,
                                               long totalNumberOfUsers);
 
     default SprintResponse sprintToSprintResponse(Sprint sprint) {

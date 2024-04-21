@@ -6,9 +6,11 @@ import { MatToolbar } from "@angular/material/toolbar";
 import { KeycloakProfile } from "keycloak-js";
 import { UserinfoComponent } from "@pages/boards/userinfo/userinfo.component";
 import { KeycloakService } from "keycloak-angular";
-import { Router, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { RouterPaths } from "@core/enum/RouterPaths";
 import { MatTooltip } from "@angular/material/tooltip";
+import { StorageService } from "@core/services/storage.service";
+import { StorageKey } from "@core/enum/storage-key.enum";
 
 @Component({
     selector: 'app-toolbar',
@@ -29,14 +31,15 @@ import { MatTooltip } from "@angular/material/tooltip";
     styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent implements OnInit {
+    protected readonly RouterPaths = RouterPaths;
+    @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Input() isOnProjectRoute: boolean = false;
     userProfile ?: KeycloakProfile;
     isLoggedIn: boolean = false;
-    @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-    sidebarShown: boolean = true;
+    sidebarShown: boolean = false;
 
     constructor(private keycloak: KeycloakService,
-                private router: Router) {
+                private storage: StorageService) {
     }
 
     async ngOnInit(): Promise<void> {
@@ -44,9 +47,7 @@ export class ToolbarComponent implements OnInit {
 
         if (this.isLoggedIn) {
             this.userProfile = await this.keycloak.loadUserProfile();
-            console.log(this.userProfile);
-        } else {
-            this.router.navigate([RouterPaths.HOME_DIRECT_PATH]);
+            this.storage.save(StorageKey.CURRENT_USER, this.userProfile);
         }
     }
 
@@ -57,8 +58,7 @@ export class ToolbarComponent implements OnInit {
     }
 
     logout(): void {
+        this.storage.deleteProjectFromStorage();
         this.keycloak.logout();
     }
-
-    protected readonly RouterPaths = RouterPaths;
 }

@@ -10,12 +10,14 @@ import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.test.sprint.SprintTestDataBuilder;
 import dev.corn.cornbackend.test.sprint.data.AddNewSprintData;
 import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistException;
+import dev.corn.cornbackend.utils.exceptions.sprint.InvalidSprintDateException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintEndDateMustBeAfterStartDate;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,11 +73,11 @@ class SprintServiceTest {
         assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
         verify(sprintRepository).save(ADD_SPRINT_DATA.asSprint());
     }
+
     @Test
     final void test_addNewSprint_shouldThrowWhenProjectNotFound() {
         // given
         SprintResponse expected = MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint());
-        SprintRequest sprintRequest = ADD_SPRINT_DATA.asSprintRequest();
         User owner = ADD_SPRINT_DATA.project().getOwner();
 
         // when
@@ -260,7 +262,7 @@ class SprintServiceTest {
     final void test_updateSprintsStartDate_shouldThrowWhenEndIsBeforeStart() {
         // given
         Sprint sprint = ADD_SPRINT_DATA.asSprint();
-        LocalDate newStartDate = sprint.getSprintEndDate().plusDays(10);
+        LocalDate newStartDate = sprint.getEndDate().plusDays(10);
         User owner = ADD_SPRINT_DATA.project().getOwner();
 
         // when
@@ -315,7 +317,7 @@ class SprintServiceTest {
     final void test_updateSprintsEndDate_shouldThrowWhenEndIsBeforeStart() {
         // given
         Sprint sprint = ADD_SPRINT_DATA.asSprint();
-        LocalDate newEndDate = sprint.getSprintStartDate().minusDays(10);
+        LocalDate newEndDate = sprint.getStartDate().minusDays(10);
         User owner = ADD_SPRINT_DATA.project().getOwner();
 
         // when
@@ -394,8 +396,8 @@ class SprintServiceTest {
         // when
         when(projectRepository.findByIdWithProjectMember(projectId, user))
                 .thenReturn(Optional.of(ADD_SPRINT_DATA.project()));
-        when(sprintRepository.findAllByProjectAndSprintEndDateAfter(
-                any(),any(), any()))
+        when(sprintRepository.findAllByProjectAndEndDateAfter(
+                any(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(ADD_SPRINT_DATA.asSprint())));
         when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
                 .thenReturn(ADD_SPRINT_DATA.asSprintResponse());
@@ -419,4 +421,89 @@ class SprintServiceTest {
         assertThrows(ProjectDoesNotExistException.class, () ->
                 sprintService.getCurrentAndFutureSprints(projectId, user));
     }
+
+    @Test
+    final void test_addNewSprint_shouldThrowInvalidSprintDateException() {
+        // given
+        SprintRequest expected = ADD_SPRINT_DATA.asSprintRequest();
+        User owner = ADD_SPRINT_DATA.project().getOwner();
+
+        // when
+        when(sprintRepository.existsBetweenStartDateAndEndDate(ADD_SPRINT_DATA.asSprint().getStartDate(),
+                ADD_SPRINT_DATA.asSprint().getEndDate(), ADD_SPRINT_DATA.project().getProjectId()))
+                .thenReturn(true);
+
+        // then
+        assertThrows(InvalidSprintDateException.class, () -> {
+            sprintService.addNewSprint(expected, owner);
+        });
+    }
+
+    @Test
+    final void test_updateSprintsStartDate_shouldThrowInvalidSprintDateException() {
+        // given
+        LocalDate newStartDate = LocalDate.now();
+        final long sprintId = 1L;
+        User owner = ADD_SPRINT_DATA.project().getOwner();
+
+        // when
+        when(sprintRepository.existsEndDateBeforeDate(newStartDate))
+                .thenReturn(true);
+
+        // then
+        assertThrows(InvalidSprintDateException.class, () -> {
+            sprintService.updateSprintsStartDate(newStartDate, sprintId, owner);
+        });
+    }
+
+    @Test
+    final void test_getSprintsAfterSprint_shouldReturnListOfSprints() {
+        // given
+        long sprintId = 1L;
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Sprint> sprints = List.of(ADD_SPRINT_DATA.asSprint());
+        List<SprintResponse> sprintResponses = List.of(ADD_SPRINT_DATA.asSprintResponse());
+        Page<Sprint> pageOfSprints = new PageImpl<>(sprints, pageable, sprints.size());
+        Page<SprintResponse> expected = new PageImpl<>(sprintResponses, pageable, sprintResponses.size());
+
+        // when
+        when(sprintRepository.findAllByProjectAndStartDateAfter(ADD_SPRINT_DATA.project(),
+                ADD_SPRINT_DATA.asSprint().getStartDate(), pageable)).thenReturn(pageOfSprints);
+        when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
+                .thenReturn(ADD_SPRINT_DATA.asSprintResponse());
+        when(sprintRepository.findByIdWithProjectMember(sprintId, ADD_SPRINT_DATA.project().getOwner()))
+                .thenReturn(Optional.of(ADD_SPRINT_DATA.asSprint()));
+
+        Page<SprintResponse> actual = sprintService.getSprintsAfterSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner());
+
+        // then
+        assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
+
+    @Test
+    final void test_getSprintsBeforeSprint_shouldReturnListOfSprints() {
+        // given
+        long sprintId = 1L;
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Sprint> sprints = List.of(ADD_SPRINT_DATA.asSprint());
+        List<SprintResponse> sprintResponses = List.of(ADD_SPRINT_DATA.asSprintResponse());
+        Page<Sprint> pageOfSprints = new PageImpl<>(sprints, pageable, sprints.size());
+        Page<SprintResponse> expected = new PageImpl<>(sprintResponses, pageable, sprintResponses.size());
+
+        // when
+        when(sprintRepository.findAllByProjectAndEndDateBefore(ADD_SPRINT_DATA.project(),
+                ADD_SPRINT_DATA.asSprint().getEndDate(), pageable)).thenReturn(pageOfSprints);
+        when(MAPPER.toSprintResponse(ADD_SPRINT_DATA.asSprint()))
+                .thenReturn(ADD_SPRINT_DATA.asSprintResponse());
+        when(sprintRepository.findByIdWithProjectMember(sprintId, ADD_SPRINT_DATA.project().getOwner()))
+                .thenReturn(Optional.of(ADD_SPRINT_DATA.asSprint()));
+
+        Page<SprintResponse> actual = sprintService.getSprintsBeforeSprint(sprintId, pageable,
+                ADD_SPRINT_DATA.project().getOwner());
+
+        // then
+        assertEquals(expected, actual, SPRINT_RESPONSE_SHOULD_BE_EQUAL_TO_EXPECTED);
+    }
+
 }

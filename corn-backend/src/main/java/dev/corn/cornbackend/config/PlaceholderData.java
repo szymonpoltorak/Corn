@@ -20,11 +20,15 @@ import dev.corn.cornbackend.entities.sprint.interfaces.SprintRepository;
 import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.entities.user.interfaces.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -48,12 +52,14 @@ public class PlaceholderData implements CommandLineRunner {
     private final BacklogItemCommentService backlogItemCommentService;
     private final ProjectMemberService projectMemberService;
     private final ProjectMemberRepository projectMemberRepository;
+    private final EntityManager entityManager;
     private final Random random = new Random(0);
 
     @Value("${CREATE_PLACEHOLDER_DATA:false}")
     private String CREATE_PLACEHOLDER_DATA;
 
     @Override
+    @Transactional
     public void run(String... args) {
         if (!"true".equalsIgnoreCase(CREATE_PLACEHOLDER_DATA)) {
             return;
@@ -78,23 +84,31 @@ public class PlaceholderData implements CommandLineRunner {
         ).map(UserResponse::userId).toList());
 
         User projectOwner = drawRandom(users);
-        projectService.addNewProject("Sample Project", projectOwner);
-        Project project = projectRepository.findAllByOwnerOrderByName(projectOwner, Pageable.ofSize(1))
-                .stream().findFirst().get();
+        Arrays.stream(PROJECT_NAMES)
+                        .forEach(name -> {
+                            projectService.addNewProject(name, projectOwner);
+                        });
+        Project[] projects = projectRepository.findAllByOwnerOrderByName(projectOwner, Pageable.ofSize(PROJECT_NAMES.length))
+                .stream().toList().toArray(new Project[0]);
+        Project project = projects[0];
 
         users.stream()
                 .filter(user -> user.getUserId() != projectOwner.getUserId())
-                .forEach(user ->
-                        projectMemberService.addMemberToProject(user.getUsername(), project.getProjectId(), projectOwner)
-                );
+                .forEach(user -> Arrays.stream(projects).forEach(currentProject ->
+                        projectMemberService.addMemberToProject(user.getUsername(), currentProject.getProjectId(), projectOwner)));
 
-        List<ProjectMember> members = projectMemberRepository.findAll();
+        List<ProjectMember> members =  projectMemberRepository.findAllByProject(project, Pageable.ofSize(users.size()))
+                .stream().toList();
 
-        for(int i = 0; i < 30; i++) {
+        LocalDate prevDate = LocalDate.now();
+
+        for (int i = 0; i < 8; i++) {
             sprintService.addNewSprint(new SprintRequest(
-                    project.getProjectId(), String.format("Sprint %d", i), LocalDate.now(), LocalDate.now().plusDays(7),
+                    project.getProjectId(), String.format("Sprint %d", i), prevDate, prevDate.plusDays(7),
                     String.format("Sprintd %d description", i)
             ), projectOwner);
+
+            prevDate = prevDate.plusDays(8L);
         }
 
         List<Sprint> allSprints = sprintRepository.findAll();
@@ -115,9 +129,13 @@ public class PlaceholderData implements CommandLineRunner {
             for (int j = 0; j < random.nextInt(4); j++) {
                 long backlogItemId = drawRandom(backlogItems).getBacklogItemId();
                 User commenter = drawRandom(users);
+                for(int k = 0; k < 5; k++) {
+                    backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
+                            drawRandom(SAMPLE_COMMENTS), backlogItemId
+                    ), commenter);
+                }
                 backlogItemCommentService.addNewComment(new BacklogItemCommentRequest(
-                        drawRandom(SAMPLE_COMMENTS), backlogItemId
-                ), commenter);
+                       LONG_STRING, backlogItemId),users.get(4));
             }
         }
 
@@ -132,6 +150,11 @@ public class PlaceholderData implements CommandLineRunner {
                         project,
                         drawRandom(typesPool)))
                 .forEach(backlogItemRepository::save);
+
+        Query query = entityManager.createNativeQuery("UPDATE sprint SET " +
+                "end_date = end_date - INTERVAL '17 days', " +
+                "start_date = start_date - INTERVAL '17 days';");
+        query.executeUpdate();
     }
 
     private <T> T drawRandom(List<T> list) {
@@ -281,4 +304,36 @@ public class PlaceholderData implements CommandLineRunner {
             {"Upgrade CAPTCHA Security", "Enhance CAPTCHA security to prevent spam and abuse."},
             {"Implement Continuous Integration", "Introduce continuous integration for automated code testing and deployment."},
     };
+    
+    private static final String LONG_STRING =
+            """
+            aaa very long string aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            hahahaha you though I was joking this string is reeeeaalllllyyyy loooooooooooooooooooooooooooooong and guess what
+            it ain't stopping dfsdkfbsfdkjsbdfkljdbflkjdsbflksdjbfskldjfblksdjbfklsjdbflkjsdbflkjsdbflksdbfjklsdfb
+            ok I'm done\n\n\n\n\n\n\nhaha just jk ok now I'm done
+            """;
+
+    private final String[] PROJECT_NAMES = {
+            "BlueSky Initiative",
+            "Phoenix Rising",
+            "InnovateX",
+            "TigerEye Project",
+            "SilverLining Endeavor",
+            "Eclipse Evolution",
+            "Zenith Quest",
+            "Nebula Nexus",
+            "Sapphire Sprint",
+            "Lunar Horizon",
+            "Starlight Stride",
+            "Aurora Ascent",
+            "Galactic Gateway",
+            "Thunderbolt Taskforce",
+            "Crimson Catalyst",
+            "Velocity Venture",
+            "Mystic Momentum",
+            "Titan Triumph",
+            "Ocean Odyssey",
+            "Solar Serenity"
+    };
+
 }

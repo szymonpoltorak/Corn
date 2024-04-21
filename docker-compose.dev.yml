@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
     corn-postgres:
         container_name: corn-postgres
@@ -10,12 +8,19 @@ services:
             - POSTGRES_DB=corn
         ports:
             - "5000:5432"
+        healthcheck:
+            test: "pg_isready -U postgres"
+            interval: 1s
+            retries: 50
+            start_period: 5s
+            timeout: 3s
 
     corn-backend:
         container_name: corn-backend
         image: corn-backend
         depends_on:
-            - corn-postgres
+            corn-postgres:
+                condition: service_healthy
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=none
@@ -33,6 +38,12 @@ services:
             - "./corn-backend:/home/corn"
             - "./.cache/corn-backend/.gradle:/home/corn/.gradle"
             - "./.cache/corn-backend/build:/home/corn/build"
+        healthcheck:
+            test: "curl -f http://localhost:8081/actuator/health"
+            interval: 2s
+            retries: 120
+            start_period: 15s
+            timeout: 5s
 
     corn-frontend:
         container_name: corn-frontend
@@ -42,6 +53,12 @@ services:
             dockerfile: Dockerfile.dev
         ports:
             - "4201:4200"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:4200"]
+            interval: 1s
+            retries: 120
+            start_period: 15s
+            timeout: 5s
         volumes:
             - "./corn-frontend:/corn-frontend"
             - "./.cache/corn-frontend/node_modules:/corn-frontend/node_modules"
@@ -130,9 +147,12 @@ services:
             context: nginx
             dockerfile: Dockerfile.dev
         depends_on:
-            - corn-backend
-            - corn-frontend
-            - corn-keycloak
+            corn-backend:
+                condition: service_healthy
+            corn-frontend:
+                condition: service_healthy
+            corn-keycloak:
+                condition: service_healthy
         ports:
             - "4200:4200"
             - "8081:8080"

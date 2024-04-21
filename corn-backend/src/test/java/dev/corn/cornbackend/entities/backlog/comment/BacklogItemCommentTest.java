@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -192,6 +193,8 @@ class BacklogItemCommentTest {
         BacklogItemComment backlogItemComment = new BacklogItemComment();
         backlogItemComment.setUser(null);
         backlogItemComment.setBacklogItem(null);
+        backlogItemComment.setLastEditTime(null);
+        backlogItemComment.setCommentDate(null);
 
         // when
 
@@ -206,6 +209,16 @@ class BacklogItemCommentTest {
                         BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_FIELD_NAME,
                         BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_BACKLOG_ITEM_NULL_MSG),
                 "Should return null backlog item violation");
+        assertTrue(validateField(
+                backlogItemComment,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_TIME_FIELD_NAME,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_COMMENT_TIME_NULL_MSG),
+                "Should return null comment time violation");
+        assertTrue(validateField(
+                backlogItemComment,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_LAST_EDIT_TIME_FIELD_NAME,
+                BacklogItemCommentConstants.BACKLOG_ITEM_COMMENT_LAST_EDIT_TIME_NULL_MSG),
+                "Should return null last edit time violation");
     }
 
     @Test
@@ -227,6 +240,8 @@ class BacklogItemCommentTest {
                 .comment("Sample comment")
                 .user(new User())
                 .backlogItem(new BacklogItem())
+                .lastEditTime(LocalDateTime.now())
+                .commentDate(LocalDateTime.now())
                 .build();
     }
 

@@ -1,56 +1,75 @@
 <div class="flex flex-col gap-[16px]">
-    <h1 class="text-3xl">{{ modelService.sprintName }}</h1>
-
-    <div class="flex items-center gap-4">
-        <mat-form-field class="border-solid border-[1px] rounded-md border-dark-color-settings-container-background" subscriptSizing="dynamic">
-            <mat-label>Search</mat-label>
-            <input #filterField matInput type="text" (input)="updateFilterString(filterField.value)" />
-        </mat-form-field>
-
-        <div class="flex flex-col gap-[1px]">
-            <span class="text-xs">Group by</span>
-            <button mat-raised-button [matMenuTriggerFor]="groupingMenu" color="primary">
-                <mat-icon>expand_more</mat-icon>
-                {{ taskGrouping }}
-            </button>
-        </div>
-    </div>
-
-    <div class="flex flex-col gap-[8px]">
-        <columnset>
-            <h2 todo class="font-bold m-auto p-1">TODO ({{ modelService.todoSize() }}/{{ modelService.allTasksSize() }})</h2>
-            <h2 inprogress class="font-bold m-auto p-1">INPROGRESS ({{ modelService.inprogressSize() }}/{{ modelService.allTasksSize() }})</h2>
-            <h2 done class="font-bold m-auto p-1">DONE ({{ modelService.doneSize() }}/{{ modelService.allTasksSize() }})</h2>
-        </columnset>
-
-        @for (slice of slicesModelService.slices; track slice) {
-            <div>
-                @if (taskGrouping == TaskGroupingEnum.NONE) {
-                    <slice [sliceDescriptor]="slice"></slice>
-                } @else if(taskGrouping == TaskGroupingEnum.BY_ASSIGNEE) {
-                    <button mat-button (click)="toggleHidden(sliceWrapper)">
-                        <mat-icon>
-                            {{ isHidden(sliceWrapper) ? "chevron_right" : "expand_more" }}
-                        </mat-icon>
-                        <div class="flex items-center space-x-1">
-                            <img 
-                                class="w-5 h-5 rounded-full" 
-                                src="{{ slice.metadata.avatarUrl }}" 
-                                alt="slice.metadata.firstName + ' ' + slice.metadata.familyName"
-                            />
-                            <span>
-                                {{ slice.metadata.firstName + " " + slice.metadata.familyName }}
-                            </span>
-                        </div>
-                    </button>
-
-                    <div #sliceWrapper>
-                        <slice [sliceDescriptor]="slice"></slice>
-                    </div>
-                }
+    @if (currentSprint === null) {
+        <span>Brak sprintów w projekcie</span>
+    } @else if(currentSprint === undefined) {
+        <span>Ładowanie sprintów...</span>
+    } @else {
+        <div class="flex items-center gap-4">
+            <div class="flex">
+                <button mat-icon-button color="primary" (click)="switchDisplayedSprint(false)" [disabled]="!previousSprint">
+                    <mat-icon>navigate_before</mat-icon>
+                </button>
+                <h1 class="text-3xl">{{ currentSprint.sprintName }}</h1>
+                <button mat-icon-button color="primary" (click)="switchDisplayedSprint(true)" [disabled]="!nextSprint">
+                    <mat-icon>navigate_next</mat-icon>
+                </button>
             </div>
-        }
-    </div>
+            @if (!isDisplayedSprintEditable()) {
+                <span>This is not ongoing sprint and it is in read only mode!</span>
+            }
+        </div>
+
+        <div class="flex items-center gap-4">
+            <mat-form-field class="border-solid border-[1px] rounded-md border-dark-color-settings-container-background" subscriptSizing="dynamic">
+                <mat-label>Search</mat-label>
+                <input #filterField matInput type="text" (input)="updateFilterString(filterField.value)" />
+            </mat-form-field>
+
+            <div class="flex flex-col gap-[1px]">
+                <span class="text-xs">Group by</span>
+                <button mat-raised-button [matMenuTriggerFor]="groupingMenu" color="primary">
+                    <mat-icon>expand_more</mat-icon>
+                    {{ taskGrouping }}
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-[8px]">
+            <columnset>
+                <h2 todo class="font-bold m-auto p-1">TODO ({{ modelService.todoSize() }}/{{ modelService.allTasksSize() }})</h2>
+                <h2 inprogress class="font-bold m-auto p-1">INPROGRESS ({{ modelService.inprogressSize() }}/{{ modelService.allTasksSize() }})</h2>
+                <h2 done class="font-bold m-auto p-1">DONE ({{ modelService.doneSize() }}/{{ modelService.allTasksSize() }})</h2>
+            </columnset>
+
+            @for (slice of slicesModelService.slices; track slice) {
+                <div>
+                    @if (taskGrouping == TaskGroupingEnum.NONE) {
+                        <slice [sliceDescriptor]="slice" [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
+                    } @else if(taskGrouping == TaskGroupingEnum.BY_ASSIGNEE) {
+                        <button mat-button (click)="toggleHidden(sliceWrapper)">
+                            <mat-icon>
+                                {{ isHidden(sliceWrapper) ? "chevron_right" : "expand_more" }}
+                            </mat-icon>
+                            <div class="flex items-center space-x-1">
+                                <img
+                                    class="w-5 h-5 rounded-full"
+                                    src="{{ slice.metadata.avatarUrl }}"
+                                    alt="slice.metadata.firstName + ' ' + slice.metadata.familyName"
+                                />
+                                <span>
+                                    {{ slice.metadata.firstName + " " + slice.metadata.familyName }}
+                                </span>
+                            </div>
+                        </button>
+
+                        <div #sliceWrapper>
+                            <slice [sliceDescriptor]="slice" [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>
 
 <mat-menu #groupingMenu="matMenu">

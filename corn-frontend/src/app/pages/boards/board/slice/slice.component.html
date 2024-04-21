@@ -2,16 +2,19 @@
     <tasklist todo
         #todoTasklist
         [tasks]="sliceDescriptor ? sliceDescriptor.todo : []"
+        [assigneeChangedHandler]="assigneeChangedHandler0"
         (taskMoved)="sliceModelService.droppedHandler($event)"
     ></tasklist>
     <tasklist inprogress
         #inprogressTasklist
         [tasks]="sliceDescriptor ? sliceDescriptor.inprogress : []"
+        [assigneeChangedHandler]="assigneeChangedHandler0"
         (taskMoved)="sliceModelService.droppedHandler($event)"
     ></tasklist>
     <tasklist done
         #doneTasklist
         [tasks]="sliceDescriptor ? sliceDescriptor.done : []"
+        [assigneeChangedHandler]="assigneeChangedHandler0"
         (taskMoved)="sliceModelService.droppedHandler($event)"
     ></tasklist>
 </columnset>

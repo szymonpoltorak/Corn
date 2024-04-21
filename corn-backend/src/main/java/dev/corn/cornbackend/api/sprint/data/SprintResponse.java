@@ -6,5 +6,5 @@ import java.time.LocalDate;
 
 @Builder
 public record SprintResponse(long sprintId, long projectId, String sprintName, String sprintDescription,
-                             LocalDate sprintStartDate, LocalDate sprintEndDate) {
+                             LocalDate startDate, LocalDate endDate) {
 }

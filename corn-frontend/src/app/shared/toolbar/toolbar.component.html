@@ -4,16 +4,6 @@
             <button mat-icon-button (click)="toggleSidebar()">
                 <mat-icon>{{ sidebarShown ? 'menu_open' : 'menu' }}</mat-icon>
             </button>
-
-            <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
-                Your Projects
-                <mat-icon iconPositionEnd>{{ t.menuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
-            </button>
-
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item>Some Project</button>
-                <button mat-menu-item>Another Project</button>
-            </mat-menu>
         </div>
     }
 
@@ -26,6 +16,14 @@
                 matTooltip="Go to projects"
                 aria-label="Go to projects">
             <mat-icon>apps</mat-icon>
+        </button>
+    } @else {
+        <button mat-icon-button
+                [routerLink]="RouterPaths.PROJECT_LIST_DIRECT_PATH"
+                class="center"
+                matTooltip="Settings"
+                aria-label="Settings">
+            <mat-icon>settings</mat-icon>
         </button>
     }
 

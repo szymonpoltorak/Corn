@@ -37,7 +37,7 @@
         "zone.js": "~0.14.3"
     },
     "devDependencies": {
-        "@angular-devkit/build-angular": "^17.1.0",
+        "@angular-devkit/build-angular": "^17.3.4",
         "@angular/cli": "^17.1.0",
         "@angular/compiler-cli": "^17.1.0",
         "@fireflysemantics/sass-logger": "^1.0.2",

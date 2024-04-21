@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { BoardsPaths } from '@core/enum/BoardsPaths';
 import { RouterPaths } from "@core/enum/RouterPaths";
+import { authGuard } from '@core/guards/auth.guard';
+import { projectGuard } from '@core/guards/project.guard';
 
 export const routes: Routes = [
     {
@@ -17,7 +19,7 @@ export const routes: Routes = [
         path: RouterPaths.BOARDS_PATH,
         loadComponent: () => import("@pages/boards/boards.component")
             .then(c => c.BoardsComponent),
-        // canActivate: [authGuard],
+        canActivate: [authGuard, projectGuard],
         children: [
             {
                 path: BoardsPaths.BACKLOG,
@@ -34,6 +36,11 @@ export const routes: Routes = [
                 loadComponent: () => import("@pages/boards/board/board.component")
                     .then(c => c.BoardComponent)
             },
+            {
+                path: RouterPaths.SETTINGS_PATH,
+                loadComponent: () => import("@pages/boards/project-settings/project-settings.component")
+                    .then(c => c.ProjectSettingsComponent)
+            }
         ],
     },
     {

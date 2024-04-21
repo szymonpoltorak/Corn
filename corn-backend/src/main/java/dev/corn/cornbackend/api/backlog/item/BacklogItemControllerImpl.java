@@ -11,6 +11,7 @@ import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,14 +19,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_ADD_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_API_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_DELETE_MAPPING;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_ALL_BY_SPRINT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_ALL_WITHOUT_SPRINT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_BY_PROJECT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_BY_SPRINT_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_DETAILS_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_GET_MAPPING;
+import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_PARTIAL_UPDATE_MAPPING;
 import static dev.corn.cornbackend.api.backlog.item.constants.BacklogItemMappings.BACKLOG_ITEM_UPDATE_MAPPING;
 
 @RestController
@@ -99,4 +104,21 @@ public class BacklogItemControllerImpl implements BacklogItemController {
                                                              @JwtAuthed User user) {
         return backlogItemService.getAllWithoutSprint(projectId, pageNumber, sortBy, order, user);
     }
+
+    @Override
+    @GetMapping(BACKLOG_ITEM_GET_ALL_BY_SPRINT_MAPPING)
+    public final List<BacklogItemResponse> getAllBySprintId(
+            @RequestParam long sprintId,
+            @JwtAuthed User user) {
+        return backlogItemService.getAllBySprintId(sprintId, user);
+    }
+
+    @Override
+    @PatchMapping(BACKLOG_ITEM_PARTIAL_UPDATE_MAPPING)
+    public final BacklogItemResponse partialUpdate(@RequestParam long id,
+                                             @RequestBody BacklogItemRequest backlogItemRequest,
+                                             @JwtAuthed User user) {
+        return backlogItemService.partialUpdate(id, backlogItemRequest, user);
+    }
+
 }

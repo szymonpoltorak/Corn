@@ -2,28 +2,19 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
-import { environment } from "@environments/environment";
 import { ApiUrl } from "@core/enum/api-url";
 import { BacklogItemType } from "@core/enum/BacklogItemType";
 import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
+import { StorageService } from "@core/services/storage.service";
+import { StorageKey } from "@core/enum/storage-key.enum";
 
 @Injectable({
     providedIn: 'root'
 })
 export class BacklogItemService {
 
-    constructor(private http: HttpClient) {
-    }
-
-    getAllByProjectId(projectId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
-        return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_BY_PROJECT_ID, {
-            params: {
-                projectId: projectId,
-                pageNumber: pageNumber,
-                sortBy: sortBy,
-                order: order
-            }
-        });
+    constructor(private http: HttpClient,
+                private storage: StorageService) {
     }
 
     getAllBySprintId(sprintId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
@@ -37,10 +28,10 @@ export class BacklogItemService {
         });
     }
 
-    getAllWithoutSprint(projectId: number, pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
+    getAllWithoutSprint(pageNumber: number, sortBy: string, order: string): Observable<BacklogItemList> {
         return this.http.get<BacklogItemList>(ApiUrl.GET_BACKLOG_ITEMS_WITHOUT_SPRINT, {
             params: {
-                projectId: projectId,
+                projectId: this.storage.getValueFromStorage(StorageKey.PROJECT_ID),
                 pageNumber: pageNumber,
                 sortBy: sortBy,
                 order: order
@@ -49,13 +40,13 @@ export class BacklogItemService {
     }
 
     createNewBacklogItem(title: string, description: string, projectMemberId: number, sprintId: number,
-                         projectId: number, itemType: BacklogItemType): Observable<BacklogItem> {
+                         itemType: BacklogItemType): Observable<BacklogItem> {
         return this.http.post<BacklogItem>(ApiUrl.CREATE_BACKLOG_ITEM, {
             title: title,
             description: description,
             projectMemberId: projectMemberId,
             sprintId: sprintId,
-            projectId: projectId,
+            projectId: this.storage.getValueFromStorage(StorageKey.PROJECT_ID),
             itemType: itemType.toString()
         })
     }
@@ -66,7 +57,7 @@ export class BacklogItemService {
             description: item.description,
             projectMemberId: item.assignee ? item.assignee.userId : -1,
             sprintId: item.sprintId,
-            projectId: item.projectId,
+            projectId: this.storage.getValueFromStorage(StorageKey.PROJECT_ID),
             itemType: item.itemType.toString(),
             itemStatus: item.status.toString()
         }, {

@@ -5,7 +5,7 @@ import { NgIcon, provideIcons } from "@ng-icons/core";
 import { bootstrapArchiveFill } from "@ng-icons/bootstrap-icons";
 import { octGoal, octGraph } from "@ng-icons/octicons";
 import { akarClipboard } from "@ng-icons/akar-icons";
-import { matError, matViewTimeline } from "@ng-icons/material-icons/baseline";
+import { matError, matSettings, matViewTimeline } from "@ng-icons/material-icons/baseline";
 
 @Component({
     selector: 'sidebar-button',
@@ -22,7 +22,8 @@ import { matError, matViewTimeline } from "@ng-icons/material-icons/baseline";
         octGoal,
         akarClipboard,
         matViewTimeline,
-        matError
+        matError,
+        matSettings
     })]
 })
 export class SidebarButton {

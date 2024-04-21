@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { TaskCardComponent } from '../task_card/task_card.component';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 import { TaskMovedByDnDEvent } from '@core/interfaces/boards/board/task_moved_by_dnd_event.interface';
+import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
+import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 
 @Component({
     selector: 'tasklist',
@@ -20,6 +22,8 @@ export class TaskListComponent {
 
     @Input() tasks: Task[] = [];
     @Input() siblingDroplistInstances: CdkDropList[] = [];
+
+    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee>) => void;
 
     @Output() taskMoved: EventEmitter<TaskMovedByDnDEvent> = new EventEmitter();
 

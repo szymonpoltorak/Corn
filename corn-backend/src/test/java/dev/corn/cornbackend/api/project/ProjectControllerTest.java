@@ -3,9 +3,9 @@ package dev.corn.cornbackend.api.project;
 import dev.corn.cornbackend.api.project.data.ProjectInfoResponse;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.api.project.interfaces.ProjectService;
-import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoResponse;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
+import dev.corn.cornbackend.entities.user.data.UserResponse;
 import dev.corn.cornbackend.test.project.ProjectTestDataBuilder;
 import dev.corn.cornbackend.test.project.data.AddNewProjectData;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class ProjectControllerTest {
     final void test_getProjectsOnPage_shouldGetProjects() {
         // given
         Project project = ADD_PROJECT_DATA.project();
-        List<ProjectMemberInfoResponse> members = List.of(new ProjectMemberInfoResponse("full Name", 1L));
+        List<UserResponse> members = List.of(new UserResponse(1, "full", "name", "username"));
         List<ProjectInfoResponse> expected = List.of(MAPPER.toProjectInfoResponse(project, members, 1L));
         int page = 0;
 

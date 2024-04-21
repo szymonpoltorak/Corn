@@ -67,29 +67,19 @@ import { UserService } from "@core/services/users/user.service";
 })
 export class BacklogFormComponent implements AfterViewInit, OnDestroy {
 
-    constructor(public dialogRef: MatDialogRef<BacklogFormComponent>,
-                private scrollDispatcher: ScrollDispatcher,
-                private ngZone: NgZone,
-                private sprintService: SprintService,
-                private userService: UserService) {
-    }
+    @ViewChild('sprintSelect') sprintSelect !: MatSelect;
+    @ViewChild('memberSelect') memberSelect !: MatSelect;
 
+    protected readonly BacklogItemType = BacklogItemType;
     private readonly sprintPageSize: number = 20;
     private sprintsPageNumber: number = 0;
-
     private readonly membersPageSize: number = 20;
     private membersPageNumber: number = 0;
 
     destroy$: Subject<void> = new Subject<void>();
-
     sprints: Sprint[] = [];
-
     currentUser ?: User;
     currentType ?: BacklogItemType;
-
-    @ViewChild('sprintSelect') sprintSelect !: MatSelect;
-    @ViewChild('memberSelect') memberSelect !: MatSelect;
-
     itemForm: FormGroup = new FormGroup({
         title: new FormControl('', [
             Validators.required,
@@ -112,8 +102,6 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
         ])
     });
 
-    protected readonly BacklogItemType = BacklogItemType;
-
     types: BacklogItemType[] = [
         BacklogItemType.STORY,
         BacklogItemType.BUG,
@@ -121,6 +109,13 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
         BacklogItemType.EPIC
     ];
     users: User[] = [];
+
+    constructor(public dialogRef: MatDialogRef<BacklogFormComponent>,
+                private scrollDispatcher: ScrollDispatcher,
+                private ngZone: NgZone,
+                private sprintService: SprintService,
+                private userService: UserService) {
+    }
 
     submitForm(): void {
         if (this.itemForm.invalid) {
@@ -146,10 +141,10 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.userService.getProjectMembersOnPage(1, this.membersPageNumber).pipe(take(1)).subscribe(users => {
-            this.users = users;
+        this.userService.getProjectMembersOnPage(this.membersPageNumber).pipe(take(1)).subscribe(users => {
+            this.users = users.projectMembers;
         });
-        this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(sprints => {
+        this.sprintService.getSprintsOnPageForProject(this.sprintsPageNumber).pipe(take(1)).subscribe(sprints => {
             this.sprints = sprints;
         });
 
@@ -175,7 +170,7 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
                         return;
                     }
                     this.sprintsPageNumber++;
-                    this.sprintService.getSprintsOnPageForProject(1, this.sprintsPageNumber).pipe(take(1)).subscribe(newSprints => {
+                    this.sprintService.getSprintsOnPageForProject(this.sprintsPageNumber).pipe(take(1)).subscribe(newSprints => {
                         this.ngZone.run(() => {
                             this.sprints = [...this.sprints, ...newSprints];
                         })
@@ -202,9 +197,9 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
                         return;
                     }
                     this.membersPageNumber++;
-                    this.userService.getProjectMembersOnPage(1, this.membersPageNumber).pipe(take(1)).subscribe(newUsers => {
+                    this.userService.getProjectMembersOnPage(this.membersPageNumber).pipe(take(1)).subscribe(newUsers => {
                         this.ngZone.run(() => {
-                            this.users = [...this.users, ...newUsers];
+                            this.users = [...this.users, ...newUsers.projectMembers];
                         })
                     })
                 })
@@ -212,11 +207,9 @@ export class BacklogFormComponent implements AfterViewInit, OnDestroy {
         })
     }
 
-
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
     }
-
 
 }

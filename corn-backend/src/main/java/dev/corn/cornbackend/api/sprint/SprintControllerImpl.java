@@ -7,6 +7,8 @@ import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
 import dev.corn.cornbackend.config.jwtprocessing.JwtAuthed;
 import dev.corn.cornbackend.entities.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,8 @@ import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.CURRENT_A
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.DELETE_SPRINT;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.GET_SPRINTS_ON_PAGE;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.GET_SPRINT_BY_ID;
+import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.SPRINTS_AFTER_SPRINT;
+import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.SPRINTS_BEFORE_SPRINT;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.SPRINT_API_ENDPOINT;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.UPDATE_SPRINTS_DESCRIPTION;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.UPDATE_SPRINTS_END_DATE;
@@ -98,4 +102,21 @@ public class SprintControllerImpl implements SprintController {
                                                            @JwtAuthed User user) {
         return sprintService.getCurrentAndFutureSprints(projectId, user);
     }
+
+    @Override
+    @GetMapping(value = SPRINTS_AFTER_SPRINT)
+    public final Page<SprintResponse> getSprintsAfterSprint(@RequestParam long sprintId,
+                                                      Pageable pageable,
+                                                      @JwtAuthed User user) {
+        return sprintService.getSprintsAfterSprint(sprintId, pageable, user);
+    }
+
+    @Override
+    @GetMapping(value = SPRINTS_BEFORE_SPRINT)
+    public final Page<SprintResponse> getSprintsBeforeSprint(@RequestParam long sprintId,
+                                                       Pageable pageable,
+                                                       @JwtAuthed User user) {
+        return sprintService.getSprintsBeforeSprint(sprintId, pageable, user);
+    }
+
 }

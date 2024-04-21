@@ -18,8 +18,8 @@ public class SprintMapperImpl implements SprintMapper {
                 .projectId(sprint.getProject().getProjectId())
                 .sprintName(sprint.getSprintName())
                 .sprintDescription(sprint.getSprintDescription())
-                .sprintStartDate(sprint.getSprintStartDate())
-                .sprintEndDate(sprint.getSprintEndDate())
+                .startDate(sprint.getStartDate())
+                .endDate(sprint.getEndDate())
                 .build();
     }
 }

@@ -26,14 +26,14 @@ public class SprintRepositoryTestDataBuilder {
         Sprint finishedSprint = createSampleSprint(2L);
         Sprint futureSprint = createSampleSprint(3L);
 
-        currentSprint.setSprintStartDate(LocalDate.now().plusDays(3L));
-        currentSprint.setSprintEndDate(LocalDate.now().plusDays(4L));
+        currentSprint.setStartDate(LocalDate.now().plusDays(3L));
+        currentSprint.setEndDate(LocalDate.now().plusDays(4L));
 
-        finishedSprint.setSprintStartDate(LocalDate.now().plusDays(1L));
-        finishedSprint.setSprintEndDate(LocalDate.now().plusDays(2L));
+        finishedSprint.setStartDate(LocalDate.now().plusDays(1L));
+        finishedSprint.setEndDate(LocalDate.now().plusDays(2L));
 
-        futureSprint.setSprintStartDate(LocalDate.now().plusDays(5L));
-        futureSprint.setSprintEndDate(LocalDate.now().plusDays(6L));
+        futureSprint.setStartDate(LocalDate.now().plusDays(5L));
+        futureSprint.setEndDate(LocalDate.now().plusDays(6L));
 
         testEntityManager.merge(projectOwner);
         testEntityManager.merge(projectMember);

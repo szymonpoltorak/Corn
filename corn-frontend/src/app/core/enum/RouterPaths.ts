@@ -9,5 +9,9 @@ export enum RouterPaths {
     PROJECT_LIST_PATH = "projects",
     PROJECT_LIST_DIRECT_PATH = "/projects",
 
-    UNKNOWN_PATH = "**"
+    UNKNOWN_PATH = "**",
+    BOARDS_DIRECT_PATH = "/boards",
+    BACKLOG_PATH = "backlog",
+
+    SETTINGS_PATH = "settings",
 }

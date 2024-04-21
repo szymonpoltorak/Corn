@@ -6,6 +6,8 @@ import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponse;
 import dev.corn.cornbackend.api.backlog.item.data.BacklogItemResponseList;
 import dev.corn.cornbackend.entities.user.User;
 
+import java.util.List;
+
 /**
  * Interface for the BacklogItemController
  */
@@ -91,4 +93,23 @@ public interface BacklogItemController {
      */
 
     BacklogItemResponseList getAllWithoutSprint(long projectId, int pageNumber, String sortBy, String order, User user);
+
+    /**
+     * Get all backlog items associated with a given sprint
+     *
+     * @param sprintId sprint id
+     * @param user caller instance
+     * @return the backlog items
+     */
+    List<BacklogItemResponse> getAllBySprintId(long sprintId, User user);
+
+    /**
+     * Update specific fields of a backlog item
+     *
+     * @param id                 id of the backlog item
+     * @param backlogItemRequest request containing changed fields (null fields will remain unaffected)
+     * @param user               caller instance
+     * @return the updated backlog item
+     */
+    BacklogItemResponse partialUpdate(long id, BacklogItemRequest backlogItemRequest, User user);
 }

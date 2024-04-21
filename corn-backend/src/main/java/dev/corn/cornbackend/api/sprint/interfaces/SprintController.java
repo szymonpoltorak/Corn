@@ -3,6 +3,8 @@ package dev.corn.cornbackend.api.sprint.interfaces;
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.entities.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -98,4 +100,24 @@ public interface SprintController {
      * @return List of sprints
      */
     List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user);
+
+    /**
+     * Retrieves paginated list of sprints that occur after a specific sprint
+     *
+     * @param sprintId id of the sprint to retrieve sprints after
+     * @param pageable pagination information
+     * @param user user requesting access
+     * @return Page of sprints occurring after the specified sprint.
+     */
+    Page<SprintResponse> getSprintsAfterSprint(long sprintId, Pageable pageable, User user);
+
+    /**
+     * Retrieves paginated list of sprints that occur before a specific sprint
+     *
+     * @param sprintId id of the sprint to retrieve sprints before
+     * @param pageable pagination information
+     * @param user user requesting access
+     * @return Page of sprints occurring before the specified sprint
+     */
+    Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user);
 }

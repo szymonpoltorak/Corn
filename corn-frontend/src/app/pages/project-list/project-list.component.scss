@@ -1,15 +1,18 @@
 @import '../../../styles/screen';
 
 .project-list {
-  overflow-x: auto;
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 mat-grid-list {
-  min-width: calc(5*16em + 10em);
+    min-width: calc(5 * 16em + 10em);
 
-  @media(max-width: $screen-840) {
-    min-width: calc(3*11em + 6em);
-  }
+    @media(max-width: $screen-840) {
+        min-width: calc(3 * 11em + 6em);
+    }
+}
+
+.add-button {
+    @apply fixed z-999 right-10 bottom-6;
 }
