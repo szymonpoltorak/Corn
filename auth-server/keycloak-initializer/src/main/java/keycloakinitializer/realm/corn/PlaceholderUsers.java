@@ -10,17 +10,16 @@ import static java.util.Collections.singletonList;
 
 public class PlaceholderUsers {
 
-    private static final String MAIL_SUFFIX = "@mail.pl";
     private static final String DEFAULT_ROLE = "default-roles-corn";
 
     public static List<UserRepresentation> generate() {
         return Stream.of(
-                new SimpleUser("Jan", "Kowalski", "jan", "123"),
-                new SimpleUser("Andrzej", "Switch", "andrzej", "123"),
-                new SimpleUser("John", "Doe", "john", "123"),
-                new SimpleUser("Jane", "Doe", "jane", "123"),
-                new SimpleUser("Alice", "Smith", "alice", "123"),
-                new SimpleUser("Bob", "Johnson", "bob", "123")
+                new SimpleUser("Jan", "Kowalski", "jan@gmail.com", "123"),
+                new SimpleUser("Andrzej", "Switch", "andrzej@gmail.com", "123"),
+                new SimpleUser("John", "Doe", "john@gmail.com", "123"),
+                new SimpleUser("Jane", "Doe", "jane@gmail.com", "123"),
+                new SimpleUser("Alice", "Smith", "alice@gmail.com", "123"),
+                new SimpleUser("Bob", "Johnson", "bob@gmail.com", "123")
         ).map(SimpleUser::intoUserRepresentation).toList();
     }
 
@@ -31,7 +30,7 @@ public class PlaceholderUsers {
                 setUsername(username());
                 setFirstName(name);
                 setLastName(surname);
-                setEmail(username.toLowerCase()+MAIL_SUFFIX);
+                setEmail(username());
                 setEmailVerified(true);
                 setEnabled(true);
                 setRealmRoles(List.of(DEFAULT_ROLE));
