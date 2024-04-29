@@ -22,6 +22,7 @@ import { RouterPaths } from "@core/enum/RouterPaths";
 import {
     AddMemberDialogComponent
 } from "@pages/boards/project-settings/add-member-dialog/add-member-dialog.component";
+import {DeleteDialogComponent} from "@pages/utils/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: 'app-project-settings',
@@ -74,10 +75,23 @@ export class ProjectSettingsComponent implements OnInit {
     }
 
     deleteMember(projectMember: User): void {
-        this.projectService
-            .deleteMemberFromProject(projectMember.username, this.projectId)
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            enterAnimationDuration: '100ms',
+            exitAnimationDuration: '100ms'
+        });
+
+        dialogRef.afterClosed()
             .pipe(take(1))
-            .subscribe();
+            .subscribe(result => {
+                if(!result) {
+                    return;
+                }
+
+                this.projectService
+                    .deleteMemberFromProject(projectMember.username, this.projectId)
+                    .pipe(take(1))
+                    .subscribe();
+            })
     }
 
     editProjectName(): void {
@@ -105,7 +119,20 @@ export class ProjectSettingsComponent implements OnInit {
     }
 
     deleteProject(): void {
-        // TODO: add deleting project after adding dialogs
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '100ms',
+        });
+
+        dialogRef.afterClosed()
+            .pipe(take(1))
+            .subscribe(result => {
+                if(!result) {
+                    return;
+                }
+
+                //TODO: add project deletion
+            })
     }
 
     addNewMember(): void {

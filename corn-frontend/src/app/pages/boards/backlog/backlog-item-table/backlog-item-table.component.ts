@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { BacklogItem } from "@interfaces/boards/backlog/backlog.item";
-import { MatSort, MatSortHeader } from "@angular/material/sort";
+import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
+import {BacklogItem} from "@interfaces/boards/backlog/backlog.item";
+import {MatSort, MatSortHeader} from "@angular/material/sort";
 import {
     MatCell,
     MatCellDef,
@@ -13,21 +13,21 @@ import {
     MatRowDef,
     MatTable
 } from "@angular/material/table";
-import { MatOption, MatSelect } from "@angular/material/select";
-import { MatPaginator } from "@angular/material/paginator";
-import { catchError, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
-import { NgClass } from "@angular/common";
-import { map } from "rxjs/operators";
-import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
-import { NgIcon, provideIcons } from "@ng-icons/core";
-import { bootstrapBugFill } from "@ng-icons/bootstrap-icons";
-import { featherBook } from "@ng-icons/feather-icons";
-import { matDelete, matTask } from "@ng-icons/material-icons/baseline";
-import { octContainer } from "@ng-icons/octicons";
-import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";
-import { MatFabButton } from "@angular/material/button";
-import { MatTooltip } from "@angular/material/tooltip";
-import { BacklogItemList } from "@interfaces/boards/backlog/backlog.item.list";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatPaginator} from "@angular/material/paginator";
+import {catchError, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil} from "rxjs";
+import {NgClass} from "@angular/common";
+import {map} from "rxjs/operators";
+import {BacklogItemService} from "@core/services/boards/backlog/backlog-item/backlog-item.service";
+import {NgIcon, provideIcons} from "@ng-icons/core";
+import {bootstrapBugFill} from "@ng-icons/bootstrap-icons";
+import {featherBook} from "@ng-icons/feather-icons";
+import {matDelete, matTask} from "@ng-icons/material-icons/baseline";
+import {octContainer} from "@ng-icons/octicons";
+import {UserAvatarComponent} from "@pages/utils/user-avatar/user-avatar.component";
+import {MatFabButton} from "@angular/material/button";
+import {MatTooltip} from "@angular/material/tooltip";
+import {BacklogItemList} from "@interfaces/boards/backlog/backlog.item.list";
 import {
     CdkDrag,
     CdkDragDrop,
@@ -37,12 +37,13 @@ import {
     moveItemInArray,
     transferArrayItem
 } from "@angular/cdk/drag-drop";
-import { BacklogComponent } from "@pages/boards/backlog/backlog.component";
-import { StatusSelectComponent } from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
-import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
-import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-details/backlog-item-details.component";
+import {BacklogComponent} from "@pages/boards/backlog/backlog.component";
+import {StatusSelectComponent} from "@pages/boards/backlog/backlog-item-table/status-select/status-select.component";
+import {BacklogTypeComponent} from "@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component";
+import {BacklogDragComponent} from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {BacklogItemDetailsComponent} from "@pages/boards/backlog/backlog-item-details/backlog-item-details.component";
+import {DeleteDialogComponent} from "@pages/utils/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -78,7 +79,7 @@ import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-
     ],
     templateUrl: './backlog-item-table.component.html',
     styleUrl: './backlog-item-table.component.scss',
-    providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer, matDelete })],
+    providers: [provideIcons({bootstrapBugFill, featherBook, matTask, octContainer, matDelete})],
 })
 export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
 
@@ -103,15 +104,28 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     }
 
     deleteItem(item: BacklogItem): void {
-        this.backlogItemService.deleteBacklogItem(item).pipe(take(1)).subscribe((deletedItem: BacklogItem) => {
-            this.dataToDisplay = this.dataToDisplay.filter((i) => i !== item);
-            this.resultsLength -= 1;
-        });
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            enterAnimationDuration: '100ms',
+            exitAnimationDuration: '100ms'
+        })
+
+        dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+            if (!result) {
+                return;
+            }
+
+            this.backlogItemService.deleteBacklogItem(item).pipe(take(1)).subscribe((deletedItem: BacklogItem) => {
+                this.dataToDisplay = this.dataToDisplay.filter((i) => i !== item);
+                this.resultsLength -= 1;
+            });
+        })
+
+
     }
 
     ngAfterViewInit(): void {
         this.inputSprintChanged.pipe(takeUntil(this.destroy$)).subscribe((sprintId: number) => {
-            if(sprintId == this.sprintId) {
+            if (sprintId == this.sprintId) {
                 this.fetchBacklogItems();
             }
         });
@@ -141,26 +155,26 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         }
 
         source.pipe(
-                catchError(() => of(null)),
-                map(data => {
-                    this.isLoading = false;
+            catchError(() => of(null)),
+            map(data => {
+                this.isLoading = false;
 
-                    if (!data) {
-                        return [];
-                    }
+                if (!data) {
+                    return [];
+                }
 
-                    this.resultsLength = data.totalNumber;
-                    return data.backlogItemResponseList;
-                }),
-                take(1)
-            ).subscribe(data => {
-              this.dataToDisplay = data;
+                this.resultsLength = data.totalNumber;
+                return data.backlogItemResponseList;
+            }),
+            take(1)
+        ).subscribe(data => {
+            this.dataToDisplay = data;
         })
     }
 
     updateBacklogItem(item: BacklogItem): void {
         this.backlogItemService.updateBacklogItem(item).pipe(take(1)).subscribe((newItem) => {
-            if(newItem.sprintId == this.sprintId) {
+            if (newItem.sprintId == this.sprintId) {
                 let index: number = this.dataToDisplay.findIndex(item => item.backlogItemId == newItem.backlogItemId);
                 this.dataToDisplay[index] = newItem;
                 this.table.renderRows();
@@ -198,7 +212,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         });
 
         dialogRef.afterClosed().pipe(take(1)).subscribe((result: BacklogItem) => {
-            if(!result) {
+            if (!result) {
                 return;
             }
 
