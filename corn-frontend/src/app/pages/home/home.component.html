@@ -1,4 +1,4 @@
-<mat-toolbar class="!bg-dark-color-settings-container-background">
+<mat-toolbar class="!bg-dark-color-settings-container-background" xmlns="http://www.w3.org/1999/html">
     <div class="flex items-center">
         <img alt="icon" class="m-1.5" height="40" ngSrc="../../../assets/icons/icon-128x128.png" width="40">
         <span class="font-extralight font-logo text-corn-primary-300 text-4xl m-1.5">Corn</span>
@@ -6,13 +6,13 @@
 
     <span class="flex-auto"></span>
 
-    <button mat-fab extended class="flex items-center m-1.5 h-10 p-3.5 border-2 border-corn-primary-300 rounded-3xl
+    <button class="flex items-center m-1.5 h-10 p-3.5 border-2 border-corn-primary-300 rounded-3xl
     bg-dark-color-settings-container-background text-corn-primary-300 font-light" aria-label="Login" (click)="login()">
         <mat-icon class="mr-2">login</mat-icon>
         Login
     </button>
 
-    <button mat-fab extended class="flex items-center m-1.5 h-10 p-3.5 border-2 border-corn-primary-300 rounded-3xl
+    <button class="flex items-center m-1.5 h-10 p-3.5 border-2 border-corn-primary-300 rounded-3xl
     bg-corn-primary-300 text-dark-color-settings-container-background font-light" aria-label="Register" (click)="register()">
         <mat-icon class="mr-2">app_registration</mat-icon>
         Register
@@ -28,7 +28,9 @@
             <p class="text-sm">We offer simple, responsive app to manage small scrum teams</p>
         </article>
 
-        <div class="bg-amber-300 w-96 h-96"></div>
+        <div>
+            <img ngSrc="assets/home/login.png" alt="login-page" width="600" height="600">
+        </div>
     </section>
 </section>
 
@@ -47,23 +49,30 @@
 <section class="flex justify-center p-20">
     <section class="flex items-center gap-10">
         <article>
-            <p class="text-3xl my-2.5">Built with modern technologies</p>
+            <p class="text-3xl my-2.5">Built on top of modern technologies</p>
 
             <p class="text-sm">We offer simple, responsive app to manage small scrum teams</p>
         </article>
 
-        <div class="bg-amber-300 w-96 h-96"></div>
+        <div class="rounded-xl">
+            <img ngSrc="assets/home/tech_stack.png" alt="login-page" width="600" height="600">
+        </div>
     </section>
 </section>
 
 <section class="bg-dark-color-settings-container-background flex justify-center p-20">
     <section class="flex items-center gap-10">
-        <div class="bg-amber-300 w-96 h-96"></div>
+        <div class="rounded-xl">
+            <img ngSrc="assets/home/board_group_member.png" alt="login-page" width="600" height="600">
+        </div>
 
         <article>
-            <p class="text-3xl my-2.5">Well documented</p>
+            <p class="text-3xl my-2.5">Productivity first</p>
 
-            <p class="text-sm">Our app has well documented api and code. It is prepared for expansion.</p>
+            <p class="text-sm">
+                We offer easy way to manage your teams tasks in each sprint.<br>
+                You can easily group the board by tasks or each member.
+            </p>
         </article>
     </section>
 </section>
@@ -71,14 +80,17 @@
 <section class="flex justify-center p-20">
     <section class="flex items-center gap-10">
         <article>
-            <p class="text-3xl my-2.5">Followed by the best practices</p>
+            <p class="text-3xl my-2.5">Security matters</p>
 
             <p class="text-sm">
-                We follow test driven development and material design to achieve best code and ui quality.
+                We care about your data, that's why we use the best security practices to keep your data safe. <br>
+                We use keycloak as our authentication provider to ensure application safety.
             </p>
         </article>
 
-        <div class="bg-amber-300 w-96 h-96"></div>
+        <div class="rounded-xl">
+            <img ngSrc="assets/home/register.png" alt="login-page" width="600" height="600">
+        </div>
     </section>
 </section>
 
