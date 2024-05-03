@@ -17,12 +17,10 @@ import { NewProjectComponent } from "@pages/project-list/new-project/new-project
 import { take } from "rxjs";
 import { Project } from "@interfaces/boards/project";
 import { ProjectService } from "@core/services/boards/project.service";
-import { Route, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { RouterPaths } from "@core/enum/RouterPaths";
-import {
-    AddMemberDialogComponent
-} from "@pages/boards/project-settings/add-member-dialog/add-member-dialog.component";
-import {DeleteDialogComponent} from "@pages/utils/delete-dialog/delete-dialog.component";
+import { AddMemberDialogComponent } from "@pages/boards/project-settings/add-member-dialog/add-member-dialog.component";
+import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: 'app-project-settings',

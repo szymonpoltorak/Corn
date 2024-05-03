@@ -1,24 +1,24 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {BacklogItemComment} from "@interfaces/boards/backlog/backlog-item-comment";
-import {UserAvatarComponent} from "@pages/utils/user-avatar/user-avatar.component";
-import {MatError, MatFormField, MatHint, MatSuffix} from "@angular/material/form-field";
-import {CdkTextareaAutosize} from "@angular/cdk/text-field";
-import {MatInput} from "@angular/material/input";
-import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
-import {CustomValidators} from "@core/validators/custom-validators";
-import {MatButton, MatIconButton} from "@angular/material/button";
-import {NgIcon, provideIcons} from "@ng-icons/core";
-import {matDelete, matDone, matEdit} from "@ng-icons/material-icons/baseline";
-import {NgIf} from "@angular/common";
-import {MatTooltip} from "@angular/material/tooltip";
-import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
-import {MatIcon} from "@angular/material/icon";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { BacklogItemComment } from "@interfaces/boards/backlog/backlog-item-comment";
+import { UserAvatarComponent } from "@pages/utils/user-avatar/user-avatar.component";
+import { MatError, MatFormField, MatHint, MatSuffix } from "@angular/material/form-field";
+import { CdkTextareaAutosize } from "@angular/cdk/text-field";
+import { MatInput } from "@angular/material/input";
+import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CustomValidators } from "@core/validators/custom-validators";
+import { MatButton, MatIconButton } from "@angular/material/button";
+import { NgIcon, provideIcons } from "@ng-icons/core";
+import { matDelete, matDone, matEdit } from "@ng-icons/material-icons/baseline";
+import { NgIf } from "@angular/common";
+import { MatTooltip } from "@angular/material/tooltip";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { MatIcon } from "@angular/material/icon";
 import {
     BacklogItemCommentService
 } from "@core/services/boards/backlog/backlog-item-comment/backlog-item-comment.service";
-import {take} from "rxjs";
-import {MatDialog} from "@angular/material/dialog";
-import {DeleteDialogComponent} from "@pages/utils/delete-dialog/delete-dialog.component";
+import { take } from "rxjs";
+import { MatDialog } from "@angular/material/dialog";
+import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: 'app-backlog-item-comment',
