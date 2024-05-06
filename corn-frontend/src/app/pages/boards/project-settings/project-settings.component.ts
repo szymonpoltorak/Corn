@@ -88,7 +88,7 @@ export class ProjectSettingsComponent implements OnInit {
                 this.projectService
                     .deleteMemberFromProject(projectMember.username, this.projectId)
                     .pipe(take(1))
-                    .subscribe();
+                    .subscribe(() => this.getProjectMembers());
             })
     }
 
