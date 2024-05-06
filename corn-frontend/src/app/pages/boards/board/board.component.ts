@@ -32,6 +32,7 @@ import { BacklogItemResponse } from '@core/services/api/v1/backlog/item/data/bac
 import { UsernameToAssigneeMapper } from '@core/types/board/boards/UsernameToAssigneeMapper';
 import { SimpleSprint } from '@core/interfaces/boards/board/simple_sprint.interface';
 import { Pageable } from '@core/services/api/utils/pageable.interface';
+import { BacklogItemType } from '@core/enum/BacklogItemType';
 
 @Component({
     selector: 'app-board',
@@ -91,10 +92,10 @@ export class BoardComponent implements OnInit {
     }
 
     private async loadSprintInfo(sprint: SimpleSprint): Promise<void> {
-        const [nextSprint, previousSprint] = [
+        const [nextSprint, previousSprint] = (await Promise.all([
             await firstValueFrom(this.sprintApi.getSprintsAfterSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "ASC"))),
             await firstValueFrom(this.sprintApi.getSprintsBeforeSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "DESC"))),
-        ].map(page => page.numberOfElements > 0 ? this.toSimpleSprint(page.content[0]) : null);
+        ])).map(page => page.numberOfElements > 0 ? this.toSimpleSprint(page.content[0]) : null);
         this.nextSprint = nextSprint;
         this.previousSprint = previousSprint;
 
@@ -258,7 +259,18 @@ export class BoardComponent implements OnInit {
             taskTag: item.itemType + "-" + item.backlogItemId,
             content: item.title,
             assignee: mapper(item.assignee.username),
+            taskType: this.mapStringToBacklogItemType(item.itemType)!,
         };
+    }
+
+    private mapStringToBacklogItemType(str: string): BacklogItemType | undefined {
+        switch (str.toUpperCase()) {
+            case 'BUG': return BacklogItemType.BUG;
+            case 'TASK': return BacklogItemType.TASK;
+            case 'STORY': return BacklogItemType.STORY;
+            case 'EPIC': return BacklogItemType.EPIC;
+            default: return undefined;
+        }
     }
 
     protected readonly TaskGroupingEnum: typeof TaskGrouping = TaskGrouping;
