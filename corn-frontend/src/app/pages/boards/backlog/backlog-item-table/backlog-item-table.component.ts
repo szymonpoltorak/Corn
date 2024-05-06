@@ -43,6 +43,7 @@ import { BacklogTypeComponent } from "@pages/boards/backlog/backlog-item-table/b
 import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/backlog-drag/backlog-drag.component";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-details/backlog-item-details.component";
+import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -78,7 +79,7 @@ import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-
     ],
     templateUrl: './backlog-item-table.component.html',
     styleUrl: './backlog-item-table.component.scss',
-    providers: [provideIcons({ bootstrapBugFill, featherBook, matTask, octContainer, matDelete })],
+    providers: [provideIcons({bootstrapBugFill, featherBook, matTask, octContainer, matDelete})],
 })
 export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
 
@@ -103,15 +104,28 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     }
 
     deleteItem(item: BacklogItem): void {
-        this.backlogItemService.deleteBacklogItem(item).pipe(take(1)).subscribe((deletedItem: BacklogItem) => {
-            this.dataToDisplay = this.dataToDisplay.filter((i) => i !== item);
-            this.resultsLength -= 1;
-        });
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            enterAnimationDuration: '100ms',
+            exitAnimationDuration: '100ms'
+        })
+
+        dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+            if (!result) {
+                return;
+            }
+
+            this.backlogItemService.deleteBacklogItem(item).pipe(take(1)).subscribe((deletedItem: BacklogItem) => {
+                this.dataToDisplay = this.dataToDisplay.filter((i) => i !== item);
+                this.resultsLength -= 1;
+            });
+        })
+
+
     }
 
     ngAfterViewInit(): void {
         this.inputSprintChanged.pipe(takeUntil(this.destroy$)).subscribe((sprintId: number) => {
-            if(sprintId == this.sprintId) {
+            if (sprintId == this.sprintId) {
                 this.fetchBacklogItems();
             }
         });
@@ -141,26 +155,26 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         }
 
         source.pipe(
-                catchError(() => of(null)),
-                map(data => {
-                    this.isLoading = false;
+            catchError(() => of(null)),
+            map(data => {
+                this.isLoading = false;
 
-                    if (!data) {
-                        return [];
-                    }
+                if (!data) {
+                    return [];
+                }
 
-                    this.resultsLength = data.totalNumber;
-                    return data.backlogItemResponseList;
-                }),
-                take(1)
-            ).subscribe(data => {
-              this.dataToDisplay = data;
+                this.resultsLength = data.totalNumber;
+                return data.backlogItemResponseList;
+            }),
+            take(1)
+        ).subscribe(data => {
+            this.dataToDisplay = data;
         })
     }
 
     updateBacklogItem(item: BacklogItem): void {
         this.backlogItemService.updateBacklogItem(item).pipe(take(1)).subscribe((newItem) => {
-            if(newItem.sprintId == this.sprintId) {
+            if (newItem.sprintId == this.sprintId) {
                 let index: number = this.dataToDisplay.findIndex(item => item.backlogItemId == newItem.backlogItemId);
                 this.dataToDisplay[index] = newItem;
                 this.table.renderRows();
@@ -198,7 +212,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         });
 
         dialogRef.afterClosed().pipe(take(1)).subscribe((result: BacklogItem) => {
-            if(!result) {
+            if (!result) {
                 return;
             }
 

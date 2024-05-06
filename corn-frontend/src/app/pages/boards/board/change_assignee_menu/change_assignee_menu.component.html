@@ -14,12 +14,8 @@
         <button mat-menu-item (click)="assigneeChanged(item)">
             <div class="flex items-center space-x-3">
                 <ng-container *ngTemplateOutlet="zerowidthspace"></ng-container>
-                <img
-                    class="w-6 h-6 rounded-full"
-                    src="{{ item.avatarUrl }}"
-                    title="{{ item.firstName + ' ' + item.familyName }}"
-                    alt="{{ item.firstName + ' ' + item.familyName }}"
-                />
+                <app-user-avatar class="block w-[35px] h-[35px] rounded-full cursor-pointer" 
+                    [user]="assigneeToUser(item)" [isEmpty]="!item"></app-user-avatar>
                 <span>
                     {{ item.firstName + " " + item.familyName }}
                 </span>
