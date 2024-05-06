@@ -272,6 +272,10 @@ export class BoardComponent implements OnInit {
             default: return undefined;
         }
     }
+    
+    protected formatDate(date: Date): string {
+        return date.toISOString().split('T')[0].replaceAll("-", "/");
+    }
 
     protected readonly TaskGroupingEnum: typeof TaskGrouping = TaskGrouping;
     protected readonly TASK_GROUPINGS: TaskGrouping[] = Object.values(TaskGrouping);
