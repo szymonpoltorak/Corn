@@ -8,6 +8,8 @@ import { BoardModelService } from '@core/services/boards/board/model.service';
 import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
+import { User } from '@core/interfaces/boards/user';
+import { UserAvatarComponent } from '@pages/utils/user-avatar/user-avatar.component';
 
 @Component({
     selector: 'change-assignee-menu',
@@ -18,6 +20,7 @@ import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_change
         MatInputModule,
         MatButtonModule,
         MatDividerModule,
+        UserAvatarComponent,
     ],
     templateUrl: './change_assignee_menu.component.html',
 })
@@ -54,6 +57,15 @@ export class ChangeAssigneeMenuComponent {
             sourceGroupMetadata: this.associatedTask.assignee,
             destinationGroupMetadata: assignee
         });
+    }
+
+    protected assigneeToUser(assignee: Assignee): User {
+        return {
+            userId: assignee.associatedUserId,
+            name: assignee.firstName,
+            surname: assignee.familyName,
+            username: assignee.associatedUsername,
+        };
     }
 
 }
