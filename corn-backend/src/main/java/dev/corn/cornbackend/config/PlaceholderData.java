@@ -105,7 +105,7 @@ public class PlaceholderData implements CommandLineRunner {
 
         for (int i = 0; i < 8; i++) {
             sprintService.addNewSprint(new SprintRequest(
-                    project.getProjectId(), String.format("Sprint %d", i), prevDate, prevDate.plusDays(7),
+                    project.getProjectId(), String.format("Sprint %d", i), prevDate, prevDate.plusDays(7L),
                     String.format("Sprintd %d description", i)
             ), projectOwner);
 

@@ -1,4 +1,4 @@
-<section class="m-20 flex gap-10 justify-center">
+<section class="m-20 flex gap-10 justify-center overflow-y-hidden">
     @if (feature.isLeft) {
         <article>
             <p class="text-3xl my-2.5">
@@ -11,7 +11,9 @@
         </article>
     }
 
-    <div class="bg-amber-300 w-96 h-96"></div>
+    <div>
+        <img [ngSrc]="feature.imagePath" alt="login-page" width="700" height="520">
+    </div>
 
     @if (!feature.isLeft) {
         <article>
