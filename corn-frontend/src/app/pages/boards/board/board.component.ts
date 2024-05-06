@@ -25,7 +25,9 @@ import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-
 import { BacklogItemStatus } from '@core/enum/BacklogItemStatus';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { firstValueFrom } from 'rxjs';
-import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
+import {
+    ProjectMemberInfoExtendedResponse
+} from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
 import { BacklogItemResponse } from '@core/services/api/v1/backlog/item/data/backlog-item-response.interface';
 import { UsernameToAssigneeMapper } from '@core/types/board/boards/UsernameToAssigneeMapper';
 import { SimpleSprint } from '@core/interfaces/boards/board/simple_sprint.interface';

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { User } from "@interfaces/boards/user";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { ApiUrl } from "@core/enum/api-url";
