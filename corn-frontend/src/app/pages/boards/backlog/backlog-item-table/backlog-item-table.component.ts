@@ -54,6 +54,8 @@ import { StorageService } from '@core/services/storage.service';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
 import { User } from '@core/interfaces/boards/user';
+import { ChangeItemTypeMenuComponent } from '@pages/utils/change_item_type_menu/change_item_type_menu.component';
+import { BacklogItemType } from '@core/enum/BacklogItemType';
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -87,6 +89,7 @@ import { User } from '@core/interfaces/boards/user';
         BacklogDragComponent,
         CdkDragPlaceholder,
         ChangeAssigneeMenuComponent,
+        ChangeItemTypeMenuComponent,
     ],
     templateUrl: './backlog-item-table.component.html',
     styleUrl: './backlog-item-table.component.scss',
@@ -258,6 +261,15 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         }).subscribe((response) => {
             const item = this.dataToDisplay.filter(item => item.backlogItemId == response.backlogItemId)[0];
             item.assignee = this.assigneeToUser(event.destinationGroupMetadata!);
+        });
+    }
+
+    protected itemTypeChangedHandler(event: { itemId: number, type: BacklogItemType }): void {
+        this.backlogItemApi.partialUpdate(event.itemId, {
+            itemType: event.type
+        }).subscribe((response) => {
+            const item = this.dataToDisplay.filter(item => item.backlogItemId == response.backlogItemId)[0];
+            item.itemType = event.type;
         });
     }
 

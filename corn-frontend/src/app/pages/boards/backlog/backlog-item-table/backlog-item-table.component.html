@@ -22,7 +22,9 @@
     <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
         <td mat-cell *matCellDef="let backlogItem">
-            <app-backlog-type [backlogItemType]="backlogItem.itemType"></app-backlog-type>
+            <change-item-type-menu [itemId]="backlogItem.backlogItemId" [itemTypeChangedHandler]="itemTypeChangedHandler.bind(this)">
+                <app-backlog-type [backlogItemType]="backlogItem.itemType"></app-backlog-type>
+            </change-item-type-menu>
         </td>
     </ng-container>
 
