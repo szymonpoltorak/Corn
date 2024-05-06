@@ -14,7 +14,7 @@
         <th mat-header-cell *matHeaderCellDef>Title</th>
 
         <td mat-cell *matCellDef="let backlogItem">
-            <h2 class="hover:text-amber-400 hover:underline hover:underline-offset-1 w-max" (click)="openDetails(backlogItem)">{{ backlogItem.title }}</h2></td>
+            <h2 class="w-max" (click)="openDetails(backlogItem)">{{ backlogItem.title }}</h2></td>
     </ng-container>
 
     <ng-container matColumnDef="description">
@@ -33,11 +33,13 @@
 
     <ng-container matColumnDef="assignee">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Assignee</th>
+
         <td mat-cell *matCellDef="let backlogItem">
             <div class="flex flex-row justify-space-between items-center w-32">
                 <div class="avatar-container">
                     <app-user-avatar [user]="backlogItem.assignee" [isEmpty]="!backlogItem.assignee"></app-user-avatar>
                 </div>
+
                 @if (backlogItem == hoveredRow) {
                     <button style="width: 2.5em; height: 2.5em; margin-left: 3em;"
                             (mouseover)="hoveredRow = backlogItem;" mat-fab color="warn" (click)="deleteItem(backlogItem)">
