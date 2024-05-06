@@ -5,6 +5,6 @@ export interface Task {
     associatedBacklogItemId: number;
     taskTag: string;
     content: string;
-    assignee: Assignee;
+    assignee?: Assignee;
     taskType: BacklogItemType;
 }

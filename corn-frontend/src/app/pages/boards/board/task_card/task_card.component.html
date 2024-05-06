@@ -6,7 +6,8 @@
                 <app-backlog-type [backlogItemType]="task.taskType"></app-backlog-type>
                 <span class="text-gray-300 text-sm font-bold">{{ task.taskTag }}</span>
             </div>
-            <change-assignee-menu [associatedTask]="task" [assigneeChangedHandler]="assigneeChangedHandler">
+            <change-assignee-menu [associatedTask]="task" [assigneeSupplier]="assigneeSupplier"
+                [assigneeChangedHandler]="assigneeChangedHandler">
                 <app-user-avatar class="block w-[35px] h-[35px] rounded-full cursor-pointer" 
                     [user]="taskAssigneeAsUser()" [isEmpty]="!task"></app-user-avatar>
             </change-assignee-menu>

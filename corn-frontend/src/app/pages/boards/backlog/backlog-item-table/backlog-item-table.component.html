@@ -30,9 +30,14 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Assignee</th>
         <td mat-cell *matCellDef="let backlogItem">
             <div class="flex flex-row justify-space-between items-center w-32">
-                <div class="avatar-container">
-                    <app-user-avatar [user]="backlogItem.assignee" [isEmpty]="!backlogItem.assignee"></app-user-avatar>
-                </div>
+                
+                <change-assignee-menu [associatedTask]="backlogItemToTask(backlogItem)" [assigneeSupplier]="getProjectMembers.bind(this)"
+                    [assigneeChangedHandler]="assigneeChangedHandler.bind(this)">
+                    <div class="avatar-container">
+                        <app-user-avatar [user]="backlogItem.assignee" [isEmpty]="!backlogItem.assignee"></app-user-avatar>
+                    </div>
+                </change-assignee-menu>
+                    
                 @if (backlogItem == hoveredRow) {
                     <button style="width: 2.5em; height: 2.5em; margin-left: 3em;"
                             (mouseover)="hoveredRow = backlogItem;" mat-fab color="warn" (click)="deleteItem(backlogItem)">

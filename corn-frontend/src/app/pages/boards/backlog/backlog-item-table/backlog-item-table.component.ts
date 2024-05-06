@@ -15,7 +15,7 @@ import {
 } from "@angular/material/table";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { MatPaginator } from "@angular/material/paginator";
-import { catchError, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
+import { catchError, firstValueFrom, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
 import { NgClass } from "@angular/common";
 import { map } from "rxjs/operators";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
@@ -44,6 +44,16 @@ import { BacklogDragComponent } from "@pages/boards/backlog/backlog-item-table/b
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BacklogItemDetailsComponent } from "@pages/boards/backlog/backlog-item-details/backlog-item-details.component";
 import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.component";
+import { ChangeAssigneeMenuComponent } from '@pages/utils/change_assignee_menu/change_assignee_menu.component';
+import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
+import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
+import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { Task } from '@core/interfaces/boards/board/task.interface';
+import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
+import { StorageService } from '@core/services/storage.service';
+import { StorageKey } from '@core/enum/storage-key.enum';
+import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
+import { User } from '@core/interfaces/boards/user';
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -75,7 +85,8 @@ import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.
         StatusSelectComponent,
         BacklogTypeComponent,
         BacklogDragComponent,
-        CdkDragPlaceholder
+        CdkDragPlaceholder,
+        ChangeAssigneeMenuComponent,
     ],
     templateUrl: './backlog-item-table.component.html',
     styleUrl: './backlog-item-table.component.scss',
@@ -97,10 +108,15 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     resultsLength: number = 0;
     hoveredRow: BacklogItem | null = null;
     isLoading: boolean = true;
+    projectMembers: Assignee[] = [];
+
 
     constructor(private backlogItemService: BacklogItemService,
                 private backlogComponent: BacklogComponent,
-                private dialog: MatDialog) {
+                private dialog: MatDialog,
+                private projectMemberApi: ProjectMemberApi,
+                private backlogItemApi: BacklogItemApi,
+                private storage: StorageService) {
     }
 
     deleteItem(item: BacklogItem): void {
@@ -147,6 +163,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         this.isLoading = true;
         let active: string = this.sort.active === 'type' ? 'itemType' : this.sort.active;
         let source: Observable<BacklogItemList>;
+        this.fetchProjectMembers();
 
         if (this.sprintId === -1) {
             source = this.backlogItemService.getAllWithoutSprint(this.paginator.pageIndex, active, this.sort.direction.toUpperCase());
@@ -218,6 +235,67 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
 
             this.updateBacklogItem(result);
         })
+    }
+
+    protected fetchProjectMembers(): void {
+        const projectId: number = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
+        this.projectMemberApi.getAllProjectMembers(projectId).subscribe(members => {
+            this.projectMembers = members.map(this.toAssignee);
+        });
+    }
+
+    protected getProjectMembers(): Assignee[] {
+        return this.projectMembers;
+    }
+
+    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee | undefined>): void{
+        const projectMemberResponse = this.projectMembers.filter(member =>
+            member.associatedUserId === event.destinationGroupMetadata?.associatedUserId
+        )[0];
+        const projectMemberId = projectMemberResponse.associatedProjectMemberId;
+        this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
+            projectMemberId: projectMemberId,
+        }).subscribe((response) => {
+            const item = this.dataToDisplay.filter(item => item.backlogItemId == response.backlogItemId)[0];
+            item.assignee = this.assigneeToUser(event.destinationGroupMetadata!);
+        });
+    }
+
+    protected backlogItemToTask(backlogItem: BacklogItem): Task {
+        return {
+            associatedBacklogItemId: backlogItem.backlogItemId,
+            taskTag: backlogItem.itemType + "-" + backlogItem.backlogItemId,
+            content: backlogItem.title,
+            assignee: !backlogItem.assignee ? undefined : {
+                associatedUserId: backlogItem.assignee.userId,
+                associatedUsername: backlogItem.assignee.username,
+                associatedProjectMemberId: -1,
+                firstName: backlogItem.assignee.name,
+                familyName: backlogItem.assignee.surname,
+                avatarUrl: '',
+            },
+            taskType: backlogItem.itemType,
+        };
+    }
+
+    protected assigneeToUser(assignee: Assignee): User {
+        return {
+            userId: assignee.associatedUserId,
+            name: assignee.firstName,
+            surname: assignee.familyName,
+            username: assignee.associatedUsername,
+        };
+    }
+
+    private toAssignee(member: ProjectMemberInfoExtendedResponse): Assignee {
+        return {
+            associatedUserId: member.user.userId,
+            associatedUsername: member.user.username,
+            associatedProjectMemberId: member.projectMemberId,
+            firstName: member.user.name,
+            familyName: member.user.surname,
+            avatarUrl: "/assets/assignee-avatars/alice.png",
+        };
     }
 
     ngOnDestroy(): void {

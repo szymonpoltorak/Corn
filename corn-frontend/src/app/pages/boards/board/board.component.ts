@@ -167,13 +167,17 @@ export class BoardComponent implements OnInit {
         ), 500);
     }
 
-    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee>): void {
+    protected assigneeSupplier(): Assignee[] {
+        return this.modelService.assignees;
+    }
+
+    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee | undefined>): void {
         if(!this.isDisplayedSprintEditable()) {
             return;
         }
         this.modelService.setAssigneeForTask(event.task, event.destinationGroupMetadata);
         this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
-            projectMemberId: event.task.assignee.associatedProjectMemberId,
+            projectMemberId: !event.task.assignee ? 0 : event.task.assignee.associatedProjectMemberId,
         }).subscribe((_) => { });
     }
 
@@ -197,9 +201,9 @@ export class BoardComponent implements OnInit {
         const stringPredicate = (s: string) => s.toLowerCase().includes(filterString);
         this.slicesModelService.filter = (t: Task) => {
             return stringPredicate(t.content)
-                || stringPredicate(t.assignee.firstName)
-                || stringPredicate(t.assignee.firstName + " " + t.assignee.familyName)
-                || stringPredicate(t.assignee.familyName)
+                || stringPredicate(t.assignee!.firstName)
+                || stringPredicate(t.assignee!.firstName + " " + t.assignee!.familyName)
+                || stringPredicate(t.assignee!.familyName)
                 || stringPredicate(t.associatedBacklogItemId + "")
                 || stringPredicate(t.taskTag);
         };
@@ -288,8 +292,8 @@ export class BoardComponent implements OnInit {
                 return {
                     metadata: a,
                     group: ungrouped.filter((t: Task) => {
-                        return t.assignee.firstName == a.firstName
-                            && t.assignee.familyName == a.familyName
+                        return t.assignee!.firstName == a.firstName
+                            && t.assignee!.familyName == a.familyName
                     })
                 };
             });
