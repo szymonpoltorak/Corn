@@ -197,7 +197,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user) {
+    public final List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user) {
         log.info("Getting current and future sprints for project with id: {}", projectId);
 
         Project project = resolveProjectForProjectMember(projectId, user);

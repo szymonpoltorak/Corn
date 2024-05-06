@@ -1,6 +1,6 @@
 <mat-accordion multi>
     @for (sprint of sprints; track sprint) {
-        <mat-expansion-panel>
+        <mat-expansion-panel [cdkContextMenuTriggerFor]="sprintsMenu">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{ sprint.sprintName }}
@@ -17,6 +17,18 @@
                                     [sprintIds]="sprintIds">
             </app-backlog-item-table>
         </mat-expansion-panel>
+
+        <ng-template #sprintsMenu>
+            <div class="mat-elevation-z3 sprints-menu" cdkMenu>
+                <button class="sprints-menu-item" matRipple cdkMenuItem (click)="editSprint(sprint)">
+                    Edit Sprint
+                </button>
+
+                <button class="sprints-menu-item" matRipple cdkMenuItem (click)="deleteSprint(sprint.sprintId)">
+                    Delete
+                </button>
+            </div>
+        </ng-template>
     }
 
 </mat-accordion>

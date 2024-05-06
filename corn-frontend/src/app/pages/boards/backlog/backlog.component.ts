@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { MatButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
 import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog-form.component";
@@ -15,6 +15,10 @@ import {
 } from "@angular/material/expansion";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
 import { DatePipe, NgForOf } from "@angular/common";
+import { MatMenu, MatMenuItem, MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
+import { CdkContextMenuTrigger, CdkMenu, CdkMenuItem } from "@angular/cdk/menu";
+import { MatIcon } from "@angular/material/icon";
+import { MatRipple } from "@angular/material/core";
 
 @Component({
     selector: 'app-backlog',
@@ -28,7 +32,12 @@ import { DatePipe, NgForOf } from "@angular/common";
         MatExpansionPanelHeader,
         NgForOf,
         BacklogItemTableComponent,
-        DatePipe
+        DatePipe,
+        MatMenuModule,
+        CdkContextMenuTrigger,
+        CdkMenu,
+        CdkMenuItem,
+        MatRipple,
     ],
     templateUrl: './backlog.component.html',
     styleUrl: './backlog.component.scss',
@@ -89,5 +98,18 @@ export class BacklogComponent implements OnInit {
 
     findBacklogItemTableById(id: string): BacklogItemTableComponent | undefined {
         return this.backlogItemTableComponents.find(table => table.sprintId.toString() === id);
+    }
+
+    deleteSprint(sprintId: number): void {
+        this.sprintService
+            .deleteSprint(sprintId)
+            .pipe(take(1))
+            .subscribe(() => {
+                this.sprints = this.sprints.filter(sprint => sprint.sprintId !== sprintId);
+            });
+    }
+
+    editSprint(sprint: Sprint): void {
+        // TODO Add editing sprint data
     }
 }
