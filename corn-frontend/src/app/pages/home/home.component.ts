@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit {
             imagePath: "assets/home/task.png"
         },
         {
-            content: "You can easily analyze your sprints and see how your team is doing. You can see how much work is done and how much is left to do",
+            content: "You can easily analyze your sprints and see how your team is doing. You can see how much work is done and how much is left to do.",
             isLeft: true,
             label: "Analyze your sprints",
             title: "Analysis is a key",
