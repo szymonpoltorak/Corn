@@ -1,3 +1,5 @@
+<#import "common.ftl" as common />
+
 <#macro mainLayout active bodyClass>
 <!doctype html>
 <html>
@@ -18,87 +20,91 @@
 		<link rel="stylesheet" href="/resources/jxveb/common/corn/css/styles.css" />
 	</head>
 
+<body class="h-screen bg-yellow-400">
 
-<#--  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="robots" content="noindex, nofollow">
-
-    <title>${msg("accountManagementTitle")}</title>
-    <link rel="icon" href="${url.resourcesPath}/img/favicon.ico">
-    <#if properties.stylesCommon?has_content>
-        <#list properties.stylesCommon?split(' ') as style>
-            <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
-        </#list>
-    </#if>
-    <#if properties.styles?has_content>
-        <#list properties.styles?split(' ') as style>
-            <link href="${url.resourcesPath}/${style}" rel="stylesheet" />
-        </#list>
-    </#if>
-    <#if properties.scripts?has_content>
-        <#list properties.scripts?split(' ') as script>
-            <script type="text/javascript" src="${url.resourcesPath}/${script}"></script>
-        </#list>
-    </#if>
-</head>  -->
-<body class="">
-
-    <h1 class="text-small text-yellow-400 font-bold ml-[2px]">TW works</h1>
-        
-    <header class="navbar navbar-default navbar-pf navbar-main header">
-        <nav class="navbar" role="navigation">
-            <div class="navbar-header">
-                <div class="container">
-                    <h1 class="navbar-title">Keycloak</h1>
-                </div>
+    <header class="w-full bg-yellowishDark">
+        <nav class="w-full flex justify-between items-center py-2 px-2">
+            <div class="flex items-center">
+                <img src="/resources/jxveb/common/corn/img/corn.png" class="h-8 mr-2">
+                <h1 class="text-white font-bold text-lg">Corn</h1>
             </div>
-            <div class="navbar-collapse navbar-collapse-1">
-                <div class="container">
-                    <ul class="nav navbar-nav navbar-utility">
-                        <#if realm.internationalizationEnabled>
-                            <li>
-                                <div class="kc-dropdown" id="kc-locale-dropdown">
-                                    <a href="#" id="kc-current-locale-link">${locale.current}</a>
-                                    <ul>
-                                        <#list locale.supported as l>
-                                            <li class="kc-dropdown-item"><a href="${l.url}">${l.label}</a></li>
-                                        </#list>
-                                    </ul>
-                                </div>
-                            <li>
-                        </#if>
-                        <#if referrer?has_content && referrer.url?has_content><li><a href="${referrer.url}" id="referrer">${msg("backTo",referrer.name)}</a></li></#if>
-                        <li><a href="${url.getLogoutUrl()}">${msg("doSignOut")}</a></li>
-                    </ul>
-                </div>
+            
+            <div class="flex space-x-4 items-center whitespace-nowrap">
+                <#if referrer?has_content && referrer.url?has_content>
+                    <@common.WHITE_A_BUTTON href="${referrer.url}" id="kc-backto">
+                        ${msg("backTo",referrer.name)}
+                    </@common.WHITE_A_BUTTON>
+                </#if>
+                <@common.YELLOW_A_BUTTON href="${url.getLogoutUrl()}" id="kc-logout">
+                    ${msg("doSignOut")}
+                </@common.YELLOW_A_BUTTON>
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <div class="bs-sidebar col-sm-3">
-            <ul>
-                <li class="<#if active=='account'>active</#if>"><a href="${url.accountUrl}">${msg("account")}</a></li>
-                <#if features.passwordUpdateSupported><li class="<#if active=='password'>active</#if>"><a href="${url.passwordUrl}">${msg("password")}</a></li></#if>
-                <li class="<#if active=='totp'>active</#if>"><a href="${url.totpUrl}">${msg("authenticator")}</a></li>
-                <#if features.identityFederation><li class="<#if active=='social'>active</#if>"><a href="${url.socialUrl}">${msg("federatedIdentity")}</a></li></#if>
-                <li class="<#if active=='sessions'>active</#if>"><a href="${url.sessionsUrl}">${msg("sessions")}</a></li>
-                <li class="<#if active=='applications'>active</#if>"><a href="${url.applicationsUrl}">${msg("applications")}</a></li>
-                <#if features.log><li class="<#if active=='log'>active</#if>"><a href="${url.logUrl}">${msg("log")}</a></li></#if>
-                <#if realm.userManagedAccessAllowed && features.authorization><li class="<#if active=='authorization'>active</#if>"><a href="${url.resourceUrl}">${msg("myResources")}</a></li></#if>
-            </ul>
-        </div>
+    <div class="grid grid-cols-[196px,1fr] gap-4 mx-auto h-screen max-w-[968px]">
+        <ul class="space-y-2 py-2">
+            <li>
+                <@common.ACTIVATABLE_BUTTON href="${url.accountUrl}" id="kc-account" expected="account" actual="${active}">
+                    ${msg("account")}
+                </@common.ACTIVATABLE_BUTTON>
+            </li>
+            <#if features.passwordUpdateSupported>
+                <li>
+                    <@common.ACTIVATABLE_BUTTON href="${url.passwordUrl}" id="kc-password" expected="password" actual="${active}">
+                        ${msg("password")}
+                    </@common.ACTIVATABLE_BUTTON>
+                </li>
+            </#if>
+            <li>
+                <@common.ACTIVATABLE_BUTTON href="${url.totpUrl}" id="kc-totp" expected="totp" actual="${active}">
+                    ${msg("authenticator")}
+                </@common.ACTIVATABLE_BUTTON>
+            </li>
+            <#if features.identityFederation>
+                <li>
+                    <@common.ACTIVATABLE_BUTTON href="${url.socialUrl}" id="kc-social" expected="social" actual="${active}">
+                        ${msg("federatedIdentity")}
+                    </@common.ACTIVATABLE_BUTTON>
+                </li>
+            </#if>
+            <li>
+                <@common.ACTIVATABLE_BUTTON href="${url.sessionsUrl}" id="kc-sessions" expected="sessions" actual="${active}">
+                    ${msg("sessions")}
+                </@common.ACTIVATABLE_BUTTON>
+            </li>
+            <li>
+                <@common.ACTIVATABLE_BUTTON href="${url.applicationsUrl}" id="kc-applications" expected="applications" actual="${active}">
+                    ${msg("applications")}
+                </@common.ACTIVATABLE_BUTTON>
+            </li>
+            <#if features.log>
+                <li>
+                    <@common.ACTIVATABLE_BUTTON href="${url.logUrl}" id="kc-log" expected="log" actual="${active}">
+                        ${msg("log")}
+                    </@common.ACTIVATABLE_BUTTON>
+                </li>
+            </#if>
+            <#if realm.userManagedAccessAllowed && features.authorization>
+                <li>
+                    <@common.ACTIVATABLE_BUTTON href="${url.resourceUrl}" id="kc-authorization" expected="authorization" actual="${active}">
+                        ${msg("myResources")}
+                    </@common.ACTIVATABLE_BUTTON>
+                </li>
+            </#if>
+        </ul>
 
-        <div class="col-sm-9 content-area">
+        <div class="content-area bg-yellowishDark bg-white border border-gray-300 border-solid border-t-0 border-x-2 h-full px-6">
             <#if message?has_content>
-                <div class="alert alert-${message.type}">
-                    <#if message.type=='success' ><span class="pficon pficon-ok"></span></#if>
-                    <#if message.type=='error' ><span class="pficon pficon-error-circle-o"></span></#if>
-                    <span class="kc-feedback-text">${kcSanitize(message.summary)?no_esc}</span>
+                <div>
+                    <#if message.type=='success' >
+                        <span class="text-green-500">${kcSanitize(message.summary)?no_esc}</span>
+                    </#if>
+                    <#if message.type=='error' >
+                        <span class="text-red-500">${kcSanitize(message.summary)?no_esc}</span>
+                    </#if>
                 </div>
             </#if>
-
             <#nested "content">
         </div>
     </div>
