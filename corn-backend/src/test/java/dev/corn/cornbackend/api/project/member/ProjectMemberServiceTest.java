@@ -2,6 +2,7 @@ package dev.corn.cornbackend.api.project.member;
 
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoExtendedResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
+import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.ProjectMemberMapperImpl;
@@ -48,6 +49,9 @@ class ProjectMemberServiceTest {
 
     @Mock
     private ProjectMemberRepository projectMemberRepository;
+
+    @Mock
+    private BacklogItemRepository backlogItemRepository;
 
     @Mock
     private UserRepository userRepository;

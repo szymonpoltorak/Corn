@@ -191,7 +191,7 @@ public class BacklogItemServiceImpl implements BacklogItemService {
 
         log.info(RETURNING_RESPONSE_OF, backlogItem);
 
-        return backlogItemMapper.backlogItemToBacklogItemDetails(backlogItem);
+        return backlogItemMapper.backlogItemToBacklogItemDetails(backlogItem, user);
     }
 
     @Override

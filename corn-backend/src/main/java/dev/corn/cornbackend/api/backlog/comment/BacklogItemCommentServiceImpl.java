@@ -65,7 +65,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
 
         log.info(RETURNING_RESPONSE_FOR, savedComment);
 
-        return backLogItemCommentMapper.toBacklogItemCommentResponse(savedComment);
+        return backLogItemCommentMapper.toBacklogItemCommentResponse(savedComment, user);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
 
         log.info(RETURNING_RESPONSE_FOR, savedComment);
 
-        return backLogItemCommentMapper.toBacklogItemCommentResponse(savedComment);
+        return backLogItemCommentMapper.toBacklogItemCommentResponse(savedComment, user);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
 
         log.info(RETURNING_RESPONSE_FOR, backlogItemComment);
 
-        return backLogItemCommentMapper.toBacklogItemCommentResponse(backlogItemComment);
+        return backLogItemCommentMapper.toBacklogItemCommentResponse(backlogItemComment, user);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
 
         log.info(RETURNING_RESPONSE_FOR, backlogItemComment);
 
-        return backLogItemCommentMapper.toBacklogItemCommentResponse(backlogItemComment);
+        return backLogItemCommentMapper.toBacklogItemCommentResponse(backlogItemComment, user);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class BacklogItemCommentServiceImpl implements BacklogItemCommentService 
 
         return BacklogItemCommentResponseList.builder()
                 .comments(comments.stream()
-                        .map(backLogItemCommentMapper::toBacklogItemCommentResponse)
+                        .map((comment) -> backLogItemCommentMapper.toBacklogItemCommentResponse(comment, user))
                         .toList())
                 .totalNumber(comments.getTotalElements())
                 .build();

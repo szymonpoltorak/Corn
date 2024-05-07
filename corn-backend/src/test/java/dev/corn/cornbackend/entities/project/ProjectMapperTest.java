@@ -3,6 +3,7 @@ package dev.corn.cornbackend.entities.project;
 import dev.corn.cornbackend.api.project.data.ProjectResponse;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectMapper;
 import dev.corn.cornbackend.entities.sprint.Sprint;
+import dev.corn.cornbackend.entities.user.User;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -19,7 +20,7 @@ class ProjectMapperTest {
         ProjectMapper projectMapper = Mappers.getMapper(ProjectMapper.class);
 
         // when
-        ProjectResponse actual = projectMapper.toProjectResponse(null);
+        ProjectResponse actual = projectMapper.toProjectResponse(null, null);
 
         // then
         assertNull(actual, "Should return null");
@@ -39,7 +40,7 @@ class ProjectMapperTest {
                 .build();
 
         // when
-        ProjectResponse actual = projectMapper.toProjectResponse(project);
+        ProjectResponse actual = projectMapper.toProjectResponse(project, new User());
 
         // then
         assertNotNull(actual.sprints(), "Should return null");
@@ -55,7 +56,7 @@ class ProjectMapperTest {
                 .build();
 
         // when
-        ProjectResponse actual = projectMapper.toProjectResponse(project);
+        ProjectResponse actual = projectMapper.toProjectResponse(project, new User());
 
         // then
         assertNull(actual.sprints(), "Should return null");
@@ -73,7 +74,7 @@ class ProjectMapperTest {
                 .build();
 
         // when
-        ProjectResponse actual = projectMapper.toProjectResponse(project);
+        ProjectResponse actual = projectMapper.toProjectResponse(project, new User());
 
         // then
         assertNull(actual.sprints().get(0), "Should return null");

@@ -4,11 +4,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { SprintApi } from '@core/services/api/v1/sprint/sprint-api.service';
+import { SprintApiService } from '@core/services/api/v1/sprint/sprint-api.service';
 import { StorageService } from '@core/services/storage.service';
 import { SprintResponse } from '@core/services/api/v1/sprint/data/sprint-response.interface';
-import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
-import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { ProjectMemberApiService } from '@core/services/api/v1/project/member/project-member-api.service';
+import { BacklogItemApiService } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
 import { BacklogItemStatus } from '@core/enum/BacklogItemStatus';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { firstValueFrom } from 'rxjs';
@@ -72,9 +72,9 @@ export class ReportsComponent implements AfterViewInit {
     protected chart: any;
 
     constructor(
-        protected readonly sprintApi: SprintApi,
-        protected readonly projectMemberApi: ProjectMemberApi,
-        protected readonly backlogItemApi: BacklogItemApi,
+        protected readonly sprintApi: SprintApiService,
+        protected readonly projectMemberApi: ProjectMemberApiService,
+        protected readonly backlogItemApi: BacklogItemApiService,
         protected readonly storage: StorageService,
     ) { }
 
@@ -133,21 +133,26 @@ export class ReportsComponent implements AfterViewInit {
                 .forEach(bucket => bucket.remainingTasks--);
         });
 
-        this.updateDatapoints(buckets);
+        const theNextDayTime = new Date().getTime() + dayLengthMs;
+        const completedAndCurrentBuckets = buckets
+            .filter(bucket => bucket.date.getTime() <= theNextDayTime);
+
+        const idealBoundaries = [
+            { remainingTasks: allTasksInSprintCount, date: startDate, },
+            { remainingTasks: 0, date: endDate, },
+        ];
+
+        this.updateDatapoints(completedAndCurrentBuckets, idealBoundaries);
     }
 
-    private updateDatapoints(buckets: Bucket[]) {
-        const actualPoints = buckets.map(bucket => {
-            return ({
-                x: bucket.date,
-                y: bucket.remainingTasks,
-            });
-        });
-        const ideal = [{ ...actualPoints[0] }, { ...actualPoints.at(-1) }];
-        ideal[1]!.y = 0;
-
+    private updateDatapoints(actual: Bucket[], ideal: Bucket[]) {
+        const [actualPoints, idealPoints] = [actual, ideal].map(buckets =>
+            buckets.map(bucket => {
+                return { x: bucket.date, y: bucket.remainingTasks, };
+            })
+        );
         this.chart.options.data[0].dataPoints = actualPoints;
-        this.chart.options.data[1].dataPoints = ideal;
+        this.chart.options.data[1].dataPoints = idealPoints;
         this.chart.render();
     }
 
@@ -170,6 +175,10 @@ export class ReportsComponent implements AfterViewInit {
             startDate: new Date(sprintResponse.startDate),
             endDate: new Date(sprintResponse.endDate),
         };
+    }
+
+    protected formatDate(date: Date): string {
+        return date.toISOString().split('T')[0].replaceAll("-", "/");
     }
 
 }

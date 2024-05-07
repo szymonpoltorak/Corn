@@ -2,6 +2,7 @@ package dev.corn.cornbackend.entities.backlog.item.interfaces;
 
 import dev.corn.cornbackend.entities.backlog.item.BacklogItem;
 import dev.corn.cornbackend.entities.project.Project;
+import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.user.User;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
     /**
      * Finds all BacklogItems associated with a Sprint
      *
-     * @param sprint Sprint to find BacklogItems for
+     * @param sprint   Sprint to find BacklogItems for
      * @param pageable Pageable that pages and sorts the data
      * @return List of BacklogItems associated with the Sprint
      */
@@ -31,7 +32,7 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
     /**
      * Finds all BacklogItems associated with a Project
      *
-     * @param project Project to find BacklogItems for
+     * @param project  Project to find BacklogItems for
      * @param pageable Pageable that pages and sorts the data
      * @return List of BacklogItems associated with the Project
      */
@@ -40,16 +41,23 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
     /**
      * Finds a BacklogItem by id and checks if the user is an assignee or the owner of the project associated
      * with the BacklogItem
-     * @param id id of BacklogItem
+     *
+     * @param id   id of BacklogItem
      * @param user user requesting access
      * @return an Optional containing the found BacklogItem if it exists, empty Optional otherwise
      */
-    @Query("SELECT b FROM BacklogItem b JOIN b.project p WHERE b.backlogItemId = :id AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm WHERE pm.project = p))")
+    @Query("""
+            SELECT b
+            FROM BacklogItem b
+            INNER JOIN Project p ON b.project = p
+            WHERE b.backlogItemId = :id AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm WHERE pm.project = p))
+            """)
     Optional<BacklogItem> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
 
     /**
      * Finds all BacklogItems for given project that aren't assigned to any sprint
-     * @param project Project to find BacklogItems for
+     *
+     * @param project  Project to find BacklogItems for
      * @param pageable Pageable that pages and sorts the data
      * @return List of BacklogItems associated with the Project
      */
@@ -60,4 +68,15 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
             update BacklogItem b SET b.sprint = null where b.sprint = :sprint
             """)
     void updateSprintItemsToBacklog(Sprint sprint);
+
+    /**
+     * Unassigns all BacklogItems associated with a ProjectMember
+     *
+     * @param projectMember to unassign BacklogItems from
+     */
+    @Modifying
+    @Query("""
+            UPDATE BacklogItem b SET b.assignee = null WHERE b.assignee = :projectMember
+            """)
+    void unAssignAllItemsByProjectMember(ProjectMember projectMember);
 }

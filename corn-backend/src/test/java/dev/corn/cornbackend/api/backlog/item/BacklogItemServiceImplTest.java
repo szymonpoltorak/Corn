@@ -571,7 +571,7 @@ class BacklogItemServiceImplTest {
         when(backlogItemRepository.findByIdWithProjectMember(id, SAMPLE_USER))
                 .thenReturn(Optional.of(BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItem()));
 
-        when(backlogItemMapper.backlogItemToBacklogItemDetails(BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItem()))
+        when(backlogItemMapper.backlogItemToBacklogItemDetails(BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItem(), SAMPLE_USER))
                 .thenReturn(BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItemDetails());
 
         BacklogItemDetails expected = BACKLOG_ITEM_DETAILS_TEST_DATA.backlogItemDetails();

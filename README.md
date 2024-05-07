@@ -12,6 +12,12 @@ application that is built of few components.
 Whole application has been made in spirit of clean code and architecture. We are thinking about security and performance
 best practices. Project is deeply tested on backend site and uses Github Actions for CI/CD.
 
+## Database diagram
+
+<div align="center">
+    <img src="screenshots/db.drawio.png" alt="TechStack">
+</div>
+
 ## How to run
 
 Application uses docker compose technology to run all components. To run application you have to install docker.
@@ -45,6 +51,10 @@ cd scripts/dev
 
 ## Tech stack
 
+<div align="center">
+    <img src="screenshots/tech_stack.png" alt="TechStack">
+</div>
+
 1. Frontend
 
 * Angular 17,
@@ -74,3 +84,71 @@ cd scripts/dev
 * KeyCloak,
 * Mapstruct,
 * Lombok.
+
+## Screenshots
+
+* Login
+
+<div align="center">
+    <img src="screenshots/login.png" alt="TechStack">
+</div>
+
+* Register
+
+<div align="center">
+    <img src="screenshots/register.png" alt="TechStack">
+</div>
+
+* Projects
+
+<div align="center">
+    <img src="screenshots/projects_list.png" alt="TechStack">
+</div>
+
+* Project settings
+
+<div align="center">
+    <img src="screenshots/project_settings.png" alt="TechStack">
+</div>
+
+* Sprints
+
+<div align="center">
+    <img src="screenshots/sprints.png" alt="TechStack">
+</div>
+
+* Sprints Burndown
+
+<div align="center">
+    <img src="screenshots/sprint_burndown.png" alt="TechStack">
+</div>
+
+* Task
+
+<div align="center">
+    <img src="screenshots/task.png" alt="TechStack">
+</div>
+
+* Task Comments
+
+<div align="center">
+    <img src="screenshots/task_comments.png" alt="TechStack">
+</div>
+
+* Creating new backlog item
+
+<div align="center">
+    <img src="screenshots/new_item.png" alt="TechStack">
+</div>
+
+* Tasks in Boards
+
+<div align="center">
+    <img src="screenshots/board_no_group.png" alt="TechStack">
+</div>
+
+* Tasks grouped by member
+
+<div align="center">
+    <img src="screenshots/board_group_member.png" alt="TechStack">
+</div>

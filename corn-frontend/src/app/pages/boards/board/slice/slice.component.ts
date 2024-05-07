@@ -23,7 +23,8 @@ export class SliceComponent<T> implements AfterViewInit, OnDestroy {
 
     @Input() sliceDescriptor?: SliceDescriptor<T>;
 
-    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee>) => void;
+    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee | undefined>) => void;
+    @Input() assigneeSupplier?: () => Assignee[];
 
     @ViewChild('todoTasklist') private todoTasklist!: TaskListComponent;
     @ViewChild('inprogressTasklist') private inprogressTasklist!: TaskListComponent;
@@ -35,8 +36,11 @@ export class SliceComponent<T> implements AfterViewInit, OnDestroy {
     ) { }
 
     ngAfterViewInit(): void {
-        this.assigneeChangedHandler0 = (event: TaskChangedGroupEvent<Assignee>) => {
+        this.assigneeChangedHandler0 = (event: TaskChangedGroupEvent<Assignee | undefined>) => {
             this.assigneeChangedHandler && this.assigneeChangedHandler(event);
+        }
+        this.assigneeSupplier0 = () => {
+            return (this.assigneeSupplier && this.assigneeSupplier())!;
         }
         this.sliceService.register(this);
     }
@@ -61,6 +65,7 @@ export class SliceComponent<T> implements AfterViewInit, OnDestroy {
         ] : [];
     }
 
-    protected assigneeChangedHandler0:(event: TaskChangedGroupEvent<Assignee>) => void = () => {};
+    protected assigneeChangedHandler0:(event: TaskChangedGroupEvent<Assignee | undefined>) => void = () => {};
+    protected assigneeSupplier0: (() => Assignee[]) = () => {return [];} 
 
 }

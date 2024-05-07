@@ -17,11 +17,10 @@ import { NewProjectComponent } from "@pages/project-list/new-project/new-project
 import { take } from "rxjs";
 import { Project } from "@interfaces/boards/project";
 import { ProjectService } from "@core/services/boards/project.service";
-import { Route, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { RouterPaths } from "@core/enum/RouterPaths";
-import {
-    AddMemberDialogComponent
-} from "@pages/boards/project-settings/add-member-dialog/add-member-dialog.component";
+import { AddMemberDialogComponent } from "@pages/boards/project-settings/add-member-dialog/add-member-dialog.component";
+import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: 'app-project-settings',
@@ -53,8 +52,7 @@ export class ProjectSettingsComponent implements OnInit {
     currentUser !: KeycloakProfile;
     displayedColumns: string[] = ['fullName', 'username', 'deleteMember'];
     dataSource !: MatTableDataSource<User>;
-    //TODO: add checking if user is project owner or not
-    isProjectOwner: boolean = true;
+    isProjectOwner: boolean = false;
     pageNumber: number = 0;
     projectId !: number;
     totalNumber !: number;
@@ -70,14 +68,29 @@ export class ProjectSettingsComponent implements OnInit {
         this.projectName = this.storage.getValueFromStorage(StorageKey.PROJECT_NAME);
         this.projectId = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
 
+        this.isProjectOwner = this.storage.getValueFromStorage(StorageKey.IS_PROJECT_OWNER) == "true";
+
         this.getProjectMembers();
     }
 
     deleteMember(projectMember: User): void {
-        this.projectService
-            .deleteMemberFromProject(projectMember.username, this.projectId)
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            enterAnimationDuration: '100ms',
+            exitAnimationDuration: '100ms'
+        });
+
+        dialogRef.afterClosed()
             .pipe(take(1))
-            .subscribe();
+            .subscribe(result => {
+                if(!result) {
+                    return;
+                }
+
+                this.projectService
+                    .deleteMemberFromProject(projectMember.username, this.projectId)
+                    .pipe(take(1))
+                    .subscribe(() => this.getProjectMembers());
+            })
     }
 
     editProjectName(): void {
@@ -105,7 +118,20 @@ export class ProjectSettingsComponent implements OnInit {
     }
 
     deleteProject(): void {
-        // TODO: add deleting project after adding dialogs
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '100ms',
+        });
+
+        dialogRef.afterClosed()
+            .pipe(take(1))
+            .subscribe(result => {
+                if(!result) {
+                    return;
+                }
+
+                //TODO: add project deletion
+            })
     }
 
     addNewMember(): void {

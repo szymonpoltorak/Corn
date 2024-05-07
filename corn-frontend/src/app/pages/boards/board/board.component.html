@@ -9,7 +9,14 @@
                 <button mat-icon-button color="primary" (click)="switchDisplayedSprint(false)" [disabled]="!previousSprint">
                     <mat-icon>navigate_before</mat-icon>
                 </button>
-                <h1 class="text-3xl">{{ currentSprint.sprintName }}</h1>
+                <div class="text-center">
+                    <h1 class="text-3xl">{{ currentSprint.sprintName }}</h1>
+                    <span class="flex items-center space-x-2 text-sm">
+                        <span class="font-bold text-white">{{ formatDate(currentSprint.startDate) }}</span>
+                        <span>—</span>
+                        <span class="font-bold text-white">{{ formatDate(currentSprint.endDate) }}</span>
+                    </span>
+                </div>
                 <button mat-icon-button color="primary" (click)="switchDisplayedSprint(true)" [disabled]="!nextSprint">
                     <mat-icon>navigate_next</mat-icon>
                 </button>
@@ -44,7 +51,8 @@
             @for (slice of slicesModelService.slices; track slice) {
                 <div>
                     @if (taskGrouping == TaskGroupingEnum.NONE) {
-                        <slice [sliceDescriptor]="slice" [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
+                        <slice [sliceDescriptor]="slice" [assigneeSupplier]="assigneeSupplier.bind(this)"
+                            [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
                     } @else if(taskGrouping == TaskGroupingEnum.BY_ASSIGNEE) {
                         <button mat-button (click)="toggleHidden(sliceWrapper)">
                             <mat-icon>
@@ -63,7 +71,8 @@
                         </button>
 
                         <div #sliceWrapper>
-                            <slice [sliceDescriptor]="slice" [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
+                            <slice [sliceDescriptor]="slice" [assigneeSupplier]="assigneeSupplier.bind(this)"
+                                [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
                         </div>
                     }
                 </div>
