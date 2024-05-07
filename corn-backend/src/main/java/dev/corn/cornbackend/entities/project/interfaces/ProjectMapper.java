@@ -7,8 +7,10 @@ import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.sprint.SprintMapperImpl;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
+import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -33,8 +35,10 @@ public interface ProjectMapper {
      * @param membersInfo the members info of the project
      * @return the project info response
      */
+    @Mapping(target = "isOwner", expression = "java(user.equals(project.getOwner()))")
+    @Mapping(target = "name", source = "project.name")
     ProjectInfoResponse toProjectInfoResponse(Project project, List<UserResponse> membersInfo,
-                                              long totalNumberOfUsers);
+                                              long totalNumberOfUsers, User user);
 
     default SprintResponse sprintToSprintResponse(Sprint sprint) {
         SprintMapper sprintMapper = new SprintMapperImpl();

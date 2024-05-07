@@ -37,7 +37,8 @@ class ProjectControllerTest {
     final void test_addNewProject_shouldAddNewProject() {
         // given
         Project project = ADD_PROJECT_DATA.project();
-        ProjectInfoResponse expected = MAPPER.toProjectInfoResponse(project, Collections.emptyList(), 0L);
+        ProjectInfoResponse expected = MAPPER.toProjectInfoResponse(project, Collections.emptyList(), 0L,
+                ADD_PROJECT_DATA.owner());
 
         // when
         when(projectService.addNewProject(ADD_PROJECT_DATA.project().getName(), ADD_PROJECT_DATA.owner()))
@@ -55,7 +56,8 @@ class ProjectControllerTest {
         // given
         Project project = ADD_PROJECT_DATA.project();
         List<UserResponse> members = List.of(new UserResponse(1, "full", "name", "username"));
-        List<ProjectInfoResponse> expected = List.of(MAPPER.toProjectInfoResponse(project, members, 1L));
+        List<ProjectInfoResponse> expected = List.of(MAPPER.toProjectInfoResponse(project, members, 1L,
+                ADD_PROJECT_DATA.owner()));
         int page = 0;
 
         // when

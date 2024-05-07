@@ -60,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         log.info("Created project member: {}", newProjectMember);
 
-        return mapToProjectInfoResponse(newProject, NEW_PROJECT_MEMBER_NUMBER);
+        return mapToProjectInfoResponse(newProject, NEW_PROJECT_MEMBER_NUMBER, user);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projects
                 .stream()
-                .map(this::mapToProjectInfoResponse)
+                .map((project) -> this.mapToProjectInfoResponse(project, user))
                 .toList();
     }
 
@@ -110,15 +110,15 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.toProjectResponse(projectToDelete);
     }
 
-    private ProjectInfoResponse mapToProjectInfoResponse(Project project) {
+    private ProjectInfoResponse mapToProjectInfoResponse(Project project, User user) {
         long totalNumberOfUsers = projectMemberService.getTotalNumberOfMembers(project.getProjectId());
 
-        return mapToProjectInfoResponse(project, totalNumberOfUsers);
+        return mapToProjectInfoResponse(project, totalNumberOfUsers, user);
     }
 
-    private ProjectInfoResponse mapToProjectInfoResponse(Project project, long totalNumberOfUsers) {
+    private ProjectInfoResponse mapToProjectInfoResponse(Project project, long totalNumberOfUsers, User user) {
         List<UserResponse> members = projectMemberService.getProjectMembersInfo(project.getProjectId());
 
-        return projectMapper.toProjectInfoResponse(project, members, totalNumberOfUsers);
+        return projectMapper.toProjectInfoResponse(project, members, totalNumberOfUsers, user);
     }
 }

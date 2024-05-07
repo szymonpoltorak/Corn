@@ -58,14 +58,16 @@ class ProjectServiceTest {
     final void test_addNewProject_shouldAddNewProject() {
         // given
         final long totalNumberOfMembers = 0L;
-        ProjectInfoResponse expected = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), Collections.emptyList(), totalNumberOfMembers);
+        ProjectInfoResponse expected = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), Collections.emptyList(),
+                totalNumberOfMembers, ADD_PROJECT_DATA.owner());
 
         // when
         when(projectRepository.save(ADD_PROJECT_DATA.project()))
                 .thenReturn(ADD_PROJECT_DATA.project());
         when(projectMemberService.getProjectMembersInfo(ADD_PROJECT_DATA.project().getProjectId()))
                 .thenReturn(Collections.emptyList());
-        when(projectMapper.toProjectInfoResponse(ADD_PROJECT_DATA.project(), Collections.emptyList(), totalNumberOfMembers))
+        when(projectMapper.toProjectInfoResponse(ADD_PROJECT_DATA.project(), Collections.emptyList(), totalNumberOfMembers,
+                ADD_PROJECT_DATA.owner()))
                 .thenReturn(expected);
         when(projectMemberRepository.save(ProjectMember.builder().build()))
                 .thenReturn(ProjectMember.builder().build());
@@ -86,7 +88,8 @@ class ProjectServiceTest {
         Pageable pageable = PageRequest.of(page, PROJECTS_PER_PAGE);
         List<UserResponse> members = List.of(new UserResponse(1, "full", "name", "username"));
 
-        ProjectInfoResponse response = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers);
+        ProjectInfoResponse response = MAPPER.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers,
+                ADD_PROJECT_DATA.owner());
         List<ProjectInfoResponse> expected = List.of(response);
 
         // when
@@ -96,7 +99,8 @@ class ProjectServiceTest {
                 .thenReturn(totalNumberOfMembers);
         when(projectMemberService.getProjectMembersInfo(ADD_PROJECT_DATA.project().getProjectId()))
                 .thenReturn(members);
-        when(projectMapper.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers))
+        when(projectMapper.toProjectInfoResponse(ADD_PROJECT_DATA.project(), members, totalNumberOfMembers,
+                ADD_PROJECT_DATA.owner()))
                 .thenReturn(response);
 
         List<ProjectInfoResponse> actual = projectService.getProjectsOnPage(page, ADD_PROJECT_DATA.owner());

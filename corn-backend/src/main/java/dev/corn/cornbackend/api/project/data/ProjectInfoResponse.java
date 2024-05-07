@@ -8,5 +8,5 @@ import java.util.List;
 
 @Builder
 public record ProjectInfoResponse(long projectId, String name, List<SprintResponse> sprints, long totalNumberOfUsers,
-                                  List<UserResponse> membersInfo) {
+                                  List<UserResponse> membersInfo, boolean isOwner) {
 }
