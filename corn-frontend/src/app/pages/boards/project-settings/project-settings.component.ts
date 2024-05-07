@@ -68,7 +68,7 @@ export class ProjectSettingsComponent implements OnInit {
         this.projectName = this.storage.getValueFromStorage(StorageKey.PROJECT_NAME);
         this.projectId = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
 
-        this.isProjectOwner = this.storage.getValueFromStorage<boolean>(StorageKey.IS_PROJECT_OWNER);
+        this.isProjectOwner = this.storage.getValueFromStorage(StorageKey.IS_PROJECT_OWNER) == "true";
 
         this.getProjectMembers();
     }
