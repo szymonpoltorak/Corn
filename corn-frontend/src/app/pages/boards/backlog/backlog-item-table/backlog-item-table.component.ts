@@ -47,9 +47,9 @@ import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.
 import { ChangeAssigneeMenuComponent } from '@pages/utils/change_assignee_menu/change_assignee_menu.component';
 import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
-import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { BacklogItemApiService } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
 import { Task } from '@core/interfaces/boards/board/task.interface';
-import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
+import { ProjectMemberApiService } from '@core/services/api/v1/project/member/project-member-api.service';
 import { StorageService } from '@core/services/storage.service';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
@@ -117,8 +117,8 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
     constructor(private backlogItemService: BacklogItemService,
                 private backlogComponent: BacklogComponent,
                 private dialog: MatDialog,
-                private projectMemberApi: ProjectMemberApi,
-                private backlogItemApi: BacklogItemApi,
+                private projectMemberApi: ProjectMemberApiService,
+                private backlogItemApi: BacklogItemApiService,
                 private storage: StorageService) {
     }
 

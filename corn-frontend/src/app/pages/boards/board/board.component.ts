@@ -17,11 +17,11 @@ import { TaskGrouper } from '@core/types/board/boards/TaskGrouper';
 import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
 import { TaskChangedColumnEvent } from '@core/interfaces/boards/board/task_changed_column_event.interface';
 import { Hideable } from '@core/interfaces/boards/board/hideable.interface';
-import { SprintApi } from '@core/services/api/v1/sprint/sprint-api.service';
+import { SprintApiService } from '@core/services/api/v1/sprint/sprint-api.service';
 import { StorageService } from '@core/services/storage.service';
 import { SprintResponse } from '@core/services/api/v1/sprint/data/sprint-response.interface';
-import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
-import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { ProjectMemberApiService } from '@core/services/api/v1/project/member/project-member-api.service';
+import { BacklogItemApiService } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
 import { BacklogItemStatus } from '@core/enum/BacklogItemStatus';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { firstValueFrom } from 'rxjs';
@@ -62,9 +62,9 @@ export class BoardComponent implements OnInit {
     protected taskGrouping: TaskGrouping = TaskGrouping.NONE;
 
     constructor(
-        protected readonly sprintApi: SprintApi,
-        protected readonly projectMemberApi: ProjectMemberApi,
-        protected readonly backlogItemApi: BacklogItemApi,
+        protected readonly sprintApi: SprintApiService,
+        protected readonly projectMemberApi: ProjectMemberApiService,
+        protected readonly backlogItemApi: BacklogItemApiService,
         protected readonly storage: StorageService,
         protected readonly modelService: BoardModelService,
         protected readonly slicesModelService: SlicesModelService<GroupingMetadata>,
