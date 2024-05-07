@@ -52,8 +52,7 @@ export class ProjectSettingsComponent implements OnInit {
     currentUser !: KeycloakProfile;
     displayedColumns: string[] = ['fullName', 'username', 'deleteMember'];
     dataSource !: MatTableDataSource<User>;
-    //TODO: add checking if user is project owner or not
-    isProjectOwner: boolean = true;
+    isProjectOwner: boolean = false;
     pageNumber: number = 0;
     projectId !: number;
     totalNumber !: number;
@@ -68,6 +67,8 @@ export class ProjectSettingsComponent implements OnInit {
         this.currentUser = JSON.parse(this.storage.getValueFromStorage(StorageKey.CURRENT_USER));
         this.projectName = this.storage.getValueFromStorage(StorageKey.PROJECT_NAME);
         this.projectId = this.storage.getValueFromStorage(StorageKey.PROJECT_ID);
+
+        this.isProjectOwner = this.storage.getValueFromStorage<boolean>(StorageKey.IS_PROJECT_OWNER);
 
         this.getProjectMembers();
     }
