@@ -14,8 +14,8 @@
 		<title>
             ${msg("loginTitle",(realm.displayName!''))}
         </title>
-		<link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
-		<link rel="stylesheet" href="${url.resourcesPath}/css/styles.css" />
+		<link rel="icon" href="/resources/jxveb/common/corn/img/corn.png" />
+		<link rel="stylesheet" href="/resources/jxveb/common/corn/css/styles.css" />
 	</head>
         
     <body class="h-screen flex flex-col bg-yellow-400">
@@ -23,7 +23,7 @@
             <div class="ml-auto h-screen">
                 <div class="max-h-[0px] max-w-[0px]">
                     <div class="min-h-screen flex items-center">
-                        <img class="min-h-[512px] min-w-[512px] ml-[-352px]" src="${url.resourcesPath}/img/corn.png" />
+                        <img class="min-h-[512px] min-w-[512px] ml-[-352px]" src="/resources/jxveb/common/corn/img/corn.png" />
                     </div>
                 </div>
                 <div class="bg-yellowishDark rounded-l-[32px] w-[160px] h-screen"></div>

@@ -42,4 +42,4 @@ testem.log
 Thumbs.db
 
 #Generated css
-themes/corn/login/resources/css/styles.css
+themes/corn/common/resources/css/styles.css
