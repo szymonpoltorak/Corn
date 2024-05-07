@@ -32,7 +32,11 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      * @param user user requesting access
      * @return an Optional containing the found Project if it exists, empty Optional otherwise
      */
-    @Query("SELECT p FROM Project p WHERE p.projectId = :id AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p))")
+    @Query("""
+            SELECT p
+            FROM Project p
+            WHERE p.projectId = :id AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p))
+            """)
     Optional<Project> findByIdWithProjectMember(@Param("id") long id, @Param("user") User user);
 
     /**
@@ -51,6 +55,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      * @param projectId id of Project
      * @return true if User is owner or project assignee of given Project, false otherwise
      */
-    @Query("SELECT CASE WHEN COUNT (p) > 0 THEN true ELSE false END FROM Project p WHERE p.projectId = :projectId AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p))")
+    @Query("""
+            SELECT CASE WHEN COUNT (p) > 0 THEN true ELSE false END
+            FROM Project p
+            WHERE p.projectId = :projectId AND (p.owner = :user OR :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p))
+            """)
     boolean existsByProjectMemberAndProjectId(@Param("user") User user, @Param("projectId") long projectId);
 }
