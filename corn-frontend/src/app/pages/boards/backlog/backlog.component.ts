@@ -20,6 +20,7 @@ import { CdkContextMenuTrigger, CdkMenu, CdkMenuItem } from "@angular/cdk/menu";
 import { MatRipple } from "@angular/material/core";
 import { BacklogEditFormComponent } from "@pages/boards/backlog/backlog-edit-form/backlog-edit-form.component";
 import { SprintRequest } from "@interfaces/boards/backlog/sprint-request.interfaces";
+import { DeleteDialogComponent } from "@pages/utils/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: 'app-backlog',
@@ -102,12 +103,22 @@ export class BacklogComponent implements OnInit {
     }
 
     deleteSprint(sprintId: number): void {
-        this.sprintService
-            .deleteSprint(sprintId)
-            .pipe(take(1))
-            .subscribe(() => {
-                this.sprints = this.sprints.filter(sprint => sprint.sprintId !== sprintId);
-            });
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '100ms',
+        });
+
+        dialogRef.afterClosed().pipe(take(1)).subscribe((result) => {
+            if (result === false) {
+                return;
+            }
+            this.sprintService
+                .deleteSprint(sprintId)
+                .pipe(take(1))
+                .subscribe(() => {
+                    this.sprints = this.sprints.filter(sprint => sprint.sprintId !== sprintId);
+                });
+        });
     }
 
     editSprint(sprint: Sprint): void {

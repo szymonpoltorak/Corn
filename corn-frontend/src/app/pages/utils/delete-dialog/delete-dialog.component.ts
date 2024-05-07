@@ -3,17 +3,17 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } fr
 import { MatButton } from "@angular/material/button";
 
 @Component({
-  selector: 'app-delete-dialog',
-  standalone: true,
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatButton,
-    MatDialogClose
-  ],
-  templateUrl: './delete-dialog.component.html',
-  styleUrl: './delete-dialog.component.scss'
+    selector: 'app-delete-dialog',
+    standalone: true,
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatButton,
+        MatDialogClose
+    ],
+    templateUrl: './delete-dialog.component.html',
+    styleUrl: './delete-dialog.component.scss'
 })
 export class DeleteDialogComponent {
 
