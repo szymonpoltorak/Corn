@@ -131,8 +131,8 @@ public class PlaceholderData implements CommandLineRunner {
                     )).map(backlogItemRepository::save).toList());
         }
 
-        for (int i = 0; i < SAMPLE_BACKLOG_ITEMS.length / 4; i++) {
-            for (int j = 0; j < random.nextInt(4); j++) {
+        for (int i = 0; i < SAMPLE_BACKLOG_ITEMS.length / 2; i++) {
+            for (int j = 0; j < random.nextInt(6); j++) {
                 long backlogItemId = drawRandom(backlogItems).getBacklogItemId();
                 User commenter = drawRandom(users);
                 for (int k = 0; k < 5; k++) {

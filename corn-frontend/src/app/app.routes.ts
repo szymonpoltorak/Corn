@@ -13,7 +13,8 @@ export const routes: Routes = [
     {
         path: RouterPaths.PROJECT_LIST_PATH,
         loadComponent: () => import("@pages/project-list/project-list.component")
-            .then(c => c.ProjectListComponent)
+            .then(c => c.ProjectListComponent),
+        canActivate: [authGuard]
     },
     {
         path: RouterPaths.BOARDS_PATH,

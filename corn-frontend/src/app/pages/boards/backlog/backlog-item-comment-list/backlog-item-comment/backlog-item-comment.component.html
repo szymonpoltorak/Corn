@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="flex flex-row justify-end items-center w-1/2">
-                <button *ngIf="canEdit() && !isEditing" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <button *ngIf="comment.canEdit && !isEditing" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                     <mat-icon class="text-amber-400">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
