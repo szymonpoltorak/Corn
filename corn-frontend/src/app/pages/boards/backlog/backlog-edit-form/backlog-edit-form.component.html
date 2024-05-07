@@ -70,6 +70,9 @@
     <div class="flex justify-between">
         <button type="button" mat-button mat-dialog-close>Cancel</button>
 
-        <button type="submit" mat-button (click)="submitSprintEdit()">Ok</button>
+        <button type="submit" mat-raised-button color="primary"
+                (click)="submitSprintEdit()" [disabled]="formGroup.invalid">
+            Ok
+        </button>
     </div>
 </div>

@@ -1,6 +1,7 @@
 export interface SprintRequest {
     sprintName: string;
-    goal: string;
+    description: string;
     startDate: string;
     endDate: string;
+    projectId: number;
 }

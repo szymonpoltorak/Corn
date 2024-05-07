@@ -33,6 +33,11 @@
 
 </mat-accordion>
 
+<button class="w-full mt-6" color="primary" mat-raised-button (click)="createNewSprint()">
+    <mat-icon>add</mat-icon>
+    New Sprint
+</button>
+
 <div style="margin-top: 3em;">
     <app-backlog-item-table (outputSprintChanged)="sprintChanged($event)"
                             [inputSprintChanged]="sprintChangedEmitter"

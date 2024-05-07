@@ -17,6 +17,7 @@ export enum ApiUrl {
     UPDATE_SPRINTS_START_DATE = SPRINT_API_URL + '/updateSprintsStartDate',
     UPDATE_SPRINTS_END_DATE = SPRINT_API_URL + '/updateSprintsEndDate',
     UPDATE_SPRINTS_DESCRIPTION = SPRINT_API_URL + '/updateSprintsDescription',
+    CREATE_SPRINT = SPRINT_API_URL + '/addSprint',
 
     GET_PROJECT_MEMBERS = PROJECT_MEMBER_API_URL + '/getMembers',
 
@@ -24,4 +25,5 @@ export enum ApiUrl {
     UPDATE_COMMENT = BACKLOG_ITEM_COMMENT_API_RUL + '/update',
     CREATE_COMMENT = BACKLOG_ITEM_COMMENT_API_RUL + '/add',
     DELETE_COMMENT = BACKLOG_ITEM_COMMENT_API_RUL + '/delete',
+
 }
