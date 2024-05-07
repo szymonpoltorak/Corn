@@ -61,4 +61,9 @@ export class ToolbarComponent implements OnInit {
         this.storage.deleteProjectFromStorage();
         this.keycloak.logout();
     }
+
+    profileClicked(): void {
+        (this.keycloak as any)._instance.accountManagement();
+    }
+
 }
