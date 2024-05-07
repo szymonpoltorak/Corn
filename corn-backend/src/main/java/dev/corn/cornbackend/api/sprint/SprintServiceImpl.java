@@ -3,6 +3,7 @@ package dev.corn.cornbackend.api.sprint;
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
 import dev.corn.cornbackend.api.sprint.interfaces.SprintService;
+import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.sprint.Sprint;
@@ -13,6 +14,7 @@ import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistExceptio
 import dev.corn.cornbackend.utils.exceptions.sprint.InvalidSprintDateException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.sprint.SprintEndDateMustBeAfterStartDate;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,10 +40,11 @@ public class SprintServiceImpl implements SprintService {
     private static final String SPRINTS_ON_PAGE = "Sprints found on page : {}";
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
+    private final BacklogItemRepository backlogItemRepository;
     private final SprintMapper sprintMapper;
 
     @Override
-    public final SprintResponse addNewSprint(SprintRequest sprintRequest, User user) {
+    public SprintResponse addNewSprint(SprintRequest sprintRequest, User user) {
 
         if (sprintRequest.endDate().isBefore(sprintRequest.startDate())) {
             throw new SprintEndDateMustBeAfterStartDate(sprintRequest.startDate(), sprintRequest.endDate());
@@ -73,7 +76,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse getSprintById(long sprintId, User user) {
+    public SprintResponse getSprintById(long sprintId, User user) {
         log.info("Getting sprint with id: {} for user: {}", sprintId, user);
 
         Sprint sprint = resolveSprintForProjectMember(sprintId, user);
@@ -84,7 +87,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final List<SprintResponse> getSprintsOnPage(int page, long projectId, User user) {
+    public List<SprintResponse> getSprintsOnPage(int page, long projectId, User user) {
         log.info("Getting sprints in project {} on page: {} for user: {}", projectId, page, user);
 
         Pageable pageable = PageRequest.of(page, SPRINTS_PER_PAGE);
@@ -97,7 +100,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse updateSprintsName(String name, long sprintId, User user) {
+    public SprintResponse updateSprintsName(String name, long sprintId, User user) {
         log.info("Updating sprint with id: {} name to: {}", sprintId, name);
 
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
@@ -115,7 +118,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse updateSprintsDescription(String description, long sprintId, User user) {
+    public SprintResponse updateSprintsDescription(String description, long sprintId, User user) {
         log.info("Updating sprint with id: {} description to: {}", sprintId, description);
 
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
@@ -133,10 +136,10 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse updateSprintsStartDate(LocalDate startDate, long sprintId, User user) {
+    public SprintResponse updateSprintsStartDate(LocalDate startDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} startDate to: {}", sprintId, startDate);
 
-        if (sprintRepository.existsEndDateBeforeDate(startDate)) {
+        if (sprintRepository.existsSprintPeriodWithGivenDate(startDate)) {
             throw new InvalidSprintDateException("Start date cannot be after any existing sprint's end date");
         }
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
@@ -157,10 +160,10 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse updateSprintsEndDate(LocalDate endDate, long sprintId, User user) {
+    public SprintResponse updateSprintsEndDate(LocalDate endDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} endDate to: {}", sprintId, endDate);
 
-        if (sprintRepository.existsEndDateBeforeDate(endDate)) {
+        if (sprintRepository.existsSprintPeriodWithGivenDate(endDate)) {
             throw new InvalidSprintDateException("End date cannot be before any existing sprint's end date");
         }
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
@@ -181,13 +184,20 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final SprintResponse deleteSprint(long sprintId, User user) {
+    @Transactional
+    public SprintResponse deleteSprint(long sprintId, User user) {
         log.info("Deleting sprint with id: {}", sprintId);
 
         Sprint sprintToDelete = sprintRepository.findByIdWithProjectOwner(sprintId, user)
                 .orElseThrow(() -> new SprintDoesNotExistException(sprintId));
 
         log.info("Found sprint to delete: {}", sprintToDelete);
+
+        log.info("Moving all sprints backlog items to backlog...");
+
+        backlogItemRepository.updateSprintItemsToBacklog(sprintToDelete);
+
+        log.info("Deleting sprint...");
 
         sprintRepository.deleteById(sprintId);
 
@@ -197,7 +207,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user) {
+    public List<SprintResponse> getCurrentAndFutureSprints(long projectId, User user) {
         log.info("Getting current and future sprints for project with id: {}", projectId);
 
         Project project = resolveProjectForProjectMember(projectId, user);
@@ -217,7 +227,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final Page<SprintResponse> getSprintsAfterSprint(long sprintId, Pageable pageable, User user) {
+    public Page<SprintResponse> getSprintsAfterSprint(long sprintId, Pageable pageable, User user) {
         log.info("Getting sprints after: {}", sprintId);
 
         Sprint sprint = resolveSprintForProjectMember(sprintId, user);
@@ -233,7 +243,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user) {
+    public Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user) {
         log.info("Getting sprints before: {}", sprintId);
 
         Sprint sprint = resolveSprintForProjectMember(sprintId, user);

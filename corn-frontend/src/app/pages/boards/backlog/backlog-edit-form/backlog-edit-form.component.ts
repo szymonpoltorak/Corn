@@ -13,6 +13,8 @@ import { MatInputModule } from "@angular/material/input";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { SprintRequest } from "@interfaces/boards/backlog/sprint-request.interfaces";
+import { DatePipe } from "@angular/common";
 
 @Component({
     selector: 'app-backlog-edit-form',
@@ -37,7 +39,8 @@ export class BacklogEditFormComponent implements OnInit {
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: Sprint,
                 public dialogRef: MatDialogRef<BacklogEditFormComponent>,
-                private formBuilder: FormBuilder) {
+                private formBuilder: FormBuilder,
+                private datePipe: DatePipe) {
     }
 
     ngOnInit(): void {
@@ -55,4 +58,23 @@ export class BacklogEditFormComponent implements OnInit {
         });
     }
 
+    submitSprintEdit(): void {
+        if (this.formGroup.invalid) {
+            return;
+        }
+        const sprintsName: string = this.formGroup.get('sprintName')?.value;
+        const goal: string = this.formGroup.get('goal')?.value;
+        const startDate: Date = this.formGroup.get('startDate')?.value;
+        const endDate: Date = this.formGroup.get('endDate')?.value;
+
+        const sprintRequest: SprintRequest = {
+            sprintName: sprintsName,
+            goal: goal,
+            startDate: this.datePipe.transform(startDate, "yyyy-MM-dd") as string,
+            endDate: this.datePipe.transform(endDate, "yyyy-MM-dd") as string
+        };
+        console.log(sprintRequest);
+
+        this.dialogRef.close(sprintRequest);
+    }
 }

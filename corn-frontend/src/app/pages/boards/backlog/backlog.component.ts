@@ -19,6 +19,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { CdkContextMenuTrigger, CdkMenu, CdkMenuItem } from "@angular/cdk/menu";
 import { MatRipple } from "@angular/material/core";
 import { BacklogEditFormComponent } from "@pages/boards/backlog/backlog-edit-form/backlog-edit-form.component";
+import { SprintRequest } from "@interfaces/boards/backlog/sprint-request.interfaces";
 
 @Component({
     selector: 'app-backlog',
@@ -116,6 +117,55 @@ export class BacklogComponent implements OnInit {
             data: sprint
         });
 
-        dialogRef.afterClosed().pipe(take(1)).subscribe();
+        dialogRef.afterClosed().pipe(take(1)).subscribe((newSprintData: SprintRequest) => {
+            if (!newSprintData) {
+                return;
+            }
+            if (newSprintData.sprintName !== sprint.sprintName) {
+                sprint.sprintName = this.updateSprintsName(newSprintData, sprint);
+            }
+            if (newSprintData.goal !== sprint.sprintDescription) {
+                sprint.sprintDescription = this.updateSprintsGoal(newSprintData, sprint);
+            }
+            if (newSprintData.startDate !== sprint.startDate) {
+                sprint.startDate = this.updateSprintStartDate(newSprintData, sprint);
+            }
+            if (newSprintData.endDate !== sprint.endDate) {
+                sprint.endDate = this.updateSprintEndDate(newSprintData, sprint);
+            }
+            this.sprints = this.sprints.map(s => s.sprintId === sprint.sprintId ? sprint : s);
+        });
+    }
+
+    private updateSprintsName(newSprintData: SprintRequest, sprint: Sprint): string {
+        this.sprintService
+            .editSprintName(newSprintData.sprintName, sprint.sprintId)
+            .pipe(take(1))
+            .subscribe();
+        return newSprintData.sprintName;
+    }
+
+    private updateSprintsGoal(newSprintData: SprintRequest, sprint: Sprint): string {
+        this.sprintService
+            .editSprintDescription(newSprintData.goal, sprint.sprintId)
+            .pipe(take(1))
+            .subscribe();
+        return newSprintData.goal;
+    }
+
+    private updateSprintStartDate(newSprintData: SprintRequest, sprint: Sprint): string {
+        this.sprintService
+            .editSprintStartDate(newSprintData.startDate, sprint.sprintId)
+            .pipe(take(1))
+            .subscribe();
+        return newSprintData.startDate;
+    }
+
+    private updateSprintEndDate(newSprintData: SprintRequest, sprint: Sprint): string {
+        this.sprintService
+            .editSprintEndDate(newSprintData.endDate, sprint.sprintId)
+            .pipe(take(1))
+            .subscribe();
+        return newSprintData.endDate;
     }
 }

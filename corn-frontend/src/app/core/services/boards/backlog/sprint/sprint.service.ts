@@ -43,11 +43,11 @@ export class SprintService {
         });
     }
 
-    editSprintEndDate(sprint: Sprint): Observable<void> {
+    editSprintEndDate(endDate: string, sprintId: number): Observable<void> {
         return this.http.put<void>(ApiUrl.UPDATE_SPRINTS_END_DATE, {}, {
             params: {
-                endDate: sprint.endDate,
-                sprintId: sprint.sprintId
+                endDate: endDate,
+                sprintId: sprintId
             }
         });
     }

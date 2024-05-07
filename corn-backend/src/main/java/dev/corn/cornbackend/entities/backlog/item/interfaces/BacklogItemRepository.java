@@ -7,6 +7,7 @@ import dev.corn.cornbackend.entities.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -53,4 +54,10 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
      * @return List of BacklogItems associated with the Project
      */
     Page<BacklogItem> findByProjectAndSprintIsNull(Project project, Pageable pageable);
+
+    @Modifying
+    @Query("""
+            update BacklogItem b SET b.sprint = null where b.sprint = :sprint
+            """)
+    void updateSprintItemsToBacklog(Sprint sprint);
 }
