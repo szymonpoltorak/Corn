@@ -11,7 +11,7 @@ import { BacklogItemRequestPartialUpdate } from "./data/backlog-item-request-par
 @Injectable({
     providedIn: 'root'
 })
-export class BacklogItemApi {
+export class BacklogItemApiService {
 
     constructor(private http: HttpClient) { }
 

@@ -51,7 +51,8 @@
             @for (slice of slicesModelService.slices; track slice) {
                 <div>
                     @if (taskGrouping == TaskGroupingEnum.NONE) {
-                        <slice [sliceDescriptor]="slice" [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
+                        <slice [sliceDescriptor]="slice" [assigneeSupplier]="assigneeSupplier.bind(this)"
+                            [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
                     } @else if(taskGrouping == TaskGroupingEnum.BY_ASSIGNEE) {
                         <button mat-button (click)="toggleHidden(sliceWrapper)">
                             <mat-icon>
@@ -70,7 +71,8 @@
                         </button>
 
                         <div #sliceWrapper>
-                            <slice [sliceDescriptor]="slice" [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
+                            <slice [sliceDescriptor]="slice" [assigneeSupplier]="assigneeSupplier.bind(this)"
+                                [assigneeChangedHandler]="assigneeChangedHandler.bind(this)"></slice>
                         </div>
                     }
                 </div>
