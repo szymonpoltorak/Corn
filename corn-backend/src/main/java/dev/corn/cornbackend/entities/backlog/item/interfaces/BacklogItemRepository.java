@@ -63,6 +63,11 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
      */
     Page<BacklogItem> findByProjectAndSprintIsNull(Project project, Pageable pageable);
 
+    /**
+     * Unassigns all BacklogItems associated with a ProjectMember
+     *
+     * @param projectMember to unassign BacklogItems from
+     */
     @Modifying
     @Query("""
             UPDATE BacklogItem b SET b.assignee = null WHERE b.assignee = :projectMember
