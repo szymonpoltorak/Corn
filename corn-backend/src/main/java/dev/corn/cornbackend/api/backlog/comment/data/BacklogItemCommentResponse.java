@@ -10,5 +10,6 @@ public record BacklogItemCommentResponse(String comment,
                                          UserResponse user,
                                          LocalDateTime commentTime,
                                          LocalDateTime lastEditTime,
-                                         long backlogItemCommentId) {
+                                         long backlogItemCommentId,
+                                         boolean canEdit) {
 }
