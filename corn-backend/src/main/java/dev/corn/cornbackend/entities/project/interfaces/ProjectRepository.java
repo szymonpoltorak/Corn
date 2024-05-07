@@ -25,6 +25,13 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      */
     Page<Project> findAllByOwnerOrderByName(User owner, Pageable pageable);
 
+    /**
+     * Finds all Projects by owner or project member
+     *
+     * @param user user requesting access
+     * @param pageable pagination information
+     * @return a Page of Projects
+     */
     @Query("""
             SELECT p FROM Project p
             WHERE p.owner = :user or :user IN (SELECT pm.user FROM ProjectMember pm where pm.project = p)
