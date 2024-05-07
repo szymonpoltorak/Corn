@@ -1,7 +1,7 @@
 <mat-accordion multi>
     @for (sprint of sprints; track sprint) {
-        <mat-expansion-panel [cdkContextMenuTriggerFor]="sprintsMenu">
-            <mat-expansion-panel-header>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header [cdkContextMenuTriggerFor]="sprintsMenu">
                 <mat-panel-title>
                     {{ sprint.sprintName }}
                 </mat-panel-title>
