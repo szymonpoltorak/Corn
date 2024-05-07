@@ -68,7 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("Getting projects on page: {} for user: {}", page, user);
 
         Pageable pageable = PageRequest.of(page, PROJECTS_PER_PAGE);
-        Page<Project> projects = projectRepository.findAllByOwnerOrderByName(user, pageable);
+        Page<Project> projects = projectRepository.findAllByProjectMember(user, pageable);
 
         log.info("Projects found on page : {}", projects.getTotalElements());
 
