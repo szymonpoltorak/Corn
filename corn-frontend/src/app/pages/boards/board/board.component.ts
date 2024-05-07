@@ -17,11 +17,11 @@ import { TaskGrouper } from '@core/types/board/boards/TaskGrouper';
 import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
 import { TaskChangedColumnEvent } from '@core/interfaces/boards/board/task_changed_column_event.interface';
 import { Hideable } from '@core/interfaces/boards/board/hideable.interface';
-import { SprintApi } from '@core/services/api/v1/sprint/sprint-api.service';
+import { SprintApiService } from '@core/services/api/v1/sprint/sprint-api.service';
 import { StorageService } from '@core/services/storage.service';
 import { SprintResponse } from '@core/services/api/v1/sprint/data/sprint-response.interface';
-import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
-import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { ProjectMemberApiService } from '@core/services/api/v1/project/member/project-member-api.service';
+import { BacklogItemApiService } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
 import { BacklogItemStatus } from '@core/enum/BacklogItemStatus';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { firstValueFrom } from 'rxjs';
@@ -62,9 +62,9 @@ export class BoardComponent implements OnInit {
     protected taskGrouping: TaskGrouping = TaskGrouping.NONE;
 
     constructor(
-        protected readonly sprintApi: SprintApi,
-        protected readonly projectMemberApi: ProjectMemberApi,
-        protected readonly backlogItemApi: BacklogItemApi,
+        protected readonly sprintApi: SprintApiService,
+        protected readonly projectMemberApi: ProjectMemberApiService,
+        protected readonly backlogItemApi: BacklogItemApiService,
         protected readonly storage: StorageService,
         protected readonly modelService: BoardModelService,
         protected readonly slicesModelService: SlicesModelService<GroupingMetadata>,
@@ -167,13 +167,17 @@ export class BoardComponent implements OnInit {
         ), 500);
     }
 
-    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee>): void {
+    protected assigneeSupplier(): Assignee[] {
+        return this.modelService.assignees;
+    }
+
+    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee | undefined>): void {
         if(!this.isDisplayedSprintEditable()) {
             return;
         }
         this.modelService.setAssigneeForTask(event.task, event.destinationGroupMetadata);
         this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
-            projectMemberId: event.task.assignee.associatedProjectMemberId,
+            projectMemberId: !event.task.assignee ? 0 : event.task.assignee.associatedProjectMemberId,
         }).subscribe((_) => { });
     }
 
@@ -197,9 +201,9 @@ export class BoardComponent implements OnInit {
         const stringPredicate = (s: string) => s.toLowerCase().includes(filterString);
         this.slicesModelService.filter = (t: Task) => {
             return stringPredicate(t.content)
-                || stringPredicate(t.assignee.firstName)
-                || stringPredicate(t.assignee.firstName + " " + t.assignee.familyName)
-                || stringPredicate(t.assignee.familyName)
+                || stringPredicate(t.assignee!.firstName)
+                || stringPredicate(t.assignee!.firstName + " " + t.assignee!.familyName)
+                || stringPredicate(t.assignee!.familyName)
                 || stringPredicate(t.associatedBacklogItemId + "")
                 || stringPredicate(t.taskTag);
         };
@@ -288,8 +292,8 @@ export class BoardComponent implements OnInit {
                 return {
                     metadata: a,
                     group: ungrouped.filter((t: Task) => {
-                        return t.assignee.firstName == a.firstName
-                            && t.assignee.familyName == a.familyName
+                        return t.assignee!.firstName == a.firstName
+                            && t.assignee!.familyName == a.familyName
                     })
                 };
             });

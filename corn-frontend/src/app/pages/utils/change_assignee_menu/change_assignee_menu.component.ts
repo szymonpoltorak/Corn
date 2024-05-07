@@ -30,19 +30,16 @@ export class ChangeAssigneeMenuComponent {
 
     @Input() associatedTask?: Task;
 
-    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee>) => void;
+    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee | undefined>) => void;
+    @Input() assigneeSupplier?: () => Assignee[];
 
     @ViewChild('filterStringInput') private input?: ElementRef;
 
-    constructor(
-        private readonly modelService: BoardModelService,
-    ) { }
-
     protected update(): void {
-        if (!this.input)
+        if (!this.input || ! this.assigneeSupplier)
             return;
         const filterString = this.input.nativeElement.value.toLowerCase();
-        this.filteredAssignees = this.modelService.assignees.filter(a =>
+        this.filteredAssignees = this.assigneeSupplier().filter(a =>
             a.firstName.toLowerCase().includes(filterString) ||
             a.familyName.toLowerCase().includes(filterString) ||
             (a.firstName + " " + a.familyName).toLowerCase().includes(filterString)

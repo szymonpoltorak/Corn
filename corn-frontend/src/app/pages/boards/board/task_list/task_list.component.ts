@@ -23,7 +23,8 @@ export class TaskListComponent {
     @Input() tasks: Task[] = [];
     @Input() siblingDroplistInstances: CdkDropList[] = [];
 
-    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee>) => void;
+    @Input() assigneeChangedHandler?: (event: TaskChangedGroupEvent<Assignee | undefined>) => void;
+    @Input() assigneeSupplier?: () => Assignee[];
 
     @Output() taskMoved: EventEmitter<TaskMovedByDnDEvent> = new EventEmitter();
 

@@ -9,7 +9,7 @@ import { Pageable } from "@core/services/api/utils/pageable.interface";
 @Injectable({
     providedIn: 'root'
 })
-export class SprintApi {
+export class SprintApiService {
 
     constructor(private http: HttpClient) { }
 

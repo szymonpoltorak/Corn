@@ -3,6 +3,7 @@ package dev.corn.cornbackend.api.project.member;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberInfoExtendedResponse;
 import dev.corn.cornbackend.api.project.member.data.ProjectMemberList;
 import dev.corn.cornbackend.api.project.member.interfaces.ProjectMemberService;
+import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.project.Project;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.project.member.ProjectMember;
@@ -16,6 +17,7 @@ import dev.corn.cornbackend.utils.exceptions.project.ProjectDoesNotExistExceptio
 import dev.corn.cornbackend.utils.exceptions.project.member.InvalidUsernameException;
 import dev.corn.cornbackend.utils.exceptions.project.member.ProjectMemberDoesNotExistException;
 import dev.corn.cornbackend.utils.exceptions.user.UserDoesNotExistException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ import java.util.List;
 public class ProjectMemberServiceImpl implements ProjectMemberService {
     private static final int MEMBERS_PAGE_SIZE = 20;
     private final ProjectMemberRepository projectMemberRepository;
+    private final BacklogItemRepository backlogItemRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final ProjectMemberMapper projectMemberMapper;
@@ -41,7 +44,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     private static final String PROJECT_NOT_FOUND = "Project with project id: %d does not exist";
 
     @Override
-    public final UserResponse addMemberToProject(String username, long projectId, User user) {
+    public UserResponse addMemberToProject(String username, long projectId, User user) {
 
         log.info("Adding assignee to project with username: {} and projectId: {}", username, projectId);
 
@@ -68,7 +71,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final ProjectMemberList getProjectMembers(long projectId, int page, User user) {
+    public ProjectMemberList getProjectMembers(long projectId, int page, User user) {
         Pageable pageable = PageRequest.of(page, MEMBERS_PAGE_SIZE);
 
         log.info("Getting project members for projectId: {}", projectId);
@@ -94,20 +97,25 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final UserResponse removeMemberFromProject(String username, long projectId, User user) {
+    @Transactional
+    public UserResponse removeMemberFromProject(String username, long projectId, User user) {
 
         if(username.equals(user.getUsername())) {
             throw new InvalidUsernameException("You cannot remove yourself from the project");
         }
-
         log.info("Removing assignee from project with username: {} and projectId: {}", username, projectId);
 
         User userToRemove = getUserFromRepository(username);
+
         ProjectMember projectMember = projectMemberRepository
                 .findByProjectAndUser(getProjectFromRepositoryIfOwner(projectId, user), userToRemove)
-                .orElseThrow(() -> new ProjectMemberDoesNotExistException(String.format("Project assignee of id username %s in project %s does not exist", username, projectId))
-                );
+                .orElseThrow(() -> new ProjectMemberDoesNotExistException(String.format("Project assignee of id username %s in project %s does not exist", username, projectId)));
         log.info("Found projectMember: {}", projectMember);
+        log.info("Un assigning projectMember backlog items");
+
+        backlogItemRepository.unAssignAllItemsByProjectMember(projectMember);
+
+        log.info("Deleting projectMember!");
 
         projectMemberRepository.deleteById(projectMember.getProjectMemberId());
 
@@ -115,7 +123,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final List<UserResponse> getProjectMembersInfo(long projectId) {
+    public List<UserResponse> getProjectMembersInfo(long projectId) {
         Pageable pageable = PageRequest.of(0, 5);
 
         log.info("Getting project members info for projectId: {}", projectId);
@@ -132,7 +140,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final long getTotalNumberOfMembers(long projectId) {
+    public long getTotalNumberOfMembers(long projectId) {
         log.info("Getting total number of members for projectId: {}", projectId);
 
         long totalNumberOfMembers = projectMemberRepository.countByProjectProjectId(projectId);
@@ -143,7 +151,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
+    public ProjectMemberInfoExtendedResponse getProjectMemberId(long projectId, User user) {
         log.info("Getting project member id  for projectId: {}", projectId);
 
         ProjectMember projectMember = projectMemberRepository
@@ -158,7 +166,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public final List<ProjectMemberInfoExtendedResponse> getAllProjectMembers(long projectId, User user) {
+    public List<ProjectMemberInfoExtendedResponse> getAllProjectMembers(long projectId, User user) {
         Pageable wholePage = Pageable.unpaged();
 
         log.info("Getting all project members for projectId: {}", projectId);

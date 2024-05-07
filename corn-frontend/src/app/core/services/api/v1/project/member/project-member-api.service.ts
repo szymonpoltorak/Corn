@@ -8,7 +8,7 @@ import { ProjectMemberApiMappings } from "./project-member-api-mappings.enum";
 @Injectable({
     providedIn: 'root'
 })
-export class ProjectMemberApi {
+export class ProjectMemberApiService {
 
     constructor(private http: HttpClient) { }
 

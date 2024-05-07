@@ -1,0 +1,14 @@
+<div [matMenuTriggerFor]="instance">
+    <ng-content></ng-content>
+</div>
+
+<mat-menu #instance>
+    @for(type of types; track type) {
+        <button mat-menu-item (click)="changedType(type)">
+            <div class="flex items-center space-x-3">
+                <app-backlog-type [backlogItemType]="type"></app-backlog-type>
+                <span>{{ type }}</span>
+            </div>
+        </button>
+    }
+</mat-menu>

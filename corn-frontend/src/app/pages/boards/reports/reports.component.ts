@@ -4,11 +4,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { SprintApi } from '@core/services/api/v1/sprint/sprint-api.service';
+import { SprintApiService } from '@core/services/api/v1/sprint/sprint-api.service';
 import { StorageService } from '@core/services/storage.service';
 import { SprintResponse } from '@core/services/api/v1/sprint/data/sprint-response.interface';
-import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
-import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { ProjectMemberApiService } from '@core/services/api/v1/project/member/project-member-api.service';
+import { BacklogItemApiService } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
 import { BacklogItemStatus } from '@core/enum/BacklogItemStatus';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { firstValueFrom } from 'rxjs';
@@ -72,9 +72,9 @@ export class ReportsComponent implements AfterViewInit {
     protected chart: any;
 
     constructor(
-        protected readonly sprintApi: SprintApi,
-        protected readonly projectMemberApi: ProjectMemberApi,
-        protected readonly backlogItemApi: BacklogItemApi,
+        protected readonly sprintApi: SprintApiService,
+        protected readonly projectMemberApi: ProjectMemberApiService,
+        protected readonly backlogItemApi: BacklogItemApiService,
         protected readonly storage: StorageService,
     ) { }
 

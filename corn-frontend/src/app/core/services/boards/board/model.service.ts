@@ -13,7 +13,7 @@ export class BoardModelService {
 
     @Input() modelChangeHandler?: () => void;
 
-    setAssigneeForTask(task: Task, assignee: Assignee) {
+    setAssigneeForTask(task: Task, assignee?: Assignee) {
         task.assignee = assignee;
         this.modelChangeHandler && this.modelChangeHandler();
     }
