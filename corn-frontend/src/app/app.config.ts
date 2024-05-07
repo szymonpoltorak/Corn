@@ -7,6 +7,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from '@core/interceptors/error.interceptor';
 import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
+import { provideNativeDateAdapter } from "@angular/material/core";
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
@@ -50,5 +51,6 @@ export const appConfig: ApplicationConfig = {
             deps: [KeycloakService]
         },
         KeycloakService,
+        provideNativeDateAdapter()
     ]
 };

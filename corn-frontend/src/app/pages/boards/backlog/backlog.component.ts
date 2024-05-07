@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { MatButton } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
 import { BacklogFormComponent } from "@pages/boards/backlog/backlog-form/backlog-form.component";
@@ -15,10 +15,10 @@ import {
 } from "@angular/material/expansion";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
 import { DatePipe, NgForOf } from "@angular/common";
-import { MatMenu, MatMenuItem, MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
+import { MatMenuModule } from "@angular/material/menu";
 import { CdkContextMenuTrigger, CdkMenu, CdkMenuItem } from "@angular/cdk/menu";
-import { MatIcon } from "@angular/material/icon";
 import { MatRipple } from "@angular/material/core";
+import { BacklogEditFormComponent } from "@pages/boards/backlog/backlog-edit-form/backlog-edit-form.component";
 
 @Component({
     selector: 'app-backlog',
@@ -110,6 +110,12 @@ export class BacklogComponent implements OnInit {
     }
 
     editSprint(sprint: Sprint): void {
-        // TODO Add editing sprint data
+        const dialogRef = this.dialog.open(BacklogEditFormComponent, {
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '100ms',
+            data: sprint
+        });
+
+        dialogRef.afterClosed().pipe(take(1)).subscribe();
     }
 }

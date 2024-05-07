@@ -22,7 +22,7 @@
     <ng-container matColumnDef="description">
         <th mat-header-cell *matHeaderCellDef>Description</th>
 
-        <td mat-cell *matCellDef="let backlogItem">{{ backlogItem.description }}</td>
+        <td (click)="openDetails(backlogItem)" mat-cell *matCellDef="let backlogItem">{{ backlogItem.description }}</td>
     </ng-container>
 
     <ng-container matColumnDef="type">
@@ -60,7 +60,6 @@
         *matRowDef="let row; columns: displayedColumns;"
         (mouseover)="hoveredRow = row"
         (mouseleave)="hoveredRow = null"
-        (click)="openDetails(row)"
         cdkDrag>
 
         <app-backlog-drag *cdkDragPreview [backlogItem]="row"></app-backlog-drag>
