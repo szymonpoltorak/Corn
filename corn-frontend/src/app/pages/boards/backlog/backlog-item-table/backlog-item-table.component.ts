@@ -56,6 +56,7 @@ import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project
 import { User } from '@core/interfaces/boards/user';
 import { ChangeItemTypeMenuComponent } from '@pages/utils/change_item_type_menu/change_item_type_menu.component';
 import { BacklogItemType } from '@core/enum/BacklogItemType';
+import { ItemTypeChangedEvent } from '@core/interfaces/utils/change_item_type_menu/item_type_changed_event.interface';
 
 @Component({
     selector: 'app-backlog-item-table',
@@ -264,7 +265,7 @@ export class BacklogItemTableComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    protected itemTypeChangedHandler(event: { itemId: number, type: BacklogItemType }): void {
+    protected itemTypeChangedHandler(event: ItemTypeChangedEvent): void {
         this.backlogItemApi.partialUpdate(event.itemId, {
             itemType: event.type
         }).subscribe((response) => {

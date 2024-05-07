@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { BacklogItemType } from '@core/enum/BacklogItemType';
 import { BacklogTypeComponent } from '@pages/boards/backlog/backlog-item-table/backlog-type/backlog-type.component';
+import { ItemTypeChangedEvent } from '@core/interfaces/utils/change_item_type_menu/item_type_changed_event.interface';
 
 @Component({
     selector: 'change-item-type-menu',
@@ -20,7 +21,7 @@ export class ChangeItemTypeMenuComponent {
 
     @Input() itemId?: number;
 
-    @Input() itemTypeChangedHandler?: (event: { itemId: number, type: BacklogItemType }) => void;
+    @Input() itemTypeChangedHandler?: (event: ItemTypeChangedEvent) => void;
     
     protected types: BacklogItemType[] = Object.values(BacklogItemType);
 
