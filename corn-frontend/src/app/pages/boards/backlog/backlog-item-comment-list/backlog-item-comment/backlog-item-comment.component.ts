@@ -71,11 +71,6 @@ export class BacklogItemCommentComponent implements OnInit {
         this.edited = this.comment.commentTime.getTime() !== this.comment.lastEditTime.getTime();
     }
 
-    canEdit(): boolean {
-        //TODO acquire real information about user being owner of the comment or owner of the project
-        return true;
-    }
-
     editComment(): void {
         if (this.commentControl.invalid) {
             return;

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { BoardModelService } from '@core/services/boards/board/model.service';
 import { Assignee } from '@core/interfaces/boards/board/assignee.interface';
 import { Task } from '@core/interfaces/boards/board/task.interface';
 import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';

@@ -64,7 +64,7 @@ class BacklogItemCommentServiceImplTest {
         when(backlogItemCommentRepository.save(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentToSave()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment());
 
-        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
+        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment(), BACKLOG_ITEM_COMMENT_TEST_DATA.user()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
 
         BacklogItemCommentResponse expected = BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse();
@@ -100,7 +100,8 @@ class BacklogItemCommentServiceImplTest {
         when(backlogItemCommentRepository.save(UPDATE_BACKLOG_ITEM_TEST_DATA.updatedBacklogItemComment()))
                 .thenReturn(UPDATE_BACKLOG_ITEM_TEST_DATA.updatedBacklogItemComment());
 
-        when(backlogItemCommentMapper.toBacklogItemCommentResponse(UPDATE_BACKLOG_ITEM_TEST_DATA.updatedBacklogItemComment()))
+        when(backlogItemCommentMapper.toBacklogItemCommentResponse(UPDATE_BACKLOG_ITEM_TEST_DATA.updatedBacklogItemComment(),
+                UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(UPDATE_BACKLOG_ITEM_TEST_DATA.backlogItemCommentResponse());
 
         BacklogItemCommentResponse expected = UPDATE_BACKLOG_ITEM_TEST_DATA.backlogItemCommentResponse();
@@ -136,7 +137,8 @@ class BacklogItemCommentServiceImplTest {
         when(backlogItemCommentRepository.findByIdWithUserOrOwner(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(Optional.of(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()));
 
-        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
+        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment(),
+                UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
 
         BacklogItemCommentResponse expected = BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse();
@@ -171,7 +173,8 @@ class BacklogItemCommentServiceImplTest {
         when(backlogItemCommentRepository.findByIdWithProjectMember(commentId, UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(Optional.of(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()));
 
-        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
+        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment(),
+                UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
 
         BacklogItemCommentResponse expected = BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse();
@@ -214,7 +217,8 @@ class BacklogItemCommentServiceImplTest {
                 BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment().getBacklogItem(), pageable))
                 .thenReturn(page);
 
-        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment()))
+        when(backlogItemCommentMapper.toBacklogItemCommentResponse(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemComment(),
+                UPDATE_BACKLOG_ITEM_TEST_DATA.user()))
                 .thenReturn(BACKLOG_ITEM_COMMENT_TEST_DATA.backlogItemCommentResponse());
 
         //then

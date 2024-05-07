@@ -15,7 +15,7 @@ import {
 } from "@angular/material/table";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { MatPaginator } from "@angular/material/paginator";
-import { catchError, firstValueFrom, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
+import { catchError, merge, Observable, of, startWith, Subject, switchMap, take, takeUntil } from "rxjs";
 import { NgClass } from "@angular/common";
 import { map } from "rxjs/operators";
 import { BacklogItemService } from "@core/services/boards/backlog/backlog-item/backlog-item.service";
@@ -52,10 +52,11 @@ import { Task } from '@core/interfaces/boards/board/task.interface';
 import { ProjectMemberApiService } from '@core/services/api/v1/project/member/project-member-api.service';
 import { StorageService } from '@core/services/storage.service';
 import { StorageKey } from '@core/enum/storage-key.enum';
-import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
+import {
+    ProjectMemberInfoExtendedResponse
+} from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
 import { User } from '@core/interfaces/boards/user';
 import { ChangeItemTypeMenuComponent } from '@pages/utils/change_item_type_menu/change_item_type_menu.component';
-import { BacklogItemType } from '@core/enum/BacklogItemType';
 import { ItemTypeChangedEvent } from '@core/interfaces/utils/change_item_type_menu/item_type_changed_event.interface';
 
 @Component({

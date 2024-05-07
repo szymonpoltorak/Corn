@@ -4,5 +4,6 @@ export interface Project {
     projectId: number
     name: string
     totalNumberOfUsers: number,
-    membersInfo: User[]
+    membersInfo: User[],
+    isOwner: boolean
 }
