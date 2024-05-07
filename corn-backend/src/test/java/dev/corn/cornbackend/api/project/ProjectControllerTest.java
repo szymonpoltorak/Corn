@@ -75,7 +75,7 @@ class ProjectControllerTest {
     final void test_updateProjectsName_shouldUpdateName() {
         // given
         Project project = ADD_PROJECT_DATA.project();
-        ProjectResponse expected = MAPPER.toProjectResponse(project);
+        ProjectResponse expected = MAPPER.toProjectResponse(project, ADD_PROJECT_DATA.owner());
 
         // when
         when(projectService.updateProjectsName(ADD_PROJECT_DATA.project().getName(), 0L, ADD_PROJECT_DATA.owner()))
@@ -93,7 +93,7 @@ class ProjectControllerTest {
         // given
         long projectId = 0L;
         Project project = ADD_PROJECT_DATA.project();
-        ProjectResponse expected = MAPPER.toProjectResponse(project);
+        ProjectResponse expected = MAPPER.toProjectResponse(project, ADD_PROJECT_DATA.owner());
 
         // when
         when(projectService.deleteProject(projectId, ADD_PROJECT_DATA.owner()))

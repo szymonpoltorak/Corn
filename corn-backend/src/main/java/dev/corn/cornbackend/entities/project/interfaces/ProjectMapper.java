@@ -26,7 +26,9 @@ public interface ProjectMapper {
      * @param project the project to map
      * @return the project response
      */
-    ProjectResponse toProjectResponse(Project project);
+    @Mapping(target = "isOwner", expression = "java(user.equals(project.getOwner()))")
+    @Mapping(target = "name", source = "project.name")
+    ProjectResponse toProjectResponse(Project project, User user);
 
     /**
      * Map a project to a project info response
@@ -35,8 +37,8 @@ public interface ProjectMapper {
      * @param membersInfo the members info of the project
      * @return the project info response
      */
-    @Mapping(target = "isOwner", expression = "java(user.equals(project.getOwner()))")
     @Mapping(target = "name", source = "project.name")
+    @Mapping(target = "isOwner", expression = "java(user.equals(project.getOwner()))")
     ProjectInfoResponse toProjectInfoResponse(Project project, List<UserResponse> membersInfo,
                                               long totalNumberOfUsers, User user);
 

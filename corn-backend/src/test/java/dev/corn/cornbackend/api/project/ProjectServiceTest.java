@@ -130,7 +130,7 @@ class ProjectServiceTest {
         // given
         final String newName = "newName";
         final long projectId = 1L;
-        ProjectResponse expected = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project());
+        ProjectResponse expected = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project(), ADD_PROJECT_DATA.owner());
 
         // when
         when(projectRepository.findByProjectIdAndOwner(projectId, ADD_PROJECT_DATA.owner()))
@@ -139,7 +139,7 @@ class ProjectServiceTest {
         when(projectRepository.save(ADD_PROJECT_DATA.project()))
                 .thenReturn(ADD_PROJECT_DATA.project());
 
-        when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project()))
+        when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project(), ADD_PROJECT_DATA.owner()))
                 .thenReturn(expected);
 
         ProjectResponse actual = projectService.updateProjectsName(newName, projectId, ADD_PROJECT_DATA.owner());
@@ -167,13 +167,13 @@ class ProjectServiceTest {
     final void test_deleteProject_shouldDeleteProject() {
         // given
         final long projectId = 1L;
-        ProjectResponse expected = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project());
+        ProjectResponse expected = MAPPER.toProjectResponse(ADD_PROJECT_DATA.project(), ADD_PROJECT_DATA.owner());
 
         // when
         when(projectRepository.findByProjectIdAndOwner(projectId, ADD_PROJECT_DATA.owner()))
                 .thenReturn(Optional.of(ADD_PROJECT_DATA.project()));
 
-        when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project()))
+        when(projectMapper.toProjectResponse(ADD_PROJECT_DATA.project(), ADD_PROJECT_DATA.owner()))
                 .thenReturn(expected);
 
         ProjectResponse actual = projectService.deleteProject(projectId, ADD_PROJECT_DATA.owner());

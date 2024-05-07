@@ -93,7 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         log.info("Updated project: {}", updatedProject);
 
-        return projectMapper.toProjectResponse(updatedProject);
+        return projectMapper.toProjectResponse(updatedProject, user);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectRepository.deleteById(projectId);
 
-        return projectMapper.toProjectResponse(projectToDelete);
+        return projectMapper.toProjectResponse(projectToDelete, user);
     }
 
     private ProjectInfoResponse mapToProjectInfoResponse(Project project, User user) {
