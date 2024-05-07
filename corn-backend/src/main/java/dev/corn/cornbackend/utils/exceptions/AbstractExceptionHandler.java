@@ -22,6 +22,7 @@ public class AbstractExceptionHandler {
         HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
 
         log.error(EXCEPTION_OCCURRED_MESSAGE, status.value(), response);
+        log.error("", exception);
 
         return ResponseEntity.status(status).body(response);
     }
