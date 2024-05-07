@@ -90,7 +90,7 @@ class ProjectServiceTest {
         List<ProjectInfoResponse> expected = List.of(response);
 
         // when
-        when(projectRepository.findAllByOwnerOrderByName(ADD_PROJECT_DATA.owner(), pageable))
+        when(projectRepository.findAllByProjectMember(ADD_PROJECT_DATA.owner(), pageable))
                 .thenReturn(new PageImpl<>(List.of(ADD_PROJECT_DATA.project())));
         when(projectMemberService.getTotalNumberOfMembers(ADD_PROJECT_DATA.project().getProjectId()))
                 .thenReturn(totalNumberOfMembers);
