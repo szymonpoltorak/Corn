@@ -94,7 +94,7 @@
             </#if>
         </ul>
 
-        <div class="content-area bg-yellowishDark bg-white border border-gray-300 border-solid border-t-0 border-x-2 h-full px-6">
+        <div class="content-area bg-yellowishDark text-white h-full px-6  py-2 border border-gray-300 border-solid border-x-2 border-y-0">
             <#if message?has_content>
                 <div>
                     <#if message.type=='success' >
