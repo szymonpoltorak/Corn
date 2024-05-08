@@ -36,6 +36,7 @@ public class SprintServiceImpl implements SprintService {
     private static final String FOUND_SPRINT_TO_UPDATE = "Found sprint to update: {}";
     private static final String PROJECT_NOT_FOUND = "Project with projectId: %d does not exist";
     private static final String SPRINTS_ON_PAGE = "Sprints found on page : {}";
+    private static final String FOUND_PROJECT_WITH_ID = "Found project with id: {}";
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
     private final SprintMapper sprintMapper;
@@ -202,7 +203,7 @@ public class SprintServiceImpl implements SprintService {
 
         Project project = resolveProjectForProjectMember(projectId, user);
 
-        log.info("Found project with id: {}", project);
+        log.info(FOUND_PROJECT_WITH_ID, project);
 
         Pageable pageable = PageRequest.of(0, FUTURE_SPRINTS_PER_PAGE, Sort.by(
                 Sort.Direction.ASC, SPRINT_START_DATE_FIELD_NAME)
@@ -246,6 +247,28 @@ public class SprintServiceImpl implements SprintService {
         log.info(SPRINTS_ON_PAGE, sprints.getNumberOfElements());
 
         return sprints.map(sprintMapper::toSprintResponse);
+    }
+
+    @Override
+    public final List<SprintResponse> getSprintsBetweenDates(LocalDate startDate, LocalDate endDate, long projectId,
+                                                             User user) {
+        log.info("Getting sprints between dates: {} and {} for project with id: {}", startDate, endDate, projectId);
+
+        if(startDate.isAfter(endDate)) {
+            throw new SprintEndDateMustBeAfterStartDate(startDate, endDate);
+        }
+
+        Project project = resolveProjectForProjectMember(projectId, user);
+
+        log.info(FOUND_PROJECT_WITH_ID, project);
+
+        List<Sprint> sprints = sprintRepository.findAllBetweenDates(startDate, endDate, project);
+
+        log.info("Found and returning {} sprints", sprints.size());
+
+        return sprints.stream()
+                .map(sprintMapper::toSprintResponse)
+                .toList();
     }
 
     private Project resolveProjectForProjectMember(long projectId, User user) {

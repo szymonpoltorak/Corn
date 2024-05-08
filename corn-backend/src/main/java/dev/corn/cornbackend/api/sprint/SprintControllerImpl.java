@@ -119,4 +119,12 @@ public class SprintControllerImpl implements SprintController {
         return sprintService.getSprintsBeforeSprint(sprintId, pageable, user);
     }
 
+    @Override
+    public List<SprintResponse> getSprintsBetweenDates(@RequestParam LocalDate startDate,
+                                                       @RequestParam LocalDate endDate,
+                                                       @RequestParam long projectId,
+                                                       @JwtAuthed User user) {
+        return sprintService.getSprintsBetweenDates(startDate, endDate, projectId, user);
+    }
+
 }
