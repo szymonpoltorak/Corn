@@ -2,7 +2,7 @@
 
 <mat-menu #menu="matMenu">
 
-    <div mat-menu-item>
+    <div mat-menu-item (click)="profileClicked.emit()">
         <div class="grid grid-cols-[36px,1fr] gap-2 mb-3">
             <div class="flex items-center">
                 <img class="object-cover rounded-full cursor-pointer" [ngSrc]="avatarUrl" width="36" height="36">

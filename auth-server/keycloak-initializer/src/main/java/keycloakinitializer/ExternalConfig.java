@@ -16,6 +16,7 @@ public final class ExternalConfig {
     private static final String KCCFG_CREATE_PLACEHOLDER_USERS = System.getenv("KCCFG_CREATE_PLACEHOLDER_USERS");
 
     public static final String KCCFG_LOGIN_THEME_NAME = System.getenv("KCCFG_LOGIN_THEME_NAME");
+    public static final String KCCFG_ACCOUNT_THEME_NAME = System.getenv("KCCFG_ACCOUNT_THEME_NAME");
 
     private static final String KC_SERVER_URL = System.getenv("KC_SERVER_URL");
 

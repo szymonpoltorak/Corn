@@ -30,6 +30,7 @@
     @if (isLoggedIn && userProfile) {
         <userinfo [username]="userProfile!.username || ''"
                   [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"
+                  (profileClicked)="profileClicked()"
                   (logout)="logout()">
         </userinfo>
     }
