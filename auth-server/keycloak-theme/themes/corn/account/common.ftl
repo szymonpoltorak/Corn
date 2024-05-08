@@ -38,14 +38,14 @@
 </#macro>
 
 <#--  edited DARK_INPUT -->
-<#macro DARK_INPUT tabindex id name value type placeholder disabled="false">
+<#macro DARK_INPUT tabindex id name type placeholder value="" disabled="false">
     <#if disabled=="true">
         <input
             tabindex="${tabindex}" type="${type}"
             id="${id}" name="${name}"
             placeholder="${placeholder}"
             autocomplete="on"
-            value="${value}"
+            <#if value!="">value="${value}"</#if>
             disabled="disabled"
             class=" w-full bg-gray-400 border border-gray-400 rounded-md text-gray-500
                     placeholder-gray-500 cursor-not-allowed"

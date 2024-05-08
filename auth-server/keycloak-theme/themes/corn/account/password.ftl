@@ -1,59 +1,62 @@
 <#import "tailwind-template.ftl" as layout>
+<#import "common.ftl" as common />
+
 <@layout.mainLayout active='password' bodyClass='password'; section>
 
-    <div class="row">
-        <div class="col-md-10">
-            <h2>${msg("changePasswordHtmlTitle")}</h2>
-        </div>
-        <div class="col-md-2 subtitle">
-            <span class="subtitle">${msg("allFieldsRequired")}</span>
+    <div class="flex justify-between items-center px-6 pb-4 border-b border-gray-300">
+        <h2 class="text-3xl font-bold">${msg("changePasswordHtmlTitle")}</h2>
+        <div class="text-sm">
+            <span>${msg("allFieldsRequired")}</span>
         </div>
     </div>
 
-    <form action="${url.passwordUrl}" class="form-horizontal" method="post">
-        <input type="text" id="username" name="username" value="${(account.username!'')}" autocomplete="username" readonly="readonly" style="display:none;">
+    <div class="pt-4">
+        <form action="${url.passwordUrl}" class="grid gap-2" method="post">
 
-        <#if password.passwordSet>
-            <div class="form-group">
-                <div class="col-sm-2 col-md-2">
-                    <label for="password" class="control-label">${msg("password")}</label>
+            <input type="text" id="username" name="username" value="${(account.username!'')}" autocomplete="username" readonly="readonly" style="display:none;">
+
+            <div>
+                <div>
+                    <label for="password">${msg("password")}</label>
                 </div>
+                <@common.DARK_INPUT 
+                    tabindex="0" type="password"
+                    placeholder=""
+                    id="password" name="password"
+                />
+            </div>
 
-                <div class="col-sm-10 col-md-10">
-                    <input type="password" class="form-control" id="password" name="password" autofocus autocomplete="current-password">
+            <input type="hidden" id="stateChecker" name="stateChecker" value="${stateChecker}">
+
+            <div>
+                <div>
+                    <label for="password-new">${msg("passwordNew")}</label>
                 </div>
-            </div>
-        </#if>
-
-        <input type="hidden" id="stateChecker" name="stateChecker" value="${stateChecker}">
-
-        <div class="form-group">
-            <div class="col-sm-2 col-md-2">
-                <label for="password-new" class="control-label">${msg("passwordNew")}</label>
+                <@common.DARK_INPUT 
+                    tabindex="0" type="password"
+                    placeholder=""
+                    id="password-new" name="password-new"
+                />
             </div>
 
-            <div class="col-sm-10 col-md-10">
-                <input type="password" class="form-control" id="password-new" name="password-new" autocomplete="new-password">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-2 col-md-2">
-                <label for="password-confirm" class="control-label" class="two-lines">${msg("passwordConfirm")}</label>
-            </div>
-
-            <div class="col-sm-10 col-md-10">
-                <input type="password" class="form-control" id="password-confirm" name="password-confirm" autocomplete="new-password">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div id="kc-form-buttons" class="col-md-offset-2 col-md-10 submit">
-                <div class="">
-                    <button type="submit" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonLargeClass!}" name="submitAction" value="Save">${msg("doSave")}</button>
+            <div>
+                <div>
+                    <label for="password-confirm">${msg("passwordConfirm")}</label>
                 </div>
+                <@common.DARK_INPUT 
+                    tabindex="0" type="password"
+                    placeholder=""
+                    id="password-confirm" name="password-confirm"
+                />
             </div>
-        </div>
-    </form>
+
+            <div class="pt-4">
+                <@common.YELLOW_BUTTON tabindex="" type="submit" name="submitAction" id="kc-login" value="Save">
+                    ${msg("doSave")}
+                </@common.YELLOW_BUTTON>
+            </div>
+
+        </form>
+    </div>
 
 </@layout.mainLayout>
