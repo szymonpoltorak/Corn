@@ -7,6 +7,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from '@core/interceptors/error.interceptor';
 import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
+import { provideMomentDateAdapter } from "@angular/material-moment-adapter";
+import { MY_FORMATS } from "@pages/boards/timeline/timeline.component";
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
@@ -50,5 +52,6 @@ export const appConfig: ApplicationConfig = {
             deps: [KeycloakService]
         },
         KeycloakService,
+        provideMomentDateAdapter(MY_FORMATS)
     ]
 };

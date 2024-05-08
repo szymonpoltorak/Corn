@@ -1,1 +1,58 @@
-<h1>Timeline</h1>
+<div class="flex flex-row items-center justify-center w-full">
+
+    <button (click)="changeMonth(-1)" mat-icon-button style="display: flex; align-items: center; justify-content: center; width: max-content; color: #f59e0b;">
+        <ng-icon name="matArrowLeft" size="2em" style="width: 2em;"></ng-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-label>Month and Year</mat-label>
+        <input matInput [matDatepicker]="dp" [formControl]="date">
+        <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp
+                        startView="year"
+                        (monthSelected)="setMonthAndYear($event, dp)"
+                        panelClass="example-month-picker">
+        </mat-datepicker>
+    </mat-form-field>
+
+    <button (click)="changeMonth(1)" mat-icon-button style="display: flex; align-items: center; justify-content: center; width: max-content; color: #f59e0b;">
+        <ng-icon name="matArrowRight" size="2em"></ng-icon>
+    </button>
+
+</div>
+
+<mat-grid-list cols="7" rowHeight="4:1">
+    @for(day of days; track day) {
+        <mat-grid-tile>
+            <div class="flex w-full h-full items-center justify-center border-2 border-amber-400/50">
+                <h3>{{ day }}</h3>
+            </div>
+        </mat-grid-tile>
+    }
+</mat-grid-list>
+
+<mat-grid-list cols="7" rowHeight="7em">
+    @for(day of getArrayFromDays(previousMonthDays[0], previousMonthDays[1]); track day) {
+        <mat-grid-tile>
+            <div class="w-full h-full">
+                <app-day [day]="day"></app-day>
+            </div>
+        </mat-grid-tile>
+    }
+
+    @for(day of getArrayFromDays(1, currentMonthDays); track day) {
+        <mat-grid-tile>
+            <div class="w-full h-full">
+                <app-day [day]="day"></app-day>
+            </div>
+        </mat-grid-tile>
+    }
+
+    @for(day of getArrayFromDays(1, nextMonthDays); track day) {
+        <mat-grid-tile>
+            <div class="w-full h-full">
+                <app-day [day]="day"></app-day>
+            </div>
+        </mat-grid-tile>
+    }
+</mat-grid-list>
