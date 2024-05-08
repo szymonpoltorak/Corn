@@ -25,7 +25,7 @@
                         <td class="px-3 py-4">${session.started?datetime}</td>
                         <td class="px-3 py-4">${session.lastAccess?datetime}</td>
                         <td class="px-3 py-4">${session.expires?datetime}</td>
-                        <td class="px-3 py-4">
+                        <td class="px-3 py-4 space-y-1">
                             <#list session.clients as client>
                                 <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">${client}</span>
                             </#list>

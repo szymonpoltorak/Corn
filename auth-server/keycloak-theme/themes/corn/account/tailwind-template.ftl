@@ -18,9 +18,15 @@
         </title>
 		<link rel="icon" href="/resources/jxveb/common/corn/img/corn.png" />
 		<link rel="stylesheet" href="/resources/jxveb/common/corn/css/styles.css" />
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+            }
+        </style> 
 	</head>
 
-<body class="h-screen bg-yellow-400">
+<body class="flex flex-col h-screen bg-yellow-400">
 
     <header class="w-full bg-yellowishDark">
         <nav class="w-full flex justify-between items-center py-2 px-2">
@@ -42,70 +48,72 @@
         </nav>
     </header>
 
-    <div class="grid grid-cols-[196px,1fr] gap-4 mx-auto h-screen max-w-[968px]">
-        <ul class="space-y-2 py-2">
-            <li>
-                <@common.ACTIVATABLE_BUTTON href="${url.accountUrl}" id="kc-account" expected="account" actual="${active}">
-                    ${msg("account")}
-                </@common.ACTIVATABLE_BUTTON>
-            </li>
-            <#if features.passwordUpdateSupported>
+    <div class="flex-grow pt-4">
+        <div class="grid grid-cols-[196px,1fr] gap-4 mx-auto h-full max-w-[968px]">
+            <ul class="space-y-2 py-4">
                 <li>
-                    <@common.ACTIVATABLE_BUTTON href="${url.passwordUrl}" id="kc-password" expected="password" actual="${active}">
-                        ${msg("password")}
+                    <@common.ACTIVATABLE_BUTTON href="${url.accountUrl}" id="kc-account" expected="account" actual="${active}">
+                        ${msg("account")}
                     </@common.ACTIVATABLE_BUTTON>
                 </li>
-            </#if>
-            <li>
-                <@common.ACTIVATABLE_BUTTON href="${url.totpUrl}" id="kc-totp" expected="totp" actual="${active}">
-                    ${msg("authenticator")}
-                </@common.ACTIVATABLE_BUTTON>
-            </li>
-            <#if features.identityFederation>
+                <#if features.passwordUpdateSupported>
+                    <li>
+                        <@common.ACTIVATABLE_BUTTON href="${url.passwordUrl}" id="kc-password" expected="password" actual="${active}">
+                            ${msg("password")}
+                        </@common.ACTIVATABLE_BUTTON>
+                    </li>
+                </#if>
                 <li>
-                    <@common.ACTIVATABLE_BUTTON href="${url.socialUrl}" id="kc-social" expected="social" actual="${active}">
-                        ${msg("federatedIdentity")}
+                    <@common.ACTIVATABLE_BUTTON href="${url.totpUrl}" id="kc-totp" expected="totp" actual="${active}">
+                        ${msg("authenticator")}
                     </@common.ACTIVATABLE_BUTTON>
                 </li>
-            </#if>
-            <li>
-                <@common.ACTIVATABLE_BUTTON href="${url.sessionsUrl}" id="kc-sessions" expected="sessions" actual="${active}">
-                    ${msg("sessions")}
-                </@common.ACTIVATABLE_BUTTON>
-            </li>
-            <li>
-                <@common.ACTIVATABLE_BUTTON href="${url.applicationsUrl}" id="kc-applications" expected="applications" actual="${active}">
-                    ${msg("applications")}
-                </@common.ACTIVATABLE_BUTTON>
-            </li>
-            <#if features.log>
+                <#if features.identityFederation>
+                    <li>
+                        <@common.ACTIVATABLE_BUTTON href="${url.socialUrl}" id="kc-social" expected="social" actual="${active}">
+                            ${msg("federatedIdentity")}
+                        </@common.ACTIVATABLE_BUTTON>
+                    </li>
+                </#if>
                 <li>
-                    <@common.ACTIVATABLE_BUTTON href="${url.logUrl}" id="kc-log" expected="log" actual="${active}">
-                        ${msg("log")}
+                    <@common.ACTIVATABLE_BUTTON href="${url.sessionsUrl}" id="kc-sessions" expected="sessions" actual="${active}">
+                        ${msg("sessions")}
                     </@common.ACTIVATABLE_BUTTON>
                 </li>
-            </#if>
-            <#if realm.userManagedAccessAllowed && features.authorization>
                 <li>
-                    <@common.ACTIVATABLE_BUTTON href="${url.resourceUrl}" id="kc-authorization" expected="authorization" actual="${active}">
-                        ${msg("myResources")}
+                    <@common.ACTIVATABLE_BUTTON href="${url.applicationsUrl}" id="kc-applications" expected="applications" actual="${active}">
+                        ${msg("applications")}
                     </@common.ACTIVATABLE_BUTTON>
                 </li>
-            </#if>
-        </ul>
+                <#if features.log>
+                    <li>
+                        <@common.ACTIVATABLE_BUTTON href="${url.logUrl}" id="kc-log" expected="log" actual="${active}">
+                            ${msg("log")}
+                        </@common.ACTIVATABLE_BUTTON>
+                    </li>
+                </#if>
+                <#if realm.userManagedAccessAllowed && features.authorization>
+                    <li>
+                        <@common.ACTIVATABLE_BUTTON href="${url.resourceUrl}" id="kc-authorization" expected="authorization" actual="${active}">
+                            ${msg("myResources")}
+                        </@common.ACTIVATABLE_BUTTON>
+                    </li>
+                </#if>
+            </ul>
 
-        <div class="content-area bg-yellowishDark text-white h-full px-6  py-2 border border-gray-300 border-solid border-x-2 border-y-0">
-            <#if message?has_content>
-                <div>
-                    <#if message.type=='success' >
-                        <span class="text-green-500">${kcSanitize(message.summary)?no_esc}</span>
-                    </#if>
-                    <#if message.type=='error' >
-                        <span class="text-red-500">${kcSanitize(message.summary)?no_esc}</span>
-                    </#if>
-                </div>
-            </#if>
-            <#nested "content">
+            <div class="content-area bg-yellowishDark text-white h-full px-6 py-4 border border-gray-300 border-solid border-2 rounded-lg">
+                <#if message?has_content>
+                    <div>
+                        <#if message.type=='success' >
+                            <span class="text-green-500">${kcSanitize(message.summary)?no_esc}</span>
+                        </#if>
+                        <#if message.type=='error' >
+                            <span class="text-red-500">${kcSanitize(message.summary)?no_esc}</span>
+                        </#if>
+                    </div>
+                </#if>
+                <#nested "content">
+            </div>
         </div>
     </div>
 

@@ -1,7 +1,6 @@
 <#macro mainLayout>
 <!DOCTYPE html>
 <html class="">
-
     <head>
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -16,7 +15,13 @@
         </title>
 		<link rel="icon" href="/resources/jxveb/common/corn/img/corn.png" />
 		<link rel="stylesheet" href="/resources/jxveb/common/corn/css/styles.css" />
-	</head>
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+            }
+        </style> 
+    </head>
         
     <body class="h-screen flex flex-col bg-yellow-400">
         <div class="flex">

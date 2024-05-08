@@ -31,7 +31,7 @@
         id="${name}" name="${id}"
         value="${value}"
         class=" w-full inline-flex justify-center px-4 py-2 bg-yellow-500 border border-yellow-600
-                rounded-md text-white transition-colors duration-300 hover:bg-yellow-600 hover:border-yellow-700"
+                rounded-md text-black transition-colors duration-300 hover:bg-yellow-600 hover:border-yellow-700"
     >
         <#nested>
     </button>
@@ -154,7 +154,7 @@
     <a 
         href="${href}" id="${id}"
         class=" w-full inline-flex justify-center px-4 py-2 bg-yellow-500 border border-yellow-600
-                rounded-md text-white transition-colors duration-300 hover:bg-yellow-600 hover:border-yellow-700"
+                rounded-md text-black transition-colors duration-300 hover:bg-yellow-600 hover:border-yellow-700"
     >
         <#nested>
     </a>
