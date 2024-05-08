@@ -5,7 +5,6 @@ import { Sprint } from "@interfaces/boards/backlog/sprint";
 import { ApiUrl } from "@core/enum/api-url";
 import { StorageService } from "@core/services/storage.service";
 import { StorageKey } from "@core/enum/storage-key.enum";
-import { SprintEditData } from "@interfaces/boards/backlog/sprint-edit-data.interfaces";
 import { SprintRequest } from "@interfaces/boards/backlog/sprint-request.interfaces";
 
 @Injectable({
