@@ -1,44 +1,46 @@
 <#import "tailwind-template.ftl" as layout>
+<#import "common.ftl" as common />
+
 <@layout.mainLayout active='sessions' bodyClass='sessions'; section>
 
-    <div class="row">
-        <div class="col-md-10">
-            <h2>${msg("sessionsHtmlTitle")}</h2>
-        </div>
+    <div class="flex justify-between items-center px-6 pb-4 border-b border-gray-300">
+        <h2 class="text-3xl font-bold">${msg("sessionsHtmlTitle")}</h2>
     </div>
 
-    <table class="table table-striped table-bordered">
-        <thead>
-        <tr>
-            <td>${msg("ip")}</td>
-            <td>${msg("started")}</td>
-            <td>${msg("lastAccess")}</td>
-            <td>${msg("expires")}</td>
-            <td>${msg("clients")}</td>
-        </tr>
-        </thead>
+    <div class="pt-4">
+        <table class="min-w-full divide-y divide-gray-200 bg-yellowishDark100">
+            <thead>
+                <tr class="text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
+                    <th class="px-3 py-3">${msg("ip")}</th>
+                    <th class="px-3 py-3">${msg("started")}</th>
+                    <th class="px-3 py-3">${msg("lastAccess")}</th>
+                    <th class="px-3 py-3">${msg("expires")}</th>
+                    <th class="px-3 py-3">${msg("clients")}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                <#list sessions.sessions as session>
+                    <tr class="text-white">
+                        <td class="px-3 py-4">${session.ipAddress}</td>
+                        <td class="px-3 py-4">${session.started?datetime}</td>
+                        <td class="px-3 py-4">${session.lastAccess?datetime}</td>
+                        <td class="px-3 py-4">${session.expires?datetime}</td>
+                        <td class="px-3 py-4">
+                            <#list session.clients as client>
+                                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">${client}</span>
+                            </#list>
+                        </td>
+                    </tr>
+                </#list>
+            </tbody>
+        </table>
 
-        <tbody>
-        <#list sessions.sessions as session>
-            <tr>
-                <td>${session.ipAddress}</td>
-                <td>${session.started?datetime}</td>
-                <td>${session.lastAccess?datetime}</td>
-                <td>${session.expires?datetime}</td>
-                <td>
-                    <#list session.clients as client>
-                        ${client}<br/>
-                    </#list>
-                </td>
-            </tr>
-        </#list>
-        </tbody>
-
-    </table>
-
-    <form action="${url.sessionsUrl}" method="post">
-        <input type="hidden" id="stateChecker" name="stateChecker" value="${stateChecker}">
-        <button id="logout-all-sessions" class="btn btn-default">${msg("doLogOutAllSessions")}</button>
-    </form>
+        <form action="${url.sessionsUrl}" method="post" class="pt-4">
+            <input type="hidden" id="stateChecker" name="stateChecker" value="${stateChecker}">
+            <@common.YELLOW_BUTTON tabindex="" type="submit" name="" id="logout-all-sessions" value="">
+                ${msg("doLogOutAllSessions")}
+            </@common.YELLOW_BUTTON>
+        </form>
+    <div>
 
 </@layout.mainLayout>
