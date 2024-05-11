@@ -453,7 +453,7 @@ class SprintServiceTest {
         User owner = ADD_SPRINT_DATA.project().getOwner();
 
         // when
-        when(sprintRepository.existsSprintPeriodWithGivenDate(newStartDate))
+        when(sprintRepository.existsSprintPeriodWithGivenDate(newStartDate, sprintId))
                 .thenReturn(true);
 
         // then

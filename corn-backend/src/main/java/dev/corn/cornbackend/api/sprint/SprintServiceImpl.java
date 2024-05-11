@@ -140,7 +140,7 @@ public class SprintServiceImpl implements SprintService {
     public SprintResponse updateSprintsStartDate(LocalDate startDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} startDate to: {}", sprintId, startDate);
 
-        if (sprintRepository.existsSprintPeriodWithGivenDate(startDate)) {
+        if (sprintRepository.existsSprintPeriodWithGivenDate(startDate, sprintId)) {
             throw new InvalidSprintDateException("Start date cannot be after any existing sprint's end date");
         }
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)
@@ -164,7 +164,7 @@ public class SprintServiceImpl implements SprintService {
     public SprintResponse updateSprintsEndDate(LocalDate endDate, long sprintId, User user) {
         log.info("Updating sprint with id: {} endDate to: {}", sprintId, endDate);
 
-        if (sprintRepository.existsSprintPeriodWithGivenDate(endDate)) {
+        if (sprintRepository.existsSprintPeriodWithGivenDate(endDate, sprintId)) {
             throw new InvalidSprintDateException("End date cannot be before any existing sprint's end date");
         }
         Sprint sprintToUpdate = sprintRepository.findByIdWithProjectOwner(sprintId, user)

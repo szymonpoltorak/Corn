@@ -95,9 +95,9 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
      */
     @Query("""
             select count(*) > 0 from Sprint s
-            where s.endDate <= :date and s.startDate >= :date
+            where s.endDate <= :date and s.startDate >= :date and s.sprintId != :sprintId
             """)
-    boolean existsSprintPeriodWithGivenDate(LocalDate date);
+    boolean existsSprintPeriodWithGivenDate(LocalDate date, long sprintId);
 
     /**
      * Finds all sprints with given project that have end date after specified date and pages them
