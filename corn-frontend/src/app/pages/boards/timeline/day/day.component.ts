@@ -29,17 +29,16 @@ export class DayComponent implements OnDestroy {
 
     color_value: string = '500';
 
-    constructor(private dialog: MatDialog,
-		private sprintService: SprintService) {
-
-    }
-
-
     private _eventEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     hovered = false;
 
     $destroy: Subject<void> = new Subject<void>();
+
+    constructor(private dialog: MatDialog,
+		private sprintService: SprintService) {
+
+    }
 
     @Input()
     set eventEmitter(emitter: EventEmitter<boolean> | null) {
@@ -121,10 +120,6 @@ export class DayComponent implements OnDestroy {
                 if (changed) {
                     this.changeEmitter.emit();
                 }
-
-
 	    })
     }
-
-
 }

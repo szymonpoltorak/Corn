@@ -123,9 +123,9 @@ public class SprintControllerImpl implements SprintController {
     @Override
     @GetMapping(value = SPRINTS_BETWEEN_DATES)
     public final List<SprintResponse> getSprintsBetweenDates(@RequestParam LocalDate startDate,
-                                                       @RequestParam LocalDate endDate,
-                                                       @RequestParam long projectId,
-                                                       @JwtAuthed User user) {
+                                                             @RequestParam LocalDate endDate,
+                                                             @RequestParam long projectId,
+                                                             @JwtAuthed User user) {
         return sprintService.getSprintsBetweenDates(startDate, endDate, projectId, user);
     }
 
