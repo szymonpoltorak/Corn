@@ -17,5 +17,6 @@ export class DayComponent {
     @Input() isFirst: boolean = false;
     @Input() isLast: boolean = false;
     @Input() sprintName: string = '';
+    @Input() backgroundColor: string = 'cyan-400';
 
 }

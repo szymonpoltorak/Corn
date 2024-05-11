@@ -13,8 +13,9 @@ import { MatIcon } from "@angular/material/icon";
 import { MatGridList, MatGridTile } from "@angular/material/grid-list";
 import { DayComponent } from "@pages/boards/timeline/day/day.component";
 import { SprintService } from "@core/services/boards/backlog/sprint/sprint.service";
-import { last, take } from "rxjs";
+import { take } from "rxjs";
 import { Sprint } from "@interfaces/boards/backlog/sprint";
+import { provideMomentDateAdapter } from "@angular/material-moment-adapter";
 
 const moment = _rollupMoment || _moment;
 
@@ -48,7 +49,7 @@ export const MY_FORMATS = {
 	MatGridTile,
 	DayComponent,
     ],
-    providers: [provideIcons({matArrowLeft, matArrowRight})]
+    providers: [provideIcons({matArrowLeft, matArrowRight}), provideMomentDateAdapter(MY_FORMATS)]
 })
 export class TimelineComponent implements OnInit {
 
@@ -66,10 +67,23 @@ export class TimelineComponent implements OnInit {
     daysArray: number[] = [];
     indexArray: number[] = [];
 
+    colors: string[] = [
+	'red',
+	'orange',
+	'yellow',
+	'lime',
+	'green',
+	'cyan',
+	'blue',
+	'purple',
+	'pink'
+    ]
+
     constructor(private sprintService: SprintService) {
     }
 
     setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>): void {
+	console.log(normalizedMonthAndYear);
 	datepicker.close();
 
 	const ctrlValue: Moment = this.date.value ?? moment();

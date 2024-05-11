@@ -6,8 +6,6 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from '@core/interceptors/error.interceptor';
 import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
-import { provideMomentDateAdapter } from "@angular/material-moment-adapter";
-import { MY_FORMATS } from "@pages/boards/timeline/timeline.component";
 import { DatePipe } from "@angular/common";
 import { provideNativeDateAdapter } from "@angular/material/core";
 
@@ -53,7 +51,6 @@ export const appConfig: ApplicationConfig = {
             deps: [KeycloakService]
         },
         KeycloakService,
-        provideMomentDateAdapter(MY_FORMATS),
         provideNativeDateAdapter(),
         DatePipe
     ]

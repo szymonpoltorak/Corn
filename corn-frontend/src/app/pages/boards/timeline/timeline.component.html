@@ -1,6 +1,6 @@
 <div class="w-full h-full flex items-center justify-center">
     <div class="flex w-10/12 h-3/4 items-center justify-center bg-black rounded-3xl">
-        <div class="flex flex-col items-center justify-center w-10/12 h-full">
+        <div class="flex flex-col items-center justify-center w-11/12 h-10/12">
             <div class="flex flex-row items-center justify-center w-full">
                 <button (click)="changeMonth(-1)" mat-icon-button
                         style="display: flex; align-items: center; justify-content: center; width: max-content; color: #f59e0b;">
@@ -40,6 +40,7 @@
                                  [sprintName]="indexArray[i] !== -1 ? sprints[indexArray[i]].sprintName: ''"
                                  [isFirst]="i == 0 || indexArray[i] !== indexArray[i-1]"
                                  [isLast]="i == daysArray.length - 1 || indexArray[i] !== indexArray[i+1]"
+                                 [backgroundColor]="indexArray[i] !== -1 ? colors[sprints[indexArray[i]].sprintId % colors.length] : ''"
                         ></app-day>
                     </div>
                 }
