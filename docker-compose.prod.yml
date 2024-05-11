@@ -64,6 +64,7 @@ services:
         environment:
             - KCCFG_OVERRIDE_EXISTING=false
             - KCCFG_LOGIN_THEME_NAME=corn
+            - KCCFG_ACCOUNT_THEME_NAME=corn
             - KC_SERVER_URL=http://corn-keycloak:8080
 
     corn-keycloak:

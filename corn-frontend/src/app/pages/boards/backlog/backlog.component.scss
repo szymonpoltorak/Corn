@@ -1,14 +1,48 @@
 @import '../../../../styles/theme';
+
 $background-color: map-get($dark-color-settings, container-background-color);
 $background-color-hover: lighten($background-color, 5%);
 
 table .table-row:hover {
-  cursor: pointer;
-  background-color: $background-color-hover;
-  outline: 1.5px solid rgba(194, 194, 194, 0.8);
+    cursor: pointer;
+    background-color: $background-color-hover;
+    outline: 1.5px solid rgba(194, 194, 194, 0.8);
 }
 
 .avatar-container {
-  width: 2.5em;
-  height: 2.5em;
+    width: 2.5em;
+    height: 2.5em;
+}
+
+.sprints-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: #282727;
+    padding: 6px 0;
+}
+
+.sprints-menu-item {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    @apply p-1.5;
+
+    user-select: none;
+    min-width: 64px;
+    line-height: 36px;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex: 1;
+}
+
+.sprints-menu-item:hover {
+    background-color: #3b3739;
+}
+
+.sprints-menu-item:active {
+    background-color: #4f4a4c;
 }

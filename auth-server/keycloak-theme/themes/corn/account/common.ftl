@@ -24,10 +24,12 @@
     </a>
 </#macro>
 
-<#macro YELLOW_BUTTON tabindex type name id>
+<#--  edited YELLOW_BUTTON -->
+<#macro YELLOW_BUTTON tabindex type name id value>
     <button 
         tabindex="${tabindex}" type="${type}"
         id="${name}" name="${id}"
+        value="${value}"
         class=" w-full inline-flex justify-center px-4 py-2 bg-yellow-500 border border-yellow-600
                 rounded-md text-black transition-colors duration-300 hover:bg-yellow-600 hover:border-yellow-700"
     >
@@ -35,16 +37,30 @@
     </button>
 </#macro>
 
-<#macro DARK_INPUT tabindex id name value type placeholder>
-    <input
-        tabindex="${tabindex}" type="${type}"
-        id="${id}" name="${name}"
-        placeholder="${placeholder}"
-        autocomplete="on"
-        value="${value}"
-        class=" w-full bg-gray-600 border border-gray-600 rounded-md text-white
-                placeholder-gray-200 focus:outline-none focus:border-blue-500"
-    />
+<#--  edited DARK_INPUT -->
+<#macro DARK_INPUT tabindex id name type placeholder value="" disabled="false">
+    <#if disabled=="true">
+        <input
+            tabindex="${tabindex}" type="${type}"
+            id="${id}" name="${name}"
+            placeholder="${placeholder}"
+            autocomplete="on"
+            <#if value!="">value="${value}"</#if>
+            disabled="disabled"
+            class=" w-full bg-gray-400 border border-gray-400 rounded-md text-gray-500
+                    placeholder-gray-500 cursor-not-allowed"
+        />
+    <#else>
+        <input
+            tabindex="${tabindex}" type="${type}"
+            id="${id}" name="${name}"
+            placeholder="${placeholder}"
+            autocomplete="on"
+            value="${value}"
+            class=" w-full bg-gray-600 border border-gray-600 rounded-md text-white
+                    placeholder-gray-200 focus:outline-none focus:border-blue-500"
+        />
+    </#if>
 </#macro>
 
 <#macro GITHUB_ICON>
@@ -131,4 +147,57 @@
         id="password-confirm" name="password-confirm"
         value="${(passwordConfirm!'')}"
     />
+</#macro>
+
+<#--  new YELLOW_A_BUTTON -->
+<#macro YELLOW_A_BUTTON href id>
+    <a 
+        href="${href}" id="${id}"
+        class=" w-full inline-flex justify-center px-4 py-2 bg-yellow-500 border border-yellow-600
+                rounded-md text-black transition-colors duration-300 hover:bg-yellow-600 hover:border-yellow-700"
+    >
+        <#nested>
+    </a>
+</#macro>
+
+<#--  new CORNACCENT_A_BUTTON -->
+<#macro CORNACCENT_A_BUTTON href id>
+    <a 
+        href="${href}" id="${id}"
+        class=" w-full inline-flex justify-center px-4 py-2 bg-corn-accent-500 border border-corn-accent-600
+                rounded-md text-white transition-colors duration-300 hover:bg-corn-accent-600 hover:border-corn-accent-700"
+    >
+        <#nested>
+    </a>
+</#macro>
+
+<#--  new ACTIVATABLE_BUTTON -->
+<#macro ACTIVATABLE_BUTTON href id expected actual>
+    <#if "${expected}"=="${actual}">
+        <@CORNACCENT_A_BUTTON href="#" id="${id}">
+            <#nested>
+        </@CORNACCENT_A_BUTTON>
+    <#else>
+        <@WHITE_A_BUTTON href="${href}" id="${id}">
+            <#nested>
+        </@WHITE_A_BUTTON>
+    </#if>
+</#macro>
+
+<#--  new RED_STAR -->
+<#macro RED_STAR>
+    <span class="text-red-500 text-sm">*</span>
+</#macro>
+
+<#--  new WHITE_BUTTON -->
+<#macro WHITE_BUTTON tabindex type name id value>
+    <button 
+        tabindex="${tabindex}" type="${type}"
+        id="${name}" name="${id}"
+        value="${value}"
+        class=" w-full inline-flex justify-center px-4 py-2 bg-white border border-gray-400
+                rounded-md text-gray-700 transition-colors duration-200 hover:bg-gray-300 hover:text-gray-800"
+    >
+        <#nested>
+    </button>
 </#macro>

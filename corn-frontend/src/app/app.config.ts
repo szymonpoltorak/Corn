@@ -1,6 +1,5 @@
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -9,6 +8,8 @@ import { ErrorInterceptor } from '@core/interceptors/error.interceptor';
 import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
 import { provideMomentDateAdapter } from "@angular/material-moment-adapter";
 import { MY_FORMATS } from "@pages/boards/timeline/timeline.component";
+import { DatePipe } from "@angular/common";
+import { provideNativeDateAdapter } from "@angular/material/core";
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
@@ -52,6 +53,8 @@ export const appConfig: ApplicationConfig = {
             deps: [KeycloakService]
         },
         KeycloakService,
-        provideMomentDateAdapter(MY_FORMATS)
+        provideMomentDateAdapter(MY_FORMATS),
+        provideNativeDateAdapter(),
+        DatePipe
     ]
 };

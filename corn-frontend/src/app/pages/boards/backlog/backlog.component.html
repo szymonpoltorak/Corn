@@ -1,7 +1,7 @@
 <mat-accordion multi>
     @for (sprint of sprints; track sprint) {
         <mat-expansion-panel>
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header [cdkContextMenuTriggerFor]="sprintsMenu">
                 <mat-panel-title>
                     {{ sprint.sprintName }}
                 </mat-panel-title>
@@ -10,14 +10,40 @@
                     {{ sprint.startDate }} - {{ sprint.endDate }}
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <app-backlog-item-table (outputSprintChanged)="sprintChanged($event)" [inputSprintChanged]="sprintChangedEmitter" [sprintId]="sprint.sprintId" [sprintIds]="sprintIds"></app-backlog-item-table>
+
+            <app-backlog-item-table (outputSprintChanged)="sprintChanged($event)"
+                                    [inputSprintChanged]="sprintChangedEmitter"
+                                    [sprintId]="sprint.sprintId"
+                                    [sprintIds]="sprintIds">
+            </app-backlog-item-table>
         </mat-expansion-panel>
+
+        <ng-template #sprintsMenu>
+            <div class="mat-elevation-z3 sprints-menu" cdkMenu>
+                <button class="sprints-menu-item" matRipple cdkMenuItem (click)="editSprint(sprint)">
+                    Edit Sprint
+                </button>
+
+                <button class="sprints-menu-item" matRipple cdkMenuItem (click)="deleteSprint(sprint.sprintId)">
+                    Delete
+                </button>
+            </div>
+        </ng-template>
     }
 
 </mat-accordion>
 
+<button class="w-full mt-6" color="primary" mat-raised-button (click)="createNewSprint()">
+    <mat-icon>add</mat-icon>
+    New Sprint
+</button>
+
 <div style="margin-top: 3em;">
-    <app-backlog-item-table (outputSprintChanged)="sprintChanged($event)" [inputSprintChanged]="sprintChangedEmitter" [sprintId]="-1" [sprintIds]="sprintIds"></app-backlog-item-table>
+    <app-backlog-item-table (outputSprintChanged)="sprintChanged($event)"
+                            [inputSprintChanged]="sprintChangedEmitter"
+                            [sprintId]="-1"
+                            [sprintIds]="sprintIds">
+    </app-backlog-item-table>
 </div>
 
 <button style="margin-left: 0.1em; margin-top: 0.5em; height: 2em; font-weight: 550;" mat-raised-button

@@ -25,5 +25,6 @@ export class UserinfoComponent {
     @Input() username: string = '';
 
     @Output() logout = new EventEmitter<void>();
+    @Output() profileClicked = new EventEmitter<void>();
 
 }
