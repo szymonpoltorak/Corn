@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 
@@ -79,6 +79,8 @@ export class TimelineComponent implements OnInit {
 	'pink'
     ]
 
+    emitters: EventEmitter<boolean>[] = [];
+
     constructor(private sprintService: SprintService) {
     }
 
@@ -148,7 +150,18 @@ export class TimelineComponent implements OnInit {
 		this.sprints = sprints;
 		this.createDayArray();
 		this.createIndexArray();
+		this.createEmittersArray();
 	    });
+    }
+
+    createEmittersArray(): void {
+	let emitters: EventEmitter<boolean>[] = [];
+
+	for(let i = 0; i < this.sprints.length; i++) {
+	    emitters.push(new EventEmitter<boolean>());
+	}
+
+	this.emitters = emitters;
     }
 
     createDayArray(): void {

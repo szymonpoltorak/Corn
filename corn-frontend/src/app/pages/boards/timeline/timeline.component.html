@@ -1,4 +1,8 @@
-<div class="w-full h-full flex items-center justify-center">
+<div class="w-full h-full flex flex-col items-center justify-center">
+    <div class="font-bold text-4xl mb-5">
+        <h1>Timeline</h1>
+    </div>
+
     <div class="flex w-10/12 h-3/4 items-center justify-center bg-black rounded-3xl">
         <div class="flex flex-col items-center justify-center w-11/12 h-10/12">
             <div class="flex flex-row items-center justify-center w-full">
@@ -9,7 +13,7 @@
 
                 <mat-form-field>
                     <mat-label>Month and Year</mat-label>
-                    <input matInput [matDatepicker]="dp" [formControl]="date">
+                    <input matInput [readonly]="true" [matDatepicker]="dp" [formControl]="date">
                     <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
                     <mat-datepicker #dp
                                     startView="year"
@@ -37,10 +41,12 @@
                 @for (day of daysArray; track day; let i = $index) {
                     <div class="w-full h-28">
                         <app-day [day]="day"
-                                 [sprintName]="indexArray[i] !== -1 ? sprints[indexArray[i]].sprintName: ''"
+                                 [sprint]="indexArray[i] !== -1 ? sprints[indexArray[i]]: null"
                                  [isFirst]="i == 0 || indexArray[i] !== indexArray[i-1]"
                                  [isLast]="i == daysArray.length - 1 || indexArray[i] !== indexArray[i+1]"
                                  [backgroundColor]="indexArray[i] !== -1 ? colors[sprints[indexArray[i]].sprintId % colors.length] : ''"
+                                 [eventEmitter]="indexArray[i] !== -1 ? emitters[indexArray[i]] : null"
+                                 (changeEmitter)="this.getSprints()"
                         ></app-day>
                     </div>
                 }

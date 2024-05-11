@@ -5,19 +5,23 @@
         }
     </div>
     <div class="flex h-5/6 w-full items-center justify-center">
-        @if (sprintName !== '') {
+        @if (sprint) {
             @if(isFirst) {
-                <div class="flex h-1/2 w-full items-center justify-start bg-{{backgroundColor}}-500 rounded-l-lg ml-2">
+                <div class="flex h-1/2 w-full items-center justify-start cursor-pointer bg-{{backgroundColor}}-{{color_value}} rounded-l-lg ml-2"
+                     (mouseenter)="mouseOver()" (mouseleave)="mouseOut()" (click)="openSprint()">
                     <div class="ml-3">
-                        <h3>{{ sprintName }}</h3>
+                        <h3>{{ sprint.sprintName }}</h3>
                     </div>
                 </div>
             } @else if(isLast) {
-                <div class="flex h-1/2 w-full items-center justify-start bg-{{backgroundColor}}-500 rounded-r-lg mr-2"></div>
+                <div class="flex h-1/2 w-full items-center justify-start cursor-pointer bg-{{backgroundColor}}-{{color_value}} rounded-r-lg mr-2"
+                (mouseenter)="mouseOver()" (mouseleave)="mouseOut()" (click)="openSprint()">
+                </div>
             } @else {
-                <div class="flex h-1/2 w-full items-center justify-start bg-{{backgroundColor}}-500"></div>
+                <div class="flex h-1/2 w-full items-center justify-start cursor-pointer bg-{{backgroundColor}}-{{color_value}}"
+                     (mouseenter)="mouseOver()" (mouseleave)="mouseOut()" (click)="openSprint()">
+                </div>
             }
-
         }
     </div>
 </div>
