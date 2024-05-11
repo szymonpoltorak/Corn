@@ -44,3 +44,7 @@ generated
 
 #Files from development builds
 .cache/
+
+#Other files
+
+auth-server/keycloak-theme/themes/corn/login/resources/css/styles.css

@@ -1,1 +1,60 @@
-<h1>Timeline</h1>
+<div class="w-full h-full flex flex-col items-center justify-center">
+    <div class="font-bold text-4xl mb-5">
+        <h1>Timeline</h1>
+    </div>
+
+    <div class="flex w-10/12 h-3/4 items-center justify-center bg-black rounded-3xl">
+        <div class="flex flex-col items-center justify-center w-11/12 h-10/12">
+            <div class="flex flex-row items-center justify-center w-full">
+                <button (click)="changeMonth(-1)" mat-icon-button
+                        style="display: flex; align-items: center; justify-content: center; width: max-content; color: #f59e0b;">
+                    <ng-icon name="matArrowLeft" size="2em" style="width: 2em;"></ng-icon>
+                </button>
+
+                <mat-form-field>
+                    <mat-label>Month and Year</mat-label>
+                    <input matInput [readonly]="true" [matDatepicker]="dp" [formControl]="date">
+                    <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker #dp
+                                    startView="year"
+                                    (monthSelected)="setMonthAndYear($event, dp)"
+                                    panelClass="example-month-picker">
+                    </mat-datepicker>
+                </mat-form-field>
+
+                <button (click)="changeMonth(1)" mat-icon-button
+                        style="display: flex; align-items: center; justify-content: center; width: max-content; color: #f59e0b;">
+                    <ng-icon name="matArrowRight" size="2em"></ng-icon>
+                </button>
+
+            </div>
+
+            <div class="grid grid-cols-7 gap-0 w-full">
+                @for (day of days; track day) {
+                    <div class="flex w-full h-20 items-center justify-center border-2 border-amber-400/50">
+                        <h3>{{ day }}</h3>
+                    </div>
+                }
+            </div>
+
+            <div class="grid grid-cols-7 gap-0 w-full">
+                @for (day of daysArray; track day; let i = $index) {
+                    <div class="w-full h-28">
+                        <app-day [day]="day"
+                                 [sprint]="indexArray[i] !== -1 ? sprints[indexArray[i]]: null"
+                                 [isFirst]="i == 0 || indexArray[i] !== indexArray[i-1]"
+                                 [isLast]="i == daysArray.length - 1 || indexArray[i] !== indexArray[i+1]"
+                                 [backgroundColor]="indexArray[i] !== -1 ? colors[sprints[indexArray[i]].sprintId % colors.length] : ''"
+                                 [eventEmitter]="indexArray[i] !== -1 ? emitters[indexArray[i]] : null"
+                                 (changeEmitter)="this.getSprints()"
+                        ></app-day>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

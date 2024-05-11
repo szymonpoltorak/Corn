@@ -1,14 +1,13 @@
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from '@core/interceptors/error.interceptor';
 import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
-import { provideNativeDateAdapter } from "@angular/material/core";
 import { DatePipe } from "@angular/common";
+import { provideNativeDateAdapter } from "@angular/material/core";
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
