@@ -106,16 +106,16 @@ public class SprintControllerImpl implements SprintController {
     @Override
     @GetMapping(value = SPRINTS_AFTER_SPRINT)
     public final Page<SprintResponse> getSprintsAfterSprint(@RequestParam long sprintId,
-                                                      Pageable pageable,
-                                                      @JwtAuthed User user) {
+                                                            Pageable pageable,
+                                                            @JwtAuthed User user) {
         return sprintService.getSprintsAfterSprint(sprintId, pageable, user);
     }
 
     @Override
     @GetMapping(value = SPRINTS_BEFORE_SPRINT)
     public final Page<SprintResponse> getSprintsBeforeSprint(@RequestParam long sprintId,
-                                                       Pageable pageable,
-                                                       @JwtAuthed User user) {
+                                                             Pageable pageable,
+                                                             @JwtAuthed User user) {
         return sprintService.getSprintsBeforeSprint(sprintId, pageable, user);
     }
 
