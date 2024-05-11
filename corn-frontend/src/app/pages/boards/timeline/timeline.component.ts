@@ -2,8 +2,7 @@ import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 
-import _moment from 'moment';
-import { default as _rollupMoment, Moment } from 'moment';
+import _moment, { default as _rollupMoment, Moment } from 'moment';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgIcon, provideIcons } from "@ng-icons/core";
