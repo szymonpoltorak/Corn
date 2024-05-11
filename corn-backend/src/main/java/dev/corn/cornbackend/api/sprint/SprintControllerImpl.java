@@ -28,6 +28,7 @@ import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.GET_SPRIN
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.GET_SPRINT_BY_ID;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.SPRINTS_AFTER_SPRINT;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.SPRINTS_BEFORE_SPRINT;
+import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.SPRINTS_BETWEEN_DATES;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.SPRINT_API_ENDPOINT;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.UPDATE_SPRINTS_DESCRIPTION;
 import static dev.corn.cornbackend.api.sprint.constants.SprintMappings.UPDATE_SPRINTS_END_DATE;
@@ -120,7 +121,8 @@ public class SprintControllerImpl implements SprintController {
     }
 
     @Override
-    public List<SprintResponse> getSprintsBetweenDates(@RequestParam LocalDate startDate,
+    @GetMapping(value = SPRINTS_BETWEEN_DATES)
+    public final List<SprintResponse> getSprintsBetweenDates(@RequestParam LocalDate startDate,
                                                        @RequestParam LocalDate endDate,
                                                        @RequestParam long projectId,
                                                        @JwtAuthed User user) {

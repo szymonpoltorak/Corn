@@ -130,12 +130,12 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
     Page<Sprint> findAllByProjectAndEndDateBefore(Project project, LocalDate date, Pageable pageable);
 
     @Query("""
-
             SELECT s FROM Sprint s
             WHERE s.project = :project AND
             ((s.startDate <= :startDate AND s.endDate >= :startDate) OR
             (s.startDate <= :endDate AND s.endDate >= :endDate) OR
             (s.startDate >= :startDate AND s.endDate <= :endDate))
+            ORDER BY s.startDate ASC
             """)
     List<Sprint> findAllBetweenDates(LocalDate startDate, LocalDate endDate, Project project);
 

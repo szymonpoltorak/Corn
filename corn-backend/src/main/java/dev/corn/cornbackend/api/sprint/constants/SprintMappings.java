@@ -25,6 +25,8 @@ public final class SprintMappings {
 
     public static final String SPRINTS_BEFORE_SPRINT = "/getSprintsBeforeSprint";
 
+    public static final String SPRINTS_BETWEEN_DATES = "/getSprintsBetweenDates";
+
     private SprintMappings() {
     }
 }

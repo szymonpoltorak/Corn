@@ -12,6 +12,7 @@ export enum ApiUrl {
 
     GET_SPRINTS_ON_PAGE = SPRINT_API_URL + '/getSprintsOnPage',
     GET_CURRENT_AND_FUTURE_SPRINTS = SPRINT_API_URL + '/currentAndFuture',
+    GET_SPRINTS_BETWEEN_DATES = SPRINT_API_URL + '/getSprintsBetweenDates',
 
     GET_PROJECT_MEMBERS = PROJECT_MEMBER_API_URL + '/getMembers',
 
