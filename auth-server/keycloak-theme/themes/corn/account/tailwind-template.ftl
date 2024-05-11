@@ -16,8 +16,8 @@
 		<title>
             ${msg("accountManagementTitle")}
         </title>
-		<link rel="icon" href="/resources/jxveb/common/corn/img/corn.png" />
-		<link rel="stylesheet" href="/resources/jxveb/common/corn/css/styles.css" />
+		<link rel="icon" href="${url.resourcesPath}/../../common/corn/img/corn.png" />
+		<link rel="stylesheet" href="${url.resourcesPath}/../../common/corn/css/styles.css" />
         <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
         <style>
             body {
@@ -31,7 +31,7 @@
     <header class="w-full bg-yellowishDark">
         <nav class="w-full flex justify-between items-center py-2 px-2">
             <div class="flex items-center">
-                <img src="/resources/jxveb/common/corn/img/corn.png" class="h-8 mr-2">
+                <img src="${url.resourcesPath}/../../common/corn/img/corn.png" class="h-8 mr-2">
                 <h1 class="text-white font-bold text-lg">Corn</h1>
             </div>
             
