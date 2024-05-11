@@ -98,8 +98,8 @@ public class SprintControllerImpl implements SprintController {
 
     @Override
     @GetMapping(value = CURRENT_AND_FUTURE_SPRINTS)
-    public List<SprintResponse> getCurrentAndFutureSprints(@RequestParam long projectId,
-                                                           @JwtAuthed User user) {
+    public final List<SprintResponse> getCurrentAndFutureSprints(@RequestParam long projectId,
+                                                                 @JwtAuthed User user) {
         return sprintService.getCurrentAndFutureSprints(projectId, user);
     }
 

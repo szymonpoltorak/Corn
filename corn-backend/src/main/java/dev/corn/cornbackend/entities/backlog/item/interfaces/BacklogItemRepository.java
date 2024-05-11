@@ -64,6 +64,17 @@ public interface BacklogItemRepository extends JpaRepository<BacklogItem, Long> 
     Page<BacklogItem> findByProjectAndSprintIsNull(Project project, Pageable pageable);
 
     /**
+     * Moves all backlog items from sprint to backlog
+     *
+     * @param sprint   Sprint to move BacklogItems from
+     */
+    @Modifying
+    @Query("""
+            UPDATE BacklogItem b SET b.sprint = null WHERE b.sprint = :sprint
+            """)
+    void updateSprintItemsToBacklog(Sprint sprint);
+
+    /**
      * Unassigns all BacklogItems associated with a ProjectMember
      *
      * @param projectMember to unassign BacklogItems from
