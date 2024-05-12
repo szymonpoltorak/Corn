@@ -1,16 +1,24 @@
-<img class="object-cover rounded-full cursor-pointer" [ngSrc]="avatarUrl" width="48" height="48" [matMenuTriggerFor]="menu">
+<app-user-avatar
+    class="block w-[48px] h-[48px] rounded-full cursor-pointer"
+    [user]="taskAssigneeAsUser()"
+    [isEmpty]="false"
+    [matMenuTriggerFor]="menu"
+></app-user-avatar>
 
 <mat-menu #menu="matMenu">
-
     <div mat-menu-item (click)="profileClicked.emit()">
         <div class="grid grid-cols-[36px,1fr] gap-2 mb-3">
             <div class="flex items-center">
-                <img class="object-cover rounded-full cursor-pointer" [ngSrc]="avatarUrl" width="36" height="36">
+                <app-user-avatar
+                    class="block w-[36px] h-[36px] rounded-full cursor-pointer"
+                    [user]="taskAssigneeAsUser()"
+                    [isEmpty]="false"
+                ></app-user-avatar>
             </div>
             <div class="items-center overflow-hidden">
-                <span class="cursor-pointer text-base">{{fullName}}</span>
-                <br>
-                <span class="cursor-pointer text-xs break-all">{{username}}</span>
+                <span class="cursor-pointer text-base">{{ fullName }}</span>
+                <br />
+                <span class="cursor-pointer text-xs break-all">{{ username }}</span>
             </div>
         </div>
     </div>
@@ -21,6 +29,4 @@
         <mat-icon>logout</mat-icon>
         <span>Logout</span>
     </button>
-
 </mat-menu>
-

@@ -33,6 +33,8 @@ import { UsernameToAssigneeMapper } from '@core/types/board/boards/UsernameToAss
 import { SimpleSprint } from '@core/interfaces/boards/board/simple_sprint.interface';
 import { Pageable } from '@core/services/api/utils/pageable.interface';
 import { BacklogItemType } from '@core/enum/BacklogItemType';
+import { UserAvatarComponent } from '@pages/utils/user-avatar/user-avatar.component';
+import { User } from '@core/interfaces/boards/user';
 
 @Component({
     selector: 'app-board',
@@ -45,6 +47,7 @@ import { BacklogItemType } from '@core/enum/BacklogItemType';
         SliceComponent,
         MatIconModule,
         ColumnSetLayout,
+        UserAvatarComponent,
     ],
     providers: [
         BoardModelService,
@@ -279,6 +282,15 @@ export class BoardComponent implements OnInit {
     
     protected formatDate(date: Date): string {
         return date.toISOString().split('T')[0].replaceAll("-", "/");
+    }
+
+    protected assigneeAsUser(assignee: Assignee): User {
+        return {
+            userId: assignee.associatedUserId,
+            name: assignee.firstName,
+            surname: assignee.familyName,
+            username: assignee.associatedUsername,
+        };
     }
 
     protected readonly TaskGroupingEnum: typeof TaskGrouping = TaskGrouping;
