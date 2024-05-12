@@ -60,4 +60,5 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
      */
     @Query("SELECT pm FROM ProjectMember pm WHERE pm.project.projectId = :projectId")
     Page<ProjectMember> findMembersByProjectIdForProjectInfo(long projectId, Pageable pageable);
+
 }

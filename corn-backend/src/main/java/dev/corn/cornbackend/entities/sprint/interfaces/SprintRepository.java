@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -94,9 +95,9 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
      */
     @Query("""
             select count(*) > 0 from Sprint s
-            where s.endDate < :date
+            where s.endDate <= :date and s.startDate >= :date and s.sprintId != :sprintId
             """)
-    boolean existsEndDateBeforeDate(LocalDate date);
+    boolean existsSprintPeriodWithGivenDate(LocalDate date, long sprintId);
 
     /**
      * Finds all sprints with given project that have end date after specified date and pages them
@@ -127,6 +128,16 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
      * @return Page of found sprints
      */
     Page<Sprint> findAllByProjectAndEndDateBefore(Project project, LocalDate date, Pageable pageable);
+
+    @Query("""
+            SELECT s FROM Sprint s
+            WHERE s.project = :project AND
+            ((s.startDate <= :startDate AND s.endDate >= :startDate) OR
+            (s.startDate <= :endDate AND s.endDate >= :endDate) OR
+            (s.startDate >= :startDate AND s.endDate <= :endDate))
+            ORDER BY s.startDate ASC
+            """)
+    List<Sprint> findAllBetweenDates(LocalDate startDate, LocalDate endDate, Project project);
 
 
 }

@@ -7,6 +7,7 @@ import dev.corn.cornbackend.entities.project.member.ProjectMember;
 import dev.corn.cornbackend.entities.project.member.ProjectMemberMapperImpl;
 import dev.corn.cornbackend.entities.project.member.interfaces.ProjectMemberMapper;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
+import dev.corn.cornbackend.entities.user.User;
 import dev.corn.cornbackend.entities.user.data.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,8 +33,8 @@ public interface BacklogItemMapper {
      * @param backlogItem The BacklogItem to map.
      * @return The mapped BacklogItemDetails.
      */
-    @Mapping(target = "sprint", source = "sprint")
-    BacklogItemDetails backlogItemToBacklogItemDetails(BacklogItem backlogItem);
+    @Mapping(target = "sprint", source = "backlogItem.sprint")
+    BacklogItemDetails backlogItemToBacklogItemDetails(BacklogItem backlogItem, User user);
 
     /**
      * Maps a ProjectMember to a UserResponse.

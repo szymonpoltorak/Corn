@@ -1,14 +1,11 @@
 <app-toolbar [isOnProjectRoute]="true"></app-toolbar>
 
-<div class="project-list">
-    <mat-grid-list [cols]="cols">
-        @for(project of projects; track project) {
-            <mat-grid-tile>
-                <app-project [project]="project"></app-project>
-            </mat-grid-tile>
-        }
-    </mat-grid-list>
+<div class="min-w-min min-h-min grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8 p-4 ">
+    @for(project of projects; track project) {
+        <app-project [project]="project"></app-project>
+    }
 </div>
+
 
 <button mat-fab color="primary"
         aria-label="Add new project"
@@ -17,3 +14,5 @@
         class="add-button">
     <mat-icon>add</mat-icon>
 </button>
+
+

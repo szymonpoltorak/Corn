@@ -17,19 +17,24 @@ import { TaskGrouper } from '@core/types/board/boards/TaskGrouper';
 import { TaskChangedGroupEvent } from '@core/interfaces/boards/board/task_changed_group_event.interface';
 import { TaskChangedColumnEvent } from '@core/interfaces/boards/board/task_changed_column_event.interface';
 import { Hideable } from '@core/interfaces/boards/board/hideable.interface';
-import { SprintApi } from '@core/services/api/v1/sprint/sprint-api.service';
+import { SprintApiService } from '@core/services/api/v1/sprint/sprint-api.service';
 import { StorageService } from '@core/services/storage.service';
 import { SprintResponse } from '@core/services/api/v1/sprint/data/sprint-response.interface';
-import { ProjectMemberApi } from '@core/services/api/v1/project/member/project-member-api.service';
-import { BacklogItemApi } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
+import { ProjectMemberApiService } from '@core/services/api/v1/project/member/project-member-api.service';
+import { BacklogItemApiService } from '@core/services/api/v1/backlog/item/backlog-item-api.service';
 import { BacklogItemStatus } from '@core/enum/BacklogItemStatus';
 import { StorageKey } from '@core/enum/storage-key.enum';
 import { firstValueFrom } from 'rxjs';
-import { ProjectMemberInfoExtendedResponse } from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
+import {
+    ProjectMemberInfoExtendedResponse
+} from '@core/services/api/v1/project/member/data/project-member-info-extended-reponse.interface';
 import { BacklogItemResponse } from '@core/services/api/v1/backlog/item/data/backlog-item-response.interface';
 import { UsernameToAssigneeMapper } from '@core/types/board/boards/UsernameToAssigneeMapper';
 import { SimpleSprint } from '@core/interfaces/boards/board/simple_sprint.interface';
 import { Pageable } from '@core/services/api/utils/pageable.interface';
+import { BacklogItemType } from '@core/enum/BacklogItemType';
+import { UserAvatarComponent } from '@pages/utils/user-avatar/user-avatar.component';
+import { User } from '@core/interfaces/boards/user';
 
 @Component({
     selector: 'app-board',
@@ -42,6 +47,7 @@ import { Pageable } from '@core/services/api/utils/pageable.interface';
         SliceComponent,
         MatIconModule,
         ColumnSetLayout,
+        UserAvatarComponent,
     ],
     providers: [
         BoardModelService,
@@ -59,9 +65,9 @@ export class BoardComponent implements OnInit {
     protected taskGrouping: TaskGrouping = TaskGrouping.NONE;
 
     constructor(
-        protected readonly sprintApi: SprintApi,
-        protected readonly projectMemberApi: ProjectMemberApi,
-        protected readonly backlogItemApi: BacklogItemApi,
+        protected readonly sprintApi: SprintApiService,
+        protected readonly projectMemberApi: ProjectMemberApiService,
+        protected readonly backlogItemApi: BacklogItemApiService,
         protected readonly storage: StorageService,
         protected readonly modelService: BoardModelService,
         protected readonly slicesModelService: SlicesModelService<GroupingMetadata>,
@@ -89,10 +95,10 @@ export class BoardComponent implements OnInit {
     }
 
     private async loadSprintInfo(sprint: SimpleSprint): Promise<void> {
-        const [nextSprint, previousSprint] = [
+        const [nextSprint, previousSprint] = (await Promise.all([
             await firstValueFrom(this.sprintApi.getSprintsAfterSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "ASC"))),
             await firstValueFrom(this.sprintApi.getSprintsBeforeSprint(sprint.sprintId, Pageable.of(0, 1, "startDate", "DESC"))),
-        ].map(page => page.numberOfElements > 0 ? this.toSimpleSprint(page.content[0]) : null);
+        ])).map(page => page.numberOfElements > 0 ? this.toSimpleSprint(page.content[0]) : null);
         this.nextSprint = nextSprint;
         this.previousSprint = previousSprint;
 
@@ -164,13 +170,17 @@ export class BoardComponent implements OnInit {
         ), 500);
     }
 
-    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee>): void {
+    protected assigneeSupplier(): Assignee[] {
+        return this.modelService.assignees;
+    }
+
+    protected assigneeChangedHandler(event: TaskChangedGroupEvent<Assignee | undefined>): void {
         if(!this.isDisplayedSprintEditable()) {
             return;
         }
         this.modelService.setAssigneeForTask(event.task, event.destinationGroupMetadata);
         this.backlogItemApi.partialUpdate(event.task.associatedBacklogItemId, {
-            projectMemberId: event.task.assignee.associatedProjectMemberId,
+            projectMemberId: !event.task.assignee ? 0 : event.task.assignee.associatedProjectMemberId,
         }).subscribe((_) => { });
     }
 
@@ -194,9 +204,9 @@ export class BoardComponent implements OnInit {
         const stringPredicate = (s: string) => s.toLowerCase().includes(filterString);
         this.slicesModelService.filter = (t: Task) => {
             return stringPredicate(t.content)
-                || stringPredicate(t.assignee.firstName)
-                || stringPredicate(t.assignee.firstName + " " + t.assignee.familyName)
-                || stringPredicate(t.assignee.familyName)
+                || stringPredicate(t.assignee!.firstName)
+                || stringPredicate(t.assignee!.firstName + " " + t.assignee!.familyName)
+                || stringPredicate(t.assignee!.familyName)
                 || stringPredicate(t.associatedBacklogItemId + "")
                 || stringPredicate(t.taskTag);
         };
@@ -256,6 +266,30 @@ export class BoardComponent implements OnInit {
             taskTag: item.itemType + "-" + item.backlogItemId,
             content: item.title,
             assignee: mapper(item.assignee.username),
+            taskType: this.mapStringToBacklogItemType(item.itemType)!,
+        };
+    }
+
+    private mapStringToBacklogItemType(str: string): BacklogItemType | undefined {
+        switch (str.toUpperCase()) {
+            case 'BUG': return BacklogItemType.BUG;
+            case 'TASK': return BacklogItemType.TASK;
+            case 'STORY': return BacklogItemType.STORY;
+            case 'EPIC': return BacklogItemType.EPIC;
+            default: return undefined;
+        }
+    }
+    
+    protected formatDate(date: Date): string {
+        return date.toISOString().split('T')[0].replaceAll("-", "/");
+    }
+
+    protected assigneeAsUser(assignee: Assignee): User {
+        return {
+            userId: assignee.associatedUserId,
+            name: assignee.firstName,
+            surname: assignee.familyName,
+            username: assignee.associatedUsername,
         };
     }
 
@@ -270,8 +304,8 @@ export class BoardComponent implements OnInit {
                 return {
                     metadata: a,
                     group: ungrouped.filter((t: Task) => {
-                        return t.assignee.firstName == a.firstName
-                            && t.assignee.familyName == a.familyName
+                        return t.assignee!.firstName == a.firstName
+                            && t.assignee!.familyName == a.familyName
                     })
                 };
             });

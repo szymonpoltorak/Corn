@@ -5,5 +5,6 @@ export interface BacklogItemComment {
     user: User,
     commentTime: Date
     backlogItemCommentId: number,
-    lastEditTime: Date
+    lastEditTime: Date,
+    canEdit: boolean
 }

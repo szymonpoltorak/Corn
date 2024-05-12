@@ -2,6 +2,7 @@ package dev.corn.cornbackend.api.sprint;
 
 import dev.corn.cornbackend.api.sprint.data.SprintRequest;
 import dev.corn.cornbackend.api.sprint.data.SprintResponse;
+import dev.corn.cornbackend.entities.backlog.item.interfaces.BacklogItemRepository;
 import dev.corn.cornbackend.entities.project.interfaces.ProjectRepository;
 import dev.corn.cornbackend.entities.sprint.Sprint;
 import dev.corn.cornbackend.entities.sprint.interfaces.SprintMapper;
@@ -43,8 +44,13 @@ class SprintServiceTest {
 
     @Mock
     private SprintRepository sprintRepository;
+
     @Mock
     private ProjectRepository projectRepository;
+
+    @Mock
+    private BacklogItemRepository backlogItemRepository;
+
     @Mock
     private SprintMapper MAPPER;
 
@@ -447,7 +453,7 @@ class SprintServiceTest {
         User owner = ADD_SPRINT_DATA.project().getOwner();
 
         // when
-        when(sprintRepository.existsEndDateBeforeDate(newStartDate))
+        when(sprintRepository.existsSprintPeriodWithGivenDate(newStartDate, sprintId))
                 .thenReturn(true);
 
         // then

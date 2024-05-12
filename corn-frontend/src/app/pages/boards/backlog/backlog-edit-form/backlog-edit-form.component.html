@@ -1,0 +1,78 @@
+<div class="min-w-[30em] min-h-[30em] p-4 flex justify-between flex-col">
+    <div class="flex items-center flex-col gap-3" [formGroup]="formGroup">
+        <div class="flex justify-center items-center text-3xl font-semibold mb-4">
+            {{ data.sprintName }}
+        </div>
+
+        <mat-form-field class="w-full">
+            <mat-label>Sprint Name</mat-label>
+
+            <input formControlName="sprintName" #sprintsName
+                   matInput placeholder="My new sprint" value="{{ data.sprintName }}" maxlength="50">
+
+            <mat-hint align="end">{{ sprintsName.value.length }} / 50</mat-hint>
+
+            @if (formGroup.controls['sprintName'].hasError('required')) {
+                <mat-error>
+                    The sprints name is <strong>required</strong>.
+                </mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Sprint Goal</mat-label>
+
+            <textarea formControlName="goal" matInput
+                      #goal
+                      [cdkTextareaAutosize]="true"
+                      placeholder="We want to finish it!" maxlength="500">
+                {{ data.sprintDescription }}
+            </textarea>
+
+            <mat-hint align="end">{{ goal.value.length }} / 500</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Start Date</mat-label>
+
+            <input formControlName="startDate" placeholder="5/30/2024"
+                   matInput [matDatepicker]="startPicker" value="{{ data.startDate }}">
+
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+
+            <mat-datepicker #startPicker></mat-datepicker>
+
+            @if (formGroup.controls['startDate'].hasError('required')) {
+                <mat-error>
+                    The start date is <strong>required</strong>.
+                </mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>End Date</mat-label>
+
+            <input formControlName="endDate" placeholder="5/31/2024"
+                   matInput [matDatepicker]="endPicker" value="{{ data.endDate }}">
+
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+
+            <mat-datepicker #endPicker></mat-datepicker>
+
+            @if (formGroup.controls['endDate'].hasError('required')) {
+                <mat-error>
+                    The end date is <strong>required</strong>.
+                </mat-error>
+            }
+        </mat-form-field>
+    </div>
+
+    <div class="flex justify-between">
+        <button type="button" mat-button mat-dialog-close>Cancel</button>
+
+        <button type="submit" mat-raised-button color="primary"
+                (click)="submitSprintEdit()" [disabled]="formGroup.invalid">
+            Ok
+        </button>
+    </div>
+</div>

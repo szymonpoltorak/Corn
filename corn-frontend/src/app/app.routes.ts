@@ -13,7 +13,8 @@ export const routes: Routes = [
     {
         path: RouterPaths.PROJECT_LIST_PATH,
         loadComponent: () => import("@pages/project-list/project-list.component")
-            .then(c => c.ProjectListComponent)
+            .then(c => c.ProjectListComponent),
+        canActivate: [authGuard]
     },
     {
         path: RouterPaths.BOARDS_PATH,
@@ -35,6 +36,11 @@ export const routes: Routes = [
                 path: BoardsPaths.BOARD,
                 loadComponent: () => import("@pages/boards/board/board.component")
                     .then(c => c.BoardComponent)
+            },
+            {
+                path: BoardsPaths.REPORTS,
+                loadComponent: () => import("@pages/boards/reports/reports.component")
+                    .then(c => c.ReportsComponent)
             },
             {
                 path: RouterPaths.SETTINGS_PATH,

@@ -121,4 +121,6 @@ public interface SprintService {
      */
     Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user);
 
+    List<SprintResponse> getSprintsBetweenDates(LocalDate startDate, LocalDate endDate, long projectId, User user);
+
 }

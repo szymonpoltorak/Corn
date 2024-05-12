@@ -120,4 +120,6 @@ public interface SprintController {
      * @return Page of sprints occurring before the specified sprint
      */
     Page<SprintResponse> getSprintsBeforeSprint(long sprintId, Pageable pageable, User user);
+
+    List<SprintResponse> getSprintsBetweenDates(LocalDate startDate, LocalDate endDate, long projectId, User user);
 }

@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { User } from '@core/interfaces/boards/user';
+import { UserAvatarComponent } from '@pages/utils/user-avatar/user-avatar.component';
 
 @Component({
     selector: 'userinfo',
@@ -16,14 +18,27 @@ import { MatListModule } from '@angular/material/list';
         MatIconModule,
         MatListModule,
         NgOptimizedImage,
+        UserAvatarComponent,
     ]
 })
 export class UserinfoComponent {
 
-    @Input() avatarUrl: string = 'https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png';
     @Input() fullName: string = '';
     @Input() username: string = '';
 
     @Output() logout = new EventEmitter<void>();
+    @Output() profileClicked = new EventEmitter<void>();
+
+    protected taskAssigneeAsUser(): User | undefined {
+        if (!this.fullName || !this.username) {
+            return undefined;
+        }
+        return {
+            userId: -1,
+            name: this.fullName.split(" ")[0],
+            surname: this.fullName.split(" ")[1],
+            username: this.username,
+        };
+    }
 
 }

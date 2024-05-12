@@ -77,6 +77,7 @@ services:
             - KCCFG_OVERRIDE_EXISTING=true
             - KCCFG_CREATE_PLACEHOLDER_USERS=true
             - KCCFG_LOGIN_THEME_NAME=corn
+            - KCCFG_ACCOUNT_THEME_NAME=corn
             - KC_SERVER_URL=http://corn-keycloak:8080
         volumes:
             - "./auth-server/keycloak-initializer:/keycloak-initializer"

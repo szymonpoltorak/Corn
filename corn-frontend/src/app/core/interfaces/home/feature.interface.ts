@@ -3,4 +3,5 @@ export interface Feature {
     label: string;
     content: string;
     isLeft: boolean;
+    imagePath: string;
 }

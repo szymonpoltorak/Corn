@@ -15,7 +15,6 @@ public final class CornRealm extends RealmRepresentation {
         setClients(List.of(new CornClient()));
         setIdentityProviders(ExternalConfig.getIdentityProviders());
         setRevokeRefreshToken(true);
-        setRememberMe(true);
         setBruteForceProtected(true);
 
         if(ExternalConfig.shouldCreatePlaceholderUsers()) {
@@ -24,6 +23,10 @@ public final class CornRealm extends RealmRepresentation {
 
         if(ExternalConfig.KCCFG_LOGIN_THEME_NAME != null) {
             setLoginTheme(ExternalConfig.KCCFG_LOGIN_THEME_NAME);
+        }
+
+        if(ExternalConfig.KCCFG_ACCOUNT_THEME_NAME != null) {
+            setAccountTheme(ExternalConfig.KCCFG_ACCOUNT_THEME_NAME);
         }
     }
 
