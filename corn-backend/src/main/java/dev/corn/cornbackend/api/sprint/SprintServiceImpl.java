@@ -260,7 +260,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public final List<SprintResponse> getSprintsBetweenDates(LocalDate startDate, LocalDate endDate, long projectId,
+    public List<SprintResponse> getSprintsBetweenDates(LocalDate startDate, LocalDate endDate, long projectId,
                                                              User user) {
         log.info("Getting sprints between dates: {} and {} for project with id: {}", startDate, endDate, projectId);
 

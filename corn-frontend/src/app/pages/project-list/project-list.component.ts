@@ -30,9 +30,6 @@ import { Router } from "@angular/router";
     styleUrl: './project-list.component.scss'
 })
 export class ProjectListComponent implements OnInit {
-
-    cols: number = 5;
-
     pageNumber: number = 0;
 
     projects: Project[] = [];
@@ -45,8 +42,25 @@ export class ProjectListComponent implements OnInit {
                 private router: Router) {
     }
 
-    ngOnInit(): void {
-        this.getProjects();
+    async ngOnInit(): Promise<void> {
+        await this.getProjects();
+        await this.fetchMoreProjectsIfNeeded();
+    }
+
+    private async fetchMoreProjectsIfNeeded(): Promise<void> {
+        let position: number = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight;
+        let max: number = document.documentElement.scrollHeight;
+
+        while (position >= max) {
+            if(this.gotAllProjects) {
+                return;
+            }
+            this.pageNumber++;
+            await this.getProjects();
+
+            position = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight;
+            max = document.documentElement.scrollHeight;
+        }
     }
 
     @HostListener('window:scroll', ['$event'])
@@ -89,17 +103,20 @@ export class ProjectListComponent implements OnInit {
             });
     }
 
-    private getProjects(): void {
-        this.projectService
-            .getProjectsOnPage(this.pageNumber)
-            .pipe(take(1))
-            .subscribe((items: Project[]) => {
-                    if (items.length == 0) {
-                        this.gotAllProjects = true;
-                        return;
+    private async getProjects(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            this.projectService
+                .getProjectsOnPage(this.pageNumber)
+                .pipe(take(1))
+                .subscribe((items: Project[]) => {
+                        if (items.length == 0) {
+                            this.gotAllProjects = true;
+                        } else {
+                            this.projects = [...this.projects, ...items];
+                        }
+                        resolve();
                     }
-                    this.projects = [...this.projects, ...items];
-                }
-            )
+                )
+        });
     }
 }

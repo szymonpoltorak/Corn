@@ -10,9 +10,14 @@
   box-shadow: #000000 0 0 1em;
   z-index: -2;
 
-  @media(max-width: $screen-840) {
+  @media(max-width: $screen-1440) {
     width: 11em;
     height: 10em;
+  }
+
+  @media(max-width: $screen-440) {
+    width: 8em;
+    height: 7em;
   }
 }
 
@@ -34,9 +39,14 @@
   border-bottom-right-radius: 5px;
   background-color: map-get($dark-color-settings, container-background-color);
 
-  @media(max-width: $screen-840) {
+  @media(max-width: $screen-1440) {
     width: 10em;
     height: 10em;
+  }
+
+  @media(max-width: $screen-440) {
+    width: 7em;
+    height: 7em;
   }
 
   &:before {
@@ -61,9 +71,14 @@
   overflow: hidden;
   z-index: 1;
 
-  @media(max-width: $screen-840) {
+  @media(max-width: $screen-1440) {
     font-size: 1em;
     margin-top: 0.25em;
+  }
+
+  @media(max-width: $screen-440) {
+    font-size: 0.7em;
+    margin-top: 0.15em;
   }
 }
 
@@ -87,9 +102,14 @@
   width: 2.7em;
   height: 2.7em;
 
-  @media (max-width: $screen-840) {
+  @media (max-width: $screen-1440) {
     width: 1.8em;
     height: 1.8em;
+  }
+
+  @media (max-width: $screen-440) {
+    width: 1.1em;
+    height: 1.1em;
   }
 }
 
