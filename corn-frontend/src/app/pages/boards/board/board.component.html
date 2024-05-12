@@ -59,11 +59,11 @@
                                 {{ isHidden(sliceWrapper) ? "chevron_right" : "expand_more" }}
                             </mat-icon>
                             <div class="flex items-center space-x-1">
-                                <img
-                                    class="w-5 h-5 rounded-full"
-                                    src="{{ slice.metadata.avatarUrl }}"
-                                    alt="slice.metadata.firstName + ' ' + slice.metadata.familyName"
-                                />
+                                <app-user-avatar
+                                    class="block w-5 h-5 rounded-full text-[12px]"
+                                    [user]="assigneeAsUser(slice.metadata)"
+                                    [isEmpty]="false"
+                                ></app-user-avatar>
                                 <span>
                                     {{ slice.metadata.firstName + " " + slice.metadata.familyName }}
                                 </span>
