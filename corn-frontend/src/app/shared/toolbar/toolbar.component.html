@@ -22,6 +22,7 @@
                 [routerLink]="RouterPaths.PROJECT_LIST_DIRECT_PATH"
                 class="center"
                 matTooltip="Settings"
+                (click)="profileClicked()"
                 aria-label="Settings">
             <mat-icon>settings</mat-icon>
         </button>
@@ -30,7 +31,6 @@
     @if (isLoggedIn && userProfile) {
         <userinfo [username]="userProfile!.username || ''"
                   [fullName]="userProfile!.firstName + ' ' + userProfile!.lastName"
-                  (profileClicked)="profileClicked()"
                   (logout)="logout()">
         </userinfo>
     }
