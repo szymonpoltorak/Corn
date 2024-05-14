@@ -99,6 +99,12 @@ cd scripts/dev
     <img src="screenshots/register.png" alt="TechStack">
 </div>
 
+* Security settings
+
+<div align="center">
+    <img src="screenshots/security_settings.png" alt="TechStack">
+</div>
+
 * Projects
 
 <div align="center">
@@ -151,4 +157,10 @@ cd scripts/dev
 
 <div align="center">
     <img src="screenshots/board_group_member.png" alt="TechStack">
+</div>
+
+* Timeline
+
+<div align="center">
+    <img src="screenshots/timeline.png" alt="TechStack">
 </div>
