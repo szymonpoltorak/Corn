@@ -51,6 +51,8 @@ cd scripts/dev
 
 ## Tech stack
 
+Application was managed using Scrum with aid of Jira.
+
 <div align="center">
     <img src="screenshots/tech_stack.png" alt="TechStack">
 </div>
